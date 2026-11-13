@@ -203,7 +203,7 @@ function render(){
  const o=current();
  if(o){
   board.appendChild(node("rect",{id:"selBox",x:o.x-5,y:o.y-5,width:o.w+10,height:o.h+10}));
-  board.appendChild(node("rect",{"data-handle":"resize",x:o.x+o.w-9,y:o.y+o.h-9,width:18,height:18,rx:3,fill:"#1a62ef",stroke:"#ffffff","stroke-width":3}));
+  const handleSize=18/zoom;board.appendChild(node("rect",{"data-handle":"resize",x:o.x+o.w-handleSize/2,y:o.y+o.h-handleSize/2,width:handleSize,height:handleSize,rx:3/zoom,fill:"#1a62ef",stroke:"#ffffff","stroke-width":2/zoom}));
  }
  $("editor").hidden=!o;$("notselected").hidden=!!o;$("counter").textContent=objects.length+" об'єкт(ів)";
  const ls=$("layers");ls.replaceChildren();
