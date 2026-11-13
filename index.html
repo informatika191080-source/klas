@@ -181,6 +181,34 @@ body{background:radial-gradient(ellipse 45% 30% at 96% 0%,#31467b55,transparent)
 @keyframes live-panel-in{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:550px){.live-bip{bottom:max(10px,env(safe-area-inset-bottom));right:max(9px,env(safe-area-inset-right))}.live-bip-launch{min-height:54px;padding:4px 11px 4px 5px}.live-bip-face{width:45px;height:45px}.live-bip-title{font-size:13px}.live-bip-panel{bottom:66px;max-height:min(500px,calc(100dvh - 105px))}.live-bip-chat{padding:13px}}
 @media(prefers-reduced-motion:reduce){.portrait,.portrait .live-eyes,.portrait .live-mouth,.portrait .live-cheek,.live-bip-face,.live-bip-eye,.live-bip-panel{animation:none!important}.live-bip-launch{transition:none!important}}
+/* Characters act out meaningful, short reactions instead of looping the same motion. */
+.portrait .live-gesture-left,.portrait .live-gesture-right{transform-box:fill-box;transform-origin:center 80%;transition:transform .22s ease-out}
+.portrait .live-gesture-left{transform:rotate(-10deg)}
+.portrait .live-gesture-right{transform:rotate(10deg)}
+.portrait.is-happy .live-gesture-right{animation:hero-wave .62s ease-in-out 2}
+.portrait.is-happy .live-gesture-left{animation:hero-cheer .62s ease-out 1}
+.portrait.is-concerned .live-gesture-left{animation:hero-think .8s ease-in-out 1}
+.portrait.is-concerned .live-gesture-right{transform:rotate(-21deg)}
+.portrait.is-surprised .live-gesture-left{animation:hero-shrug-left .65s ease-out 1}
+.portrait.is-surprised .live-gesture-right{animation:hero-shrug-right .65s ease-out 1}
+.portrait.is-concerned .live-eyes{transform:scaleY(.68)}
+.portrait.is-surprised .live-eyes{transform:scaleY(1.22)}
+@keyframes hero-wave{0%,100%{transform:rotate(10deg)}35%{transform:rotate(-38deg)}75%{transform:rotate(24deg)}}
+@keyframes hero-cheer{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(38deg)}}
+@keyframes hero-think{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(32deg)}}
+@keyframes hero-shrug-left{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(36deg)}}
+@keyframes hero-shrug-right{0%,100%{transform:rotate(10deg)}50%{transform:rotate(-36deg)}}
+.live-bip{--bip-status:#91f4ea}
+.live-bip[data-mood="happy"]{--bip-status:#71f8c9}
+.live-bip[data-mood="concerned"]{--bip-status:#ffca90}
+.live-bip[data-mood="surprised"]{--bip-status:#ffe77a}
+.live-bip[data-mood] .live-bip-launch{border-color:var(--bip-status)}
+.live-bip-moment{position:absolute;right:0;bottom:calc(100% + 10px);width:max-content;max-width:min(275px,calc(100vw - 24px));padding:10px 13px;border-radius:14px 14px 4px 14px;background:#103957;border:1px solid var(--bip-status);color:#f6ffff;font-size:13px;font-weight:700;line-height:1.3;box-shadow:0 8px 30px #001e3f88;pointer-events:none;animation:live-panel-in .2s ease-out}
+.live-bip[data-mood="happy"] .live-bip-face{animation:hero-celebrate .6s ease-out 1}
+.live-bip[data-mood="concerned"] .live-bip-head{transform:rotate(-8deg)}
+.live-bip[data-mood="surprised"] .live-bip-head{transform:scale(1.08)}
+@media(max-width:550px){.live-bip-moment{font-size:12px;max-width:195px}}
+@media(prefers-reduced-motion:reduce){.portrait .live-gesture-left,.portrait .live-gesture-right{animation:none!important;transition:none!important}.live-bip-moment,.live-bip[data-mood] .live-bip-face{animation:none!important}}
 @media print{.live-bip{display:none!important}}
 </style></head><body><div id="root" class="container"></div><div id="live-bip-root" class="live-bip no-print"></div><script>
 'use strict';
@@ -221,7 +249,7 @@ const PEOPLE=[
  {name:'Марта',role:'Учениця, працює зі спільною папкою',personality:'Не розуміє, чому мережевий файл недоступний, хоча мережа працює.',hair:'#422c6b',shirt:'#b49aff',skin:'#dfac89',type:2},
  {name:'Богдан',role:'Учень, отримав підозрілий лист',personality:'Любить комп’ютерні ігри, але хоче захистити свій обліковий запис.',hair:'#362b26',shirt:'#68d0ec',skin:'#e2aa78',type:3}
 ];
-function portrait(i){const p=PEOPLE[i],skin=p.skin,hair=p.hair,shirt=p.shirt;let fringe=['<path d="M30 50Q20 14 59 18Q92 12 95 52L79 43Q60 53 43 39Z"/>','<path d="M30 44Q33 11 64 18Q93 18 92 49Q68 34 30 44Z"/>','<path d="M29 46Q20 5 68 18Q95 13 94 51Q80 38 66 37Q47 57 29 46Z"/>','<path d="M30 46Q28 19 50 18Q81 9 93 43L75 38Q53 49 30 46Z"/>'][p.type];return `<svg class="portrait" viewBox="0 0 128 136" role="img" aria-label="Портрет персонажа ${esc(p.name)}"><defs><linearGradient id="grad${i}" x2="1" y2="1"><stop stop-color="#80e5ff"/><stop offset="1" stop-color="#7c68fa"/></linearGradient></defs><circle cx="64" cy="69" r="62" fill="url(#grad${i})" opacity=".30"/><ellipse cx="64" cy="142" rx="56" ry="45" fill="${shirt}"/><rect x="54" y="94" width="20" height="27" rx="9" fill="${skin}"/><ellipse cx="64" cy="70" rx="37" ry="45" fill="${skin}"/><path d="M27 61Q16 13 64 14Q112 14 101 67Q94 46 87 35Q63 28 40 42Q32 52 27 61" fill="${hair}"/><g fill="${hair}">${fringe}</g><ellipse cx="30" cy="72" rx="6" ry="12" fill="${skin}"/><ellipse cx="98" cy="72" rx="6" ry="12" fill="${skin}"/><g class="live-eyes"><ellipse cx="51" cy="72" rx="3.4" ry="4" fill="#1c2336"/><ellipse cx="76" cy="72" rx="3.4" ry="4" fill="#1c2336"/></g><circle class="live-cheek" cx="39" cy="82" r="5" fill="#e26b86" opacity=".2"/><circle class="live-cheek" cx="88" cy="82" r="5" fill="#e26b86" opacity=".2"/><path class="live-mouth" d="M54 88Q64 97 75 88" stroke="#8d4b4c" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M42 64L55 64M72 64L85 64" stroke="${hair}" stroke-width="2.4" stroke-linecap="round"/><path d="M38 117L55 112L64 125L73 112L91 117" fill="#ffffff25"/></svg>`}
+function portrait(i){const p=PEOPLE[i],skin=p.skin,hair=p.hair,shirt=p.shirt;let fringe=['<path d="M30 50Q20 14 59 18Q92 12 95 52L79 43Q60 53 43 39Z"/>','<path d="M30 44Q33 11 64 18Q93 18 92 49Q68 34 30 44Z"/>','<path d="M29 46Q20 5 68 18Q95 13 94 51Q80 38 66 37Q47 57 29 46Z"/>','<path d="M30 46Q28 19 50 18Q81 9 93 43L75 38Q53 49 30 46Z"/>'][p.type];return `<svg class="portrait" viewBox="0 0 128 136" role="img" aria-label="Портрет персонажа ${esc(p.name)}"><defs><linearGradient id="grad${i}" x2="1" y2="1"><stop stop-color="#80e5ff"/><stop offset="1" stop-color="#7c68fa"/></linearGradient></defs><circle cx="64" cy="69" r="62" fill="url(#grad${i})" opacity=".30"/><ellipse cx="64" cy="142" rx="56" ry="45" fill="${shirt}"/><g class="live-gesture" aria-hidden="true"><g class="live-gesture-left"><path d="M32 113Q17 106 12 87" fill="none" stroke="${shirt}" stroke-width="13" stroke-linecap="round"/><circle cx="12" cy="84" r="7" fill="${skin}"/></g><g class="live-gesture-right"><path d="M96 113Q111 106 116 86" fill="none" stroke="${shirt}" stroke-width="13" stroke-linecap="round"/><circle cx="116" cy="83" r="7" fill="${skin}"/></g></g><rect x="54" y="94" width="20" height="27" rx="9" fill="${skin}"/><ellipse cx="64" cy="70" rx="37" ry="45" fill="${skin}"/><path d="M27 61Q16 13 64 14Q112 14 101 67Q94 46 87 35Q63 28 40 42Q32 52 27 61" fill="${hair}"/><g fill="${hair}">${fringe}</g><ellipse cx="30" cy="72" rx="6" ry="12" fill="${skin}"/><ellipse cx="98" cy="72" rx="6" ry="12" fill="${skin}"/><g class="live-eyes"><ellipse cx="51" cy="72" rx="3.4" ry="4" fill="#1c2336"/><ellipse cx="76" cy="72" rx="3.4" ry="4" fill="#1c2336"/></g><circle class="live-cheek" cx="39" cy="82" r="5" fill="#e26b86" opacity=".2"/><circle class="live-cheek" cx="88" cy="82" r="5" fill="#e26b86" opacity=".2"/><path class="live-mouth" d="M54 88Q64 97 75 88" stroke="#8d4b4c" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M42 64L55 64M72 64L85 64" stroke="${hair}" stroke-width="2.4" stroke-linecap="round"/><path d="M38 117L55 112L64 125L73 112L91 117" fill="#ffffff25"/></svg>`}
 const LABS=[
  {title:'Тренажер «Права доступу»',steps:[{instruction:'На екрані спільний файл з правом «Переглядач». Вибери законну дію, щоб працювати над завданням.',scene:'📄 Правила безпеки · Переглядач',choices:['Змінити чужі дозволи','Створити дозволену копію','Видалити документ'],correct:1,ok:'Тепер у тебе є власна копія, яку можна редагувати.'},{instruction:'Власну копію вже готово. Куди її правильно додати?',scene:'📂 Навчальні матеріали → 📂 Готові роботи',choices:['До папки «Готові роботи»','Поверх початкового файла','У кошик'],correct:0,ok:'Файл передано до потрібної папки. Оригінал не змінено.'}]},
  {title:'Тренажер «Шлях до принтера»',steps:[{instruction:'Принтер під’єднаний до комп’ютера А, доступ спільний. Який маршрут правильний?',scene:'💻 Комп’ютер Б · 🌐 Мережа · 💻 Комп’ютер А · 🖨️ Принтер',choices:['Б → мережа → А → принтер','Б → інтернет → незнайомий сайт','Б → вимкнути А'],correct:0,ok:'Так, комп’ютер А передає завдання на принтер.'},{instruction:'Комп’ютер А тепер вимкнули. Що відновить друк у цій схемі?',scene:'💻 Б ✅ · 🌐 ✅ · 💻 А ❌ · 🖨️ ✅',choices:['Видалити документ','Попросити відповідальну особу ввімкнути А','Вимкнути мережу'],correct:1,ok:'Правильно: спільний принтер стає доступним через ввімкнений комп’ютер А.'}]},
@@ -481,7 +509,8 @@ function bipMarkup(){
   <button type="button" class="live-bip-launch" data-bip-open aria-controls="bip-dialog" aria-expanded="${bipPanelOpen}"><span class="live-bip-face" aria-hidden="true"><span class="live-bip-head"><b class="live-bip-eye"></b><b class="live-bip-eye"></b><i></i></span>${bipIsNew&&!bipPanelOpen?'<em class="live-bip-unread"></em>':''}</span><span class="live-bip-title">БІП <span class="live-bip-status">${bipPanelOpen?'Твій помічник':'Потрібна порада?'}</span></span></button>
  </section>`;
 }
-function updateBip(){if(!bipHolder)return;const wasOpen=bipPanelOpen;bipHolder.innerHTML=bipMarkup();if(wasOpen&&document.activeElement===document.body){} }
+let bipMoment='',bipMood='';
+function updateBip(){if(!bipHolder)return;bipHolder.innerHTML=bipMarkup();if(bipMood)bipHolder.dataset.mood=bipMood;else bipHolder.removeAttribute('data-mood');if(bipMoment&&!bipPanelOpen){const msg=document.createElement('div');msg.className='live-bip-moment';msg.textContent=bipMoment;msg.setAttribute('role','status');bipHolder.appendChild(msg);}}
 bipHolder.addEventListener('click',ev=>{
  const button=ev.target.closest('button');if(!button)return;
  if(button.hasAttribute('data-bip-open')){bipPanelOpen=!bipPanelOpen;bipIsNew=false;bipReply='';updateBip();if(bipPanelOpen)bipHolder.querySelector('[data-bip-close]')?.focus({preventScroll:true});else bipHolder.querySelector('[data-bip-open]')?.focus({preventScroll:true});return;}
@@ -575,7 +604,10 @@ function showCharacterReaction(tone,i){
  if(portraitElement){portraitElement.classList.remove('is-happy','is-concerned','is-surprised');void portraitElement.getBoundingClientRect();portraitElement.classList.add('is-'+tone);}
  const bubble=document.createElement('div');bubble.id='character-reaction-toast';bubble.className='character-reaction-toast';bubble.dataset.tone=tone;bubble.setAttribute('role','status');bubble.textContent=text;
  document.body.appendChild(bubble);
- clearTimeout(reactionTimer);reactionTimer=setTimeout(()=>{bubble.remove();portraitElement?.classList.remove('is-'+tone)},2900);
+ bipMood=tone;
+ bipMoment=tone==='happy'?'🤖 БІП: Вдале рішення!':tone==='concerned'?'🤖 БІП: Перевіримо ще раз.':'🤖 БІП: Нові обставини!';
+ updateBip();
+ clearTimeout(reactionTimer);reactionTimer=setTimeout(()=>{bubble.remove();portraitElement?.classList.remove('is-'+tone);bipMoment='';bipMood='';updateBip()},2900);
 }
 root.addEventListener('click',event=>{
  const action=event.target.closest('[data-m1],[data-m2],[data-m3],[data-m6],[data-new],[data-answer]');
