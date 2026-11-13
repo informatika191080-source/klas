@@ -111,7 +111,7 @@ footer{max-width:1420px;margin:0 auto;padding:0 22px 24px;color:#91a6c6;font-siz
   <section class="card">
    <h2>💾 Збереження та допомога</h2>
    <div id="storageStatus" class="status" role="status">Збереження перевіряється…</div>
-   <p class="help">Робота зберігається <strong>лише в цьому браузері</strong>, якщо доступне локальне сховище. Завантаж SVG для надійної копії. Роботи не надсилаються вчителю автоматично.</p>
+   <p class="help">Робота зберігається <strong>лише в цьому браузері</strong>, якщо доступне локальне сховище. Завантаж SVG для надійної копії. Роботи не надсилаються вчителю автоматично. Імпорт SVG підтримує лише прості фігури та текст без ефектів і перетворень; для повного збереження редагованого проєкту використовуйте JSON.</p>
    <details class="help"><summary>Як працювати?</summary><p>Додай фігуру. Натисни на неї й перетягни. Зміни заливку, контур і розмір. Використовуй шари, щоб переміщувати об'єкти вперед або назад. Кнопка «Зберегти SVG» створює справжній векторний файл.</p></details>
   </section>
  </aside>
@@ -264,7 +264,7 @@ function validateProject(value){
  const arr=value.objects.map(o=>{
   if(!o||!TYPES[o.type]||!Number.isInteger(o.id)||o.id<1||seen.has(o.id))throw Error("Помилка об’єкта");seen.add(o.id);
   for(const k of ["x","y","w","h"])if(!Number.isFinite(o[k]))throw Error("Помилка координат");
-  return {id:o.id,type:o.type,x:clamp(o.x,0,800),y:clamp(o.y,0,500),w:clamp(o.w,8,780),h:clamp(o.h,8,480),fill:validColor(o.fill),stroke:validColor(o.stroke),sw:clamp(o.sw,0,12),text:String(o.text||"").slice(0,90)};
+  return {id:o.id,type:o.type,x:clamp(o.x,0,784),y:clamp(o.y,0,484),w:clamp(o.w,16,780),h:clamp(o.h,16,480),fill:validColor(o.fill),stroke:validColor(o.stroke),sw:clamp(o.sw,0,12),text:String(o.text||"").slice(0,90)};
  });
  arr.forEach(o=>{o.w=Math.min(o.w,800-o.x);o.h=Math.min(o.h,500-o.y);if(o.type==="circle"){const x=Math.min(o.w,o.h);o.w=x;o.h=x}});
  return arr;
@@ -287,7 +287,15 @@ function fromSvg(xml){
   else if(kind==="ellipse"){const rx=numeric(e,"rx"),ry=numeric(e,"ry");o.x=numeric(e,"cx")-rx;o.y=numeric(e,"cy")-ry;o.w=rx*2;o.h=ry*2}
   else if(kind==="line"){const x=numeric(e,"x1"),y=numeric(e,"y1"),x2=numeric(e,"x2"),y2=numeric(e,"y2");o.x=Math.min(x,x2);o.y=Math.min(y,y2);o.w=Math.abs(x2-x);o.h=Math.abs(y2-y)}
   else if(kind==="text"){o.x=numeric(e,"x");const fs=numeric(e,"font-size",40);o.h=clamp(fs*1.5,20,100);o.y=numeric(e,"y")-o.h*.75;o.w=170;o.text=(e.textContent||"").slice(0,90)}
-  else continue; // Arbitrary polygons cannot safely be converted to our triangle model.
+  else if(kind==="polygon"){
+    const pts=(e.getAttribute("points")||"").trim().split(/\s+/).map(pair=>pair.split(",").map(Number));
+    if(pts.length!==3||pts.some(p=>p.length!==2||p.some(v=>!Number.isFinite(v))))continue;
+    const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+    o.x=Math.min(...xs);o.y=Math.min(...ys);o.w=Math.max(...xs)-o.x;o.h=Math.max(...ys)-o.y;o.type="triangle";
+    // Only symmetrical, up-facing triangles match the supported editable shape.
+    if(Math.abs(pts[0][0]-(o.x+o.w/2))>1||Math.abs(pts[0][1]-o.y)>1)continue;
+  }
+  else continue;
   if(o.w<1||o.h<1||o.x<0||o.y<0||o.x+o.w>800||o.y+o.h>500)continue;
   // The exported white 800×500 background is not an editable drawing object.
   if(kind==="rect"&&o.x===0&&o.y===0&&o.w===800&&o.h===500&&o.fill==="#ffffff")continue;
