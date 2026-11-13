@@ -143,7 +143,12 @@ function fit(){const parent=board.parentElement;setZoom(Math.min(1,Math.max(.25,
 function selectPanel(mode){
  activePanel=mode;
  document.querySelectorAll("[data-panel]").forEach(b=>b.classList.toggle("active",b.dataset.panel===mode));
- const sheet=$("mobileSheet"),content=$("sheetContent");content.replaceChildren();
+ const sheet=$("mobileSheet"),content=$("sheetContent");
+ // Restore persistent property/layer cards before changing the sheet.
+ // Removing a card from the DOM would also remove its input values and handlers.
+ const aside=document.querySelector(".aside");
+ ["propertiesCard","layersCard"].forEach(id=>{const card=$(id);if(card&&card.parentElement!==aside)aside.appendChild(card)});
+ content.replaceChildren();
  if(mode==="select"){sheet.classList.remove("open");return}
  if(mode==="text"){document.querySelector('[data-add="text"]').click();mode="properties"}
  if(mode==="shapes"){
@@ -284,6 +289,9 @@ function fromSvg(xml){
   else if(kind==="text"){o.x=numeric(e,"x");const fs=numeric(e,"font-size",40);o.h=clamp(fs*1.5,20,100);o.y=numeric(e,"y")-o.h*.75;o.w=170;o.text=(e.textContent||"").slice(0,90)}
   else continue; // Arbitrary polygons cannot safely be converted to our triangle model.
   if(o.w<1||o.h<1||o.x<0||o.y<0||o.x+o.w>800||o.y+o.h>500)continue;
+  // The exported white 800×500 background is not an editable drawing object.
+  if(kind==="rect"&&o.x===0&&o.y===0&&o.w===800&&o.h===500&&o.fill==="#ffffff")continue;
+  if(kind==="ellipse"&&o.w===o.h)o.type="circle";
   converted.push(o);
  }
  if(!converted.length)throw Error("Підтримуваних фігур у межах полотна не знайдено");
