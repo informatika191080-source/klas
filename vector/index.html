@@ -36,12 +36,49 @@ footer{max-width:1420px;margin:0 auto;padding:0 22px 24px;color:#91a6c6;font-siz
 @media(max-width:980px){.app{grid-template-columns:1fr}.aside{grid-template-columns:repeat(2,minmax(0,1fr))}.aside .card:last-child{grid-column:1/-1}}
 @media(max-width:620px){.top{padding:13px}.app{padding:8px 10px 25px}.brand-icon{width:44px;height:44px}.aside{grid-template-columns:1fr}.aside .card:last-child{grid-column:auto}.boardwrap{padding:7px}.toolbar{gap:5px}.btn{font-size:13px;min-height:42px;padding:8px 10px}.boardbar{font-size:12px}#board{border-radius:6px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Unified adaptive SVG editor */
+.boardwrap{overflow:auto;min-height:380px;max-height:72dvh;display:flex;align-items:center;justify-content:flex-start;overscroll-behavior:contain}
+#board{width:800px;height:500px;max-width:none;flex:none;aspect-ratio:unset;touch-action:none}
+#board [data-handle]{cursor:nwse-resize;touch-action:none}
+.controls-mini{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.controls-mini .btn{min-width:40px}
+#zoomLabel{min-width:45px;text-align:center;font-weight:750}
+.checklabel{display:flex;align-items:center;gap:5px;color:#d5e7ff;font-size:12px}
+.checklabel input{accent-color:#6beacc;height:18px;width:18px}
+#projectOpen{display:none}
+.mobile-dock,.mobile-sheet{display:none}
+.sheet-close{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px}
+.sheet-close button{border:1px solid #6886ae;background:#2b3e61;color:white;padding:8px 12px;border-radius:10px}
+.shape-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.shape-menu button{min-height:52px}
+@media(max-width:980px){
+ .app{grid-template-columns:1fr;padding-bottom:100px}
+ .aside{display:none}
+ .toolbar{display:none}
+ .boardwrap{min-height:56dvh;max-height:66dvh}
+ .mobile-dock{position:fixed;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));bottom:max(8px,env(safe-area-inset-bottom));left:10px;right:10px;z-index:40;background:#f4f8ff;border:1px solid #d3def0;border-radius:22px;padding:7px;gap:3px;box-shadow:0 10px 35px #0009}
+ .mobile-dock button{display:grid;place-items:center;gap:3px;align-content:center;color:#546781;border:0;background:transparent;border-radius:15px;min-height:65px;font-size:11px;font-weight:700}
+ .mobile-dock button.active{background:#dce9ff;color:#265dd1}
+ .mobile-dock .dock-icon{font-size:24px}
+ .mobile-sheet{position:fixed;z-index:39;display:none;left:10px;right:10px;bottom:calc(88px + env(safe-area-inset-bottom));max-height:52dvh;overflow-y:auto;background:#17233e;border:2px solid #6e89af;border-radius:20px;padding:14px;box-shadow:0 12px 50px #001a40cb;overscroll-behavior:contain}
+ .mobile-sheet.open{display:block}
+ .mobile-sheet .card{padding:8px;box-shadow:none;border:0}
+ .mobile-sheet .card h2{font-size:16px}
+}
+@media(max-width:620px){
+ .top{padding:12px 11px 7px}.brand-icon{width:42px;height:42px}.brand h1{font-size:23px}.sub{font-size:11px}
+ .toplinks{width:100%;justify-content:space-between}.toplinks .btn,.toplinks .linkbtn{flex:1;font-size:12px;padding:8px 6px}
+ .app{padding:5px 8px 100px;gap:8px}.boardwrap{min-height:59dvh;max-height:66dvh;padding:7px}
+ .boardbar{padding:10px;font-size:12px}.boardbar .controls-mini{gap:3px}.controls-mini .btn{min-height:36px;padding:6px 8px}
+ .mobile-sheet{left:7px;right:7px}.note{font-size:12px}
+}
 </style>
 </head>
 <body>
 <header class="top">
  <div class="brand"><div class="brand-icon" aria-hidden="true">✦</div><div><h1>Векторна майстерня</h1><div class="sub">Твоя творча лабораторія · Інформатика, 6 клас</div></div></div>
- <nav class="toplinks"><a class="linkbtn" href="../">🎮 ЦифроПоміч</a><button class="btn primary" id="saveSvg">⬇ Зберегти SVG</button><button class="btn" id="savePng">⬇ PNG</button></nav>
+ <nav class="toplinks"><a class="linkbtn" href="../">🎮 ЦифроПоміч</a><button class="btn primary" id="saveSvg">⬇ Зберегти SVG</button><button class="btn" id="savePng">⬇ PNG</button><button class="btn" id="openProject">📂 Відкрити</button><button class="btn" id="saveProject">💾 Проєкт</button><input id="projectOpen" type="file" accept=".json,.svg,application/json,image/svg+xml"></nav>
 </header>
 <div class="app">
  <div class="workspace">
@@ -52,13 +89,13 @@ footer{max-width:1420px;margin:0 auto;padding:0 22px 24px;color:#91a6c6;font-siz
    <div class="group"><button class="btn" id="undo" title="Ctrl+Z">↶ Назад</button><button class="btn" id="redo" title="Ctrl+Shift+Z">↷ Повторити</button><button class="btn danger" id="clear">Очистити</button></div>
   </section>
   <section class="card">
-   <div class="boardbar"><span><strong>Артборд 800 × 500</strong> · перетягни фігуру пальцем або мишкою</span><span id="counter">0 об'єктів</span></div>
+   <div class="boardbar"><span><strong>Артборд 800 × 500</strong> · перетягни фігуру пальцем або мишкою</span><div class="controls-mini"><button class="btn" id="zoomOut" aria-label="Зменшити">−</button><span id="zoomLabel">100%</span><button class="btn" id="zoomIn" aria-label="Збільшити">+</button><button class="btn" id="zoomFit">Умістити</button><label class="checklabel"><input id="showGrid" type="checkbox" checked>Сітка</label><label class="checklabel"><input id="snapGrid" type="checkbox">Прив’язка</label></div><span id="counter">0 об'єктів</span></div>
    <div class="boardwrap"><svg id="board" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" aria-label="Полотно для створення векторного зображення" role="img"><rect width="800" height="500" fill="white"/></svg></div>
   </section>
   <section class="card note"><strong>Майстер-завдання:</strong> створи значок «Моє цифрове місто» щонайменше з трьох різних фігур і тексту. Зміни кольори, розмісти об’єкти, експортуй SVG. SVG — векторний формат: зображення можна масштабувати без втрати чіткості контурів.</section>
  </div>
  <aside class="aside">
-  <section class="card">
+  <section class="card" id="propertiesCard">
    <h2>🎨 Властивості об'єкта</h2>
    <div id="notselected" class="empty">Вибери фігуру на полотні або у списку шарів.</div>
    <div id="editor" hidden>
@@ -70,7 +107,7 @@ footer{max-width:1420px;margin:0 auto;padding:0 22px 24px;color:#91a6c6;font-siz
     <div class="actions"><button class="btn" id="up">⬆ Вище</button><button class="btn" id="down">⬇ Нижче</button><button class="btn" id="copy">⧉ Копія</button><button class="btn danger" id="delete">✕ Видалити</button></div>
    </div>
   </section>
-  <section class="card"><h2>🗂 Шари</h2><div class="layers" id="layers"><span class="empty">Додай першу фігуру.</span></div></section>
+  <section class="card" id="layersCard"><h2>🗂 Шари</h2><div class="layers" id="layers"><span class="empty">Додай першу фігуру.</span></div></section>
   <section class="card">
    <h2>💾 Збереження та допомога</h2>
    <div id="storageStatus" class="status" role="status">Збереження перевіряється…</div>
@@ -79,6 +116,17 @@ footer{max-width:1420px;margin:0 auto;padding:0 22px 24px;color:#91a6c6;font-siz
   </section>
  </aside>
 </div>
+<section class="mobile-sheet" id="mobileSheet" aria-label="Інструменти">
+ <div class="sheet-close"><strong id="sheetTitle">Інструменти</strong><button id="closeSheet" type="button">✕ Закрити</button></div>
+ <div id="sheetContent"></div>
+</section>
+<nav class="mobile-dock" aria-label="Інструменти редактора">
+ <button data-panel="select" class="active"><span class="dock-icon">↖</span>Вибір</button>
+ <button data-panel="shapes"><span class="dock-icon">▱</span>Фігури</button>
+ <button data-panel="text"><span class="dock-icon">Т</span>Текст</button>
+ <button data-panel="properties"><span class="dock-icon">⚙</span>Властивості</button>
+ <button data-panel="layers"><span class="dock-icon">▤</span>Шари</button>
+</nav>
 <footer>Авторська навчальна майстерня. Робота з фігурами виконується на пристрої учня, без облікового запису. Режим класів і централізоване приймання робіт поки не реалізовані.</footer>
 <script>
 "use strict";
@@ -87,6 +135,38 @@ const board=document.getElementById("board"),svgNS="http://www.w3.org/2000/svg",
 const $=id=>document.getElementById(id);
 const TYPES={rect:"Прямокутник",circle:"Коло",ellipse:"Овал",triangle:"Трикутник",line:"Лінія",text:"Текст"};
 let objects=[],selected=null,nextId=1,undoStack=[],redoStack=[],drag=null,working=true;
+let zoom=1,showGrid=true,snapGrid=false,activePanel="select";
+const gridSize=20;
+function snap(v){return snapGrid?Math.round(v/gridSize)*gridSize:v}
+function setZoom(v){zoom=clamp(v,.25,2);board.style.width=(800*zoom)+"px";board.style.height=(500*zoom)+"px";$("zoomLabel").textContent=Math.round(zoom*100)+"%"}
+function fit(){const parent=board.parentElement;setZoom(Math.min(1,Math.max(.25,(parent.clientWidth-20)/800)))}
+function selectPanel(mode){
+ activePanel=mode;
+ document.querySelectorAll("[data-panel]").forEach(b=>b.classList.toggle("active",b.dataset.panel===mode));
+ const sheet=$("mobileSheet"),content=$("sheetContent");content.replaceChildren();
+ if(mode==="select"){sheet.classList.remove("open");return}
+ if(mode==="text"){document.querySelector('[data-add="text"]').click();mode="properties"}
+ if(mode==="shapes"){
+  $("sheetTitle").textContent="Додати фігуру";
+  const grid=document.createElement("div");grid.className="shape-menu";
+  document.querySelectorAll(".toolbar [data-add]").forEach(b=>{if(b.dataset.add==="text")return;const c=b.cloneNode(true);c.addEventListener("click",()=>{b.click();selectPanel("properties")});grid.appendChild(c)});
+  content.appendChild(grid);
+ }else{
+  $("sheetTitle").textContent=mode==="properties"?"Властивості об’єкта":"Шари";
+  const card=$(mode==="properties"?"propertiesCard":"layersCard");
+  content.appendChild(card);
+ }
+ sheet.classList.add("open");
+}
+document.querySelectorAll("[data-panel]").forEach(b=>b.addEventListener("click",()=>selectPanel(b.dataset.panel)));
+$("closeSheet").addEventListener("click",()=>selectPanel("select"));
+window.addEventListener("resize",()=>{if(window.innerWidth>980){selectPanel("select");const aside=document.querySelector(".aside");aside.prepend($("propertiesCard"));aside.append($("layersCard"))}});
+$("zoomIn").addEventListener("click",()=>setZoom(zoom+.15));
+$("zoomOut").addEventListener("click",()=>setZoom(zoom-.15));
+$("zoomFit").addEventListener("click",fit);
+$("showGrid").addEventListener("change",e=>{showGrid=e.target.checked;render()});
+$("snapGrid").addEventListener("change",e=>{snapGrid=e.target.checked});
+
 function validColor(x){return /^#[0-9a-f]{6}$/i.test(x)?x:"#4e9cf8"}
 function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,Number(v)||0))}
 function current(){return objects.find(o=>o.id===selected)}
@@ -108,9 +188,18 @@ function drawShape(o){
 function render(){
  while(board.firstChild)board.removeChild(board.firstChild);
  board.appendChild(node("rect",{x:0,y:0,width:800,height:500,fill:"#ffffff"}));
+ if(showGrid){
+  const defs=node("defs",{}),pattern=node("pattern",{id:"grid-edu",width:20,height:20,patternUnits:"userSpaceOnUse"});
+  pattern.appendChild(node("path",{d:"M 20 0 L 0 0 0 20",fill:"none",stroke:"#d6e0ec","stroke-width":1}));
+  defs.appendChild(pattern);board.appendChild(defs);
+  board.appendChild(node("rect",{x:0,y:0,width:800,height:500,fill:"url(#grid-edu)","pointer-events":"none"}));
+ }
  objects.forEach(o=>board.appendChild(drawShape(o)));
  const o=current();
- if(o)board.appendChild(node("rect",{id:"selBox",x:o.x-5,y:o.y-5,width:o.w+10,height:o.h+10}));
+ if(o){
+  board.appendChild(node("rect",{id:"selBox",x:o.x-5,y:o.y-5,width:o.w+10,height:o.h+10}));
+  board.appendChild(node("rect",{"data-handle":"resize",x:o.x+o.w-9,y:o.y+o.h-9,width:18,height:18,rx:3,fill:"#1a62ef",stroke:"#ffffff","stroke-width":3}));
+ }
  $("editor").hidden=!o;$("notselected").hidden=!!o;$("counter").textContent=objects.length+" об'єкт(ів)";
  const ls=$("layers");ls.replaceChildren();
  if(!objects.length){const span=document.createElement("span");span.className="empty";span.textContent="Додай першу фігуру.";ls.appendChild(span)}
@@ -119,8 +208,27 @@ function render(){
  $("undo").disabled=!undoStack.length;$("redo").disabled=!redoStack.length;
 }
 function coords(e){const r=board.getBoundingClientRect();return {x:clamp((e.clientX-r.left)*800/r.width,0,800),y:clamp((e.clientY-r.top)*500/r.height,0,500)}}
-board.addEventListener("pointerdown",e=>{const target=e.target.closest("[data-shape]");if(!target){selected=null;render();return}const id=Number(target.dataset.shape);selected=id;const o=current(),p=coords(e);drag={id,dx:p.x-o.x,dy:p.y-o.y,old:snapshot(),moved:false};board.setPointerCapture(e.pointerId);render()});
-board.addEventListener("pointermove",e=>{if(!drag)return;const o=current();if(!o||o.id!==drag.id)return;const p=coords(e),nx=clamp(p.x-drag.dx,0,800-o.w),ny=clamp(p.y-drag.dy,0,500-o.h);if(nx!==o.x||ny!==o.y){o.x=nx;o.y=ny;drag.moved=true;render()}});
+board.addEventListener("pointerdown",e=>{
+ const resizing=!!e.target.closest("[data-handle]");
+ const target=e.target.closest("[data-shape]");
+ if(!resizing&&!target){selected=null;render();return}
+ if(target)selected=Number(target.dataset.shape);
+ const o=current();if(!o)return;
+ const p=coords(e);
+ drag={id:o.id,mode:resizing?"resize":"move",dx:p.x-o.x,dy:p.y-o.y,old:snapshot()};
+ board.setPointerCapture(e.pointerId);render();
+});
+board.addEventListener("pointermove",e=>{
+ if(!drag)return;const o=current();if(!o||o.id!==drag.id)return;const p=coords(e);
+ if(drag.mode==="resize"){
+   let w=clamp(snap(p.x-o.x),16,800-o.x),he=clamp(snap(p.y-o.y),16,500-o.y);
+   if(o.type==="circle"){const side=Math.min(w,he);w=side;he=side}
+   if(w!==o.w||he!==o.h){o.w=w;o.h=he;render()}
+ }else{
+   const nx=clamp(snap(p.x-drag.dx),0,800-o.w),ny=clamp(snap(p.y-drag.dy),0,500-o.h);
+   if(nx!==o.x||ny!==o.y){o.x=nx;o.y=ny;render()}
+ }
+});
 function endDrag(){if(drag){const old=drag.old;drag=null;commit(old)}}
 board.addEventListener("pointerup",endDrag);board.addEventListener("pointercancel",endDrag);
 document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>{const old=snapshot(),o=make(b.dataset.add);objects.push(o);selected=o.id;commit(old)}));
@@ -143,9 +251,60 @@ $("clear").addEventListener("click",()=>{if(!objects.length||!confirm("Очис�
 function buildSVG(){const svg=node("svg",{xmlns:svgNS,width:800,height:500,viewBox:"0 0 800 500"});svg.appendChild(node("rect",{x:0,y:0,width:800,height:500,fill:"#ffffff"}));objects.forEach(o=>{const e=drawShape(o);e.removeAttribute("data-shape");svg.appendChild(e)});return new XMLSerializer().serializeToString(svg)}
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 $("saveSvg").addEventListener("click",()=>download(new Blob([buildSVG()],{type:"image/svg+xml;charset=utf-8"}),"mii-vektornyi-dyzain.svg"));
+$("saveProject").addEventListener("click",()=>download(new Blob([snapshot()],{type:"application/json;charset=utf-8"}),"vector-project.json"));
+$("openProject").addEventListener("click",()=>$("projectOpen").click());
+function validateProject(value){
+ if(!value||!Array.isArray(value.objects)||value.objects.length>400)throw Error("Некоректний формат проєкту");
+ const seen=new Set();
+ const arr=value.objects.map(o=>{
+  if(!o||!TYPES[o.type]||!Number.isInteger(o.id)||o.id<1||seen.has(o.id))throw Error("Помилка об’єкта");seen.add(o.id);
+  for(const k of ["x","y","w","h"])if(!Number.isFinite(o[k]))throw Error("Помилка координат");
+  return {id:o.id,type:o.type,x:clamp(o.x,0,800),y:clamp(o.y,0,500),w:clamp(o.w,8,780),h:clamp(o.h,8,480),fill:validColor(o.fill),stroke:validColor(o.stroke),sw:clamp(o.sw,0,12),text:String(o.text||"").slice(0,90)};
+ });
+ arr.forEach(o=>{o.w=Math.min(o.w,800-o.x);o.h=Math.min(o.h,500-o.y);if(o.type==="circle"){const x=Math.min(o.w,o.h);o.w=x;o.h=x}});
+ return arr;
+}
+function fromSvg(xml){
+ const dom=new DOMParser().parseFromString(xml,"image/svg+xml");
+ if(dom.querySelector("parsererror")||dom.documentElement.localName!=="svg")throw Error("Це не SVG");
+ // Only a small safe, editable subset: no script, images, external links, styling or transforms.
+ const elements=[...dom.documentElement.children].filter(e=>["rect","circle","ellipse","line","polygon","text"].includes(e.localName));
+ if(!elements.length)throw Error("SVG не містить підтримуваних фігур");
+ if(elements.length>150)throw Error("Забагато фігур");
+ const numeric=(e,k,defaultValue=0)=>{const raw=e.getAttribute(k);if(raw===null)return defaultValue;if(!/^-?\d+(?:\.\d+)?$/.test(raw))throw Error("Непідтримувані координати SVG");return Number(raw)};
+ const color=(e,k,def)=>{const v=e.getAttribute(k);return /^#[\da-f]{6}$/i.test(v||"")?v:def};
+ const converted=[];
+ for(const e of elements){
+  if(e.hasAttribute("transform"))continue;
+  const kind=e.localName;let o={id:converted.length+1,type:kind,x:0,y:0,w:100,h:100,fill:color(e,"fill","#79aaff"),stroke:color(e,"stroke","#233450"),sw:clamp(numeric(e,"stroke-width",2),0,12),text:""};
+  if(kind==="rect"){o.x=numeric(e,"x");o.y=numeric(e,"y");o.w=numeric(e,"width");o.h=numeric(e,"height")}
+  else if(kind==="circle"){const radius=numeric(e,"r");o.x=numeric(e,"cx")-radius;o.y=numeric(e,"cy")-radius;o.w=radius*2;o.h=radius*2}
+  else if(kind==="ellipse"){const rx=numeric(e,"rx"),ry=numeric(e,"ry");o.x=numeric(e,"cx")-rx;o.y=numeric(e,"cy")-ry;o.w=rx*2;o.h=ry*2}
+  else if(kind==="line"){const x=numeric(e,"x1"),y=numeric(e,"y1"),x2=numeric(e,"x2"),y2=numeric(e,"y2");o.x=Math.min(x,x2);o.y=Math.min(y,y2);o.w=Math.abs(x2-x);o.h=Math.abs(y2-y)}
+  else if(kind==="text"){o.x=numeric(e,"x");const fs=numeric(e,"font-size",40);o.h=clamp(fs*1.5,20,100);o.y=numeric(e,"y")-o.h*.75;o.w=170;o.text=(e.textContent||"").slice(0,90)}
+  else continue; // Arbitrary polygons cannot safely be converted to our triangle model.
+  if(o.w<1||o.h<1||o.x<0||o.y<0||o.x+o.w>800||o.y+o.h>500)continue;
+  converted.push(o);
+ }
+ if(!converted.length)throw Error("Підтримуваних фігур у межах полотна не знайдено");
+ return validateProject({objects:converted});
+}
+$("projectOpen").addEventListener("change",async e=>{
+ const f=e.target.files?.[0];e.target.value="";if(!f)return;
+ if(f.size>2*1024*1024){alert("Файл завеликий — максимум 2 МБ.");return}
+ try{
+  const text=await f.text();let loaded;
+  if(f.name.toLowerCase().endsWith(".json"))loaded=validateProject(JSON.parse(text));
+  else if(f.name.toLowerCase().endsWith(".svg"))loaded=fromSvg(text);
+  else throw Error("Виберіть JSON або SVG");
+  if(objects.length&&!confirm("Відкрити файл замість поточного малюнка? Поточну роботу можна повернути кнопкою «Назад»."))return;
+  const old=snapshot();objects=loaded;nextId=Math.max(1,...objects.map(o=>o.id+1));selected=null;commit(old);selectPanel("select");
+ }catch(err){alert("Не вдалося відкрити файл: "+err.message)}
+});
+
 $("savePng").addEventListener("click",()=>{const img=new Image(),url=URL.createObjectURL(new Blob([buildSVG()],{type:"image/svg+xml"}));img.onload=()=>{const canvas=document.createElement("canvas");canvas.width=800;canvas.height=500;canvas.getContext("2d").drawImage(img,0,0);canvas.toBlob(blob=>{if(blob)download(blob,"mii-vektornyi-dyzain.png");URL.revokeObjectURL(url)},"image/png")};img.onerror=()=>{URL.revokeObjectURL(url);alert("Не вдалося створити PNG. Збережи SVG.")};img.src=url});
 try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&Array.isArray(v.objects)&&v.objects.length<=400&&v.objects.every(o=>TYPES[o.type]&&Number.isFinite(o.x)&&Number.isFinite(o.y)&&Number.isFinite(o.w)&&Number.isFinite(o.h))){objects=v.objects.map(o=>({...o,text:String(o.text||"").slice(0,90),fill:validColor(o.fill),stroke:validColor(o.stroke),sw:clamp(o.sw,0,12)}));nextId=Math.max(1,...objects.map(o=>o.id+1));selected=null}}catch(e){}
-save();render();
+save();render();requestAnimationFrame(fit);
 })();
 </script>
 </body>
