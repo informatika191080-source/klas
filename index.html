@@ -278,13 +278,21 @@ body{background:radial-gradient(ellipse 45% 30% at 96% 0%,#31467b55,transparent)
 .game-notice[data-kind="complete"]{background:#154f49;border-color:#86f1c4}
 .game-notice .notice-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .game-notice .notice-head strong{flex:1;font-size:15px}
+.game-notice .notice-minimize{min-width:40px;height:40px;flex:none;background:#ffffff15;border:1px solid #ffffff55;border-radius:10px;color:#fff;font-size:19px;cursor:pointer}
+.game-notice[data-collapsed="true"]{width:min(270px,calc(100vw - 28px));padding:7px 9px;max-height:65px;overflow:hidden}
+.game-notice[data-collapsed="true"] .notice-head{margin:0}
+.game-notice[data-collapsed="true"] .notice-head strong{font-size:12px}
+.game-notice[data-collapsed="true"] .notice-minimize{font-size:16px}
+.game-notice[data-collapsed="true"] p,.game-notice[data-collapsed="true"] .notice-actions{display:none}
+.game-notice[data-collapsed="true"] .notice-close{display:none}
+.game-notice[data-collapsed="true"]{cursor:pointer}
 .game-notice .notice-close{width:40px;height:40px;flex:none;background:#ffffff15;border:1px solid #ffffff55;border-radius:10px;color:#fff;font-size:24px;cursor:pointer}
 .game-notice p{margin:6px 0 11px;line-height:1.5;font-size:14px;overflow-wrap:anywhere}
 .game-notice .notice-actions{display:flex;flex-wrap:wrap;gap:7px}
 .game-notice .notice-actions button{background:#e4f7ff;color:#163650;border:1px solid #afddeb;border-radius:11px;padding:8px 11px;min-height:43px;cursor:pointer;font:inherit;font-size:13px;font-weight:720}
 .game-notice button:focus-visible{outline:3px solid #ffe087;outline-offset:2px}
 @keyframes notice-arrive{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:640px){.game-notice{left:10px;right:10px;width:auto;max-height:46dvh;top:max(9px,calc(env(safe-area-inset-top) + 9px));padding:10px 12px}.game-notice p{font-size:13px}.game-notice .notice-actions button{font-size:12px}}
+@media(max-width:640px){.game-notice{left:10px;right:10px;width:auto;max-height:40dvh;top:max(9px,calc(env(safe-area-inset-top) + 9px));padding:10px 12px}.game-notice p{font-size:13px}.game-notice .notice-actions button{font-size:12px}.game-notice[data-collapsed="true"]{left:auto;right:10px;width:min(255px,calc(100vw - 20px));padding:6px 8px}}
 @media(prefers-reduced-motion:reduce){.game-notice{animation:none!important}}
 /* Inline feedback targets remain for code state but are not visible message duplicates. */
 main.stage [id$="-feedback"],.character-member .character-message{display:none!important}
@@ -804,13 +812,27 @@ root.addEventListener('click',event=>{
 
 /* Single pop-up surface: all role messages and mission reactions share one slot. */
 let gameNoticeTimer=null;
+let noticeLastKey="";
 const NOTICE_LABELS={bayt:"📍 Що робити?",pixel:"💡 Підказка",kiber:"🛡️ Перевірити ризик",next:"➡️ Наступна місія",map:"🗺️ До мапи"};
-function closeGameNotice(){clearTimeout(gameNoticeTimer);gameNoticeTimer=null;document.getElementById("game-notice")?.remove()}
+function closeGameNotice(){clearTimeout(gameNoticeTimer);gameNoticeTimer=null;document.getElementById("game-notice")?.remove();noticeLastKey=""}
+function collapseGameNotice(){
+ const box=document.getElementById("game-notice");if(!box)return;
+ box.dataset.collapsed="true";const b=box.querySelector(".notice-minimize");if(b){b.textContent="▢";b.setAttribute("aria-label","Розгорнути повідомлення");b.setAttribute("aria-expanded","false")}
+}
+function expandGameNotice(){
+ const box=document.getElementById("game-notice");if(!box)return;
+ box.dataset.collapsed="false";const b=box.querySelector(".notice-minimize");if(b){b.textContent="−";b.setAttribute("aria-label","Згорнути повідомлення");b.setAttribute("aria-expanded","true")}
+}
 function showGameNotice({kind="info",title="ЦифроПоміч",text="",actions=[],duration=5600}={}){
- closeGameNotice();
- const box=document.createElement("aside");box.id="game-notice";box.className="game-notice no-print";box.dataset.kind=kind;box.setAttribute("role","status");box.setAttribute("aria-label",title);
+ const key=JSON.stringify([state.screen,state.ticket,kind,title,text,actions]);
+ const existing=document.getElementById("game-notice");
+ // Identical events should not repeatedly obscure the current task.
+ if(existing&&noticeLastKey===key)return;
+ closeGameNotice();noticeLastKey=key;
+ const box=document.createElement("aside");box.id="game-notice";box.className="game-notice no-print";box.dataset.kind=kind;box.dataset.collapsed="false";box.setAttribute("role","status");box.setAttribute("aria-label",title);
  const heading=document.createElement("div");heading.className="notice-head";
  const strong=document.createElement("strong");strong.textContent=title;heading.appendChild(strong);
+ const minimize=document.createElement("button");minimize.type="button";minimize.className="notice-minimize";minimize.setAttribute("aria-label","Згорнути повідомлення");minimize.setAttribute("aria-expanded","true");minimize.textContent="−";heading.appendChild(minimize);
  const close=document.createElement("button");close.type="button";close.className="notice-close";close.setAttribute("aria-label","Закрити повідомлення");close.textContent="×";heading.appendChild(close);
  box.appendChild(heading);
  const p=document.createElement("p");p.textContent=text;box.appendChild(p);
@@ -820,11 +842,15 @@ function showGameNotice({kind="info",title="ЦифроПоміч",text="",action
   box.appendChild(buttons);
  }
  document.body.appendChild(box);
- // Actionable notices remain until dismissed; simple messages auto-close.
- if(!actions.length&&duration>0)gameNoticeTimer=setTimeout(closeGameNotice,duration);
+ // After a short reading interval, actionable notices shrink rather than blocking the game.
+ // They remain expandable so that the user does not lose the choices.
+ if(actions.length)gameNoticeTimer=setTimeout(collapseGameNotice,6500);
+ else if(duration>0)gameNoticeTimer=setTimeout(closeGameNotice,duration);
 }
 document.addEventListener("click",e=>{
  if(e.target.closest("#game-notice .notice-close")){closeGameNotice();return}
+ if(e.target.closest("#game-notice .notice-minimize")){const box=document.getElementById("game-notice");if(box?.dataset.collapsed==="true")expandGameNotice();else collapseGameNotice();return}
+ if(e.target.closest("#game-notice[data-collapsed='true']")){expandGameNotice();return}
  const button=e.target.closest("#game-notice [data-notice-action]");if(!button)return;
  const id=button.dataset.noticeAction;
  closeGameNotice();
