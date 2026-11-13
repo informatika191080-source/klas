@@ -221,6 +221,49 @@ body{background:radial-gradient(ellipse 45% 30% at 96% 0%,#31467b55,transparent)
 @media(max-width:550px){.live-bip-moment{font-size:12px;max-width:195px}}
 @media(prefers-reduced-motion:reduce){.portrait .live-gesture-left,.portrait .live-gesture-right{animation:none!important;transition:none!important}.live-bip-moment,.live-bip[data-mood] .live-bip-face{animation:none!important}}
 @media print{.live-bip{display:none!important}}
+
+/* Animated character team inspired by the supplied storyboards.
+   The figures are SVG vectors, not cropped raster frames. */
+.character-team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0 22px}
+.character-team.compact{margin:0 0 15px;gap:9px}
+.character-member{position:relative;min-width:0;display:flex;align-items:center;gap:11px;padding:12px;border:1px solid #7897b8;border-radius:17px;background:linear-gradient(140deg,#153c63,#142944);color:#f3faff;overflow:hidden}
+.character-member:nth-child(2){background:linear-gradient(145deg,#403080,#25284e);border-color:#9276dd}
+.character-member:nth-child(3){background:linear-gradient(145deg,#164d80,#1c3256)}
+.character-avatar{width:86px;height:86px;flex:none;display:grid;place-items:center;transform-origin:center bottom;animation:char-idle 3.2s ease-in-out infinite}
+.character-avatar svg{width:100%;height:100%;overflow:visible}
+.character-member:nth-child(2) .character-avatar{animation-delay:-.9s}
+.character-member:nth-child(3) .character-avatar{animation-delay:-1.6s}
+.character-member strong{display:block;font-size:15px;color:white}
+.character-member small{display:block;font-size:12px;color:#c3e8ff;margin:4px 0}
+.character-member .character-message{font-size:12px;line-height:1.35;color:#d8ecff;min-height:30px}
+.character-member[data-emotion="joy"] .character-avatar{animation:char-hop .6s ease-in-out 2}
+.character-member[data-emotion="surprise"] .character-avatar{animation:char-surprise .6s ease-out 1}
+.character-member[data-emotion="think"] .character-avatar{animation:char-think .7s ease-in-out 1}
+.character-member[data-emotion="explain"] .character-avatar{animation:char-point .65s ease-in-out 1}
+.character-member[data-emotion="celebrate"] .character-avatar{animation:char-party .6s ease-in-out 3}
+.character-member[data-emotion="joy"]{border-color:#75f6c1}
+.character-member[data-emotion="surprise"]{border-color:#ffe18b}
+.character-member[data-emotion="think"]{border-color:#ffa88f}
+.character-member[data-emotion="celebrate"]{border-color:#77f8db;box-shadow:0 0 25px #6dfed43a}
+.character-member .mascot-arm-left,.character-member .mascot-arm-right{transform-box:fill-box;transform-origin:center top}
+.character-member[data-emotion="explain"] .mascot-arm-right{animation:char-wave .45s ease-in-out 2}
+.character-member[data-emotion="celebrate"] .mascot-arm-left,.character-member[data-emotion="celebrate"] .mascot-arm-right{animation:char-wave .4s ease-in-out 3}
+@keyframes char-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes char-hop{0%,100%{transform:translateY(0)}35%{transform:translateY(-12px)}70%{transform:translateY(-4px)}}
+@keyframes char-surprise{0%,100%{transform:scale(1)}45%{transform:scale(1.13)}}
+@keyframes char-think{0%,100%{transform:rotate(0)}45%{transform:rotate(-9deg)}}
+@keyframes char-point{0%,100%{transform:rotate(0)}40%{transform:rotate(7deg)}}
+@keyframes char-party{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-9px) rotate(-9deg)}70%{transform:translateY(-7px) rotate(8deg)}}
+@keyframes char-wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-22deg)}}
+.character-team.compact .character-member{padding:7px 10px;gap:7px}
+.character-team.compact .character-avatar{width:55px;height:55px}
+.character-team.compact .character-member strong{font-size:13px}
+.character-team.compact .character-member small{font-size:11px;margin:1px 0}
+.character-team.compact .character-message{font-size:11px;min-height:unset}
+@media(max-width:920px){.character-team{gap:7px}.character-member{padding:9px;gap:6px}.character-avatar{width:64px;height:64px}.character-member strong{font-size:13px}.character-member small{font-size:11px}}
+@media(max-width:680px){.character-team{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:9px 0 12px}.character-member,.character-team.compact .character-member{display:grid;justify-items:center;align-content:start;padding:7px 3px;text-align:center;gap:3px;border-radius:13px}.character-avatar,.character-team.compact .character-avatar{width:54px;height:54px}.character-member strong,.character-team.compact .character-member strong{font-size:11px}.character-member small,.character-team.compact .character-member small{font-size:10px}.character-member .character-message,.character-team.compact .character-message{font-size:10px;min-height:unset}}
+@media(prefers-reduced-motion:reduce){.character-avatar,.character-member[data-emotion] .character-avatar,.character-member .mascot-arm-left,.character-member .mascot-arm-right{animation:none!important}}
+@media print{.character-team{display:none!important}}
 </style></head><body><div id="root" class="container"></div><div id="live-bip-root" class="live-bip no-print"></div><script>
 'use strict';
 const I={shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',wifi:'<path d="M2 8.82a15 15 0 0 1 20 0M5 12.55a10 10 0 0 1 14 0M8.5 16.3a5 5 0 0 1 7 0M12 20h.01"/>',file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/>',printer:'<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/>',search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>',image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>',browser:'<rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20M6 6h.01M10 6h.01"/>',folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/>',star:'<path d="m12 2 3 6.5 7 .9-5.1 5 1.2 7-6.1-3.4-6.1 3.4 1.2-7-5.1-5 7-.9z"/>',sound:'<path d="M11 5 6 9H2v6h4l5 4zM15 9a5 5 0 0 1 0 6M18 6a9 9 0 0 1 0 12"/>',mute:'<path d="M11 5 6 9H2v6h4l5 4zM17 9l5 6M22 9l-5 6"/>',arrow:'<path d="M5 12h14m-7-7 7 7-7 7"/>',back:'<path d="m15 18-6-6 6-6"/>',check:'<path d="m5 12 4 4L19 6"/>',home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zM9 21v-8h6v8"/>',trophy:'<path d="M8 21h8m-4-4v4M7 4h10v6a5 5 0 0 1-10 0zM7 6H3v3a4 4 0 0 0 4 4M17 6h4v3a4 4 0 0 1-4 4"/>',reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>',download:'<path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/>',info:'<circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7h.01"/>',bot:'<rect x="3" y="7" width="18" height="14" rx="4"/><path d="M12 7V3m-3 0h6M8 13h.01M16 13h.01M9 17q3 3 6 0"/>'};
@@ -559,7 +602,8 @@ function render(){
  const oldStageTop=oldStage?oldStage.getBoundingClientRect().top+window.scrollY:0;
  const oldStageHeight=oldStage?.offsetHeight||0;
  lastRenderedStep=nextKey;
-root.innerHTML=head()+(state.screen==='home'?home():state.screen==='game'?game():state.screen==='labs'?labs():state.screen==='finale'?finaleUI():state.screen==='teacher'?teacher():state.screen==='guide'?guideUI():report())+`<footer class="footer no-print">Авторська інтерактивна адаптація навчальних ситуацій за мотивами матеріалу видавництва «Ранок». ${state.storageWarning?'⚠️ Браузер не дозволив зберегти прогрес. Не закривай сторінку до завершення.':'Прогрес зберігається у цьому браузері, якщо браузер дозволяє локальне зберігання. Для перенесення на інший пристрій збережи резервну копію.'} <button class="navbtn" id="sound">Звук: ${state.sound?'увімкнено 🔊':'вимкнено 🔇'}</button> <button class="navbtn" id="backup-progress">💾 Зберегти прогрес у файл</button> <button class="navbtn" id="restore-progress">📂 Відновити прогрес</button><input type="file" id="progress-file" accept=".json,application/json" hidden aria-label="Вибрати резервну копію прогресу"> <button class="navbtn" id="reset-progress">Скинути прогрес</button></footer>`;if(!teacherConfig().showLabs)root.querySelectorAll('[data-go="labs"]').forEach(el=>el.hidden=true);if(state.screen==='game'){const stage=root.querySelector('main.panel.stage');if(stage&&teacherConfig().showCoach)stage.insertAdjacentHTML('beforeend',coachUI());if(stage&&missionStatus(state.ticket).closed)stage.insertAdjacentHTML('beforeend',reflectionBlock())}attach();bipReply='';updateBip();
+root.innerHTML=head()+(state.screen==='home'?home():state.screen==='game'?game():state.screen==='labs'?labs():state.screen==='finale'?finaleUI():state.screen==='teacher'?teacher():state.screen==='guide'?guideUI():report())+`<footer class="footer no-print">Авторська інтерактивна адаптація навчальних ситуацій за мотивами матеріалу видавництва «Ранок». ${state.storageWarning?'⚠️ Браузер не дозволив зберегти прогрес. Не закривай сторінку до завершення.':'Прогрес зберігається у цьому браузері, якщо браузер дозволяє локальне зберігання. Для перенесення на інший пристрій збережи резервну копію.'} <button class="navbtn" id="sound">Звук: ${state.sound?'увімкнено 🔊':'вимкнено 🔇'}</button> <button class="navbtn" id="backup-progress">💾 Зберегти прогрес у файл</button> <button class="navbtn" id="restore-progress">📂 Відновити прогрес</button><input type="file" id="progress-file" accept=".json,application/json" hidden aria-label="Вибрати резервну копію прогресу"> <button class="navbtn" id="reset-progress">Скинути прогрес</button></footer>`;if(!teacherConfig().showLabs)root.querySelectorAll('[data-go="labs"]').forEach(el=>el.hidden=true);if(state.screen==='home')root.querySelector('.campaign-hero')?.insertAdjacentHTML('afterend',teamMarkup(false));
+  if(state.screen==='game'){const stage=root.querySelector('main.panel.stage');if(stage)stage.insertAdjacentHTML('afterbegin',teamMarkup(true));if(stage&&teacherConfig().showCoach)stage.insertAdjacentHTML('beforeend',coachUI());if(stage&&missionStatus(state.ticket).closed)stage.insertAdjacentHTML('beforeend',reflectionBlock())}attach();bipReply='';updateBip();
  // Change screen -> show new page top. Change task -> show card heading.
  // Same task -> keep reading position, unless content collapsed substantially.
  if(prevKey!==null){
@@ -589,6 +633,77 @@ document.querySelector('[data-pilot-guide]')?.addEventListener('click',()=>{stat
  document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));document.querySelectorAll('[data-ticket]').forEach(b=>b.addEventListener('click',()=>start(Number(b.dataset.ticket))));document.getElementById('start')?.addEventListener('click',()=>{if(completed()===8){go('report');return}if(!state.guideSeen&&count()===0){state.guideStep=0;state.guideChoice=null;go('guide');return}let idx=DATA.findIndex((_,i)=>nextMissing(i)!==undefined);start(idx===-1?0:idx)});document.querySelectorAll('[data-answer]').forEach(b=>b.addEventListener('click',()=>{let k=key(state.ticket,state.step);if(state.results[k]!==undefined)return;state.selected=Number(b.dataset.answer);state.results[k]=state.selected===DATA[state.ticket].questions[state.step].correct;persist();beep(state.results[k]);render();}));document.getElementById('next')?.addEventListener('click',()=>{state.step++;state.selected=null;persist();render()});document.querySelectorAll('[data-labindex]').forEach(b=>b.addEventListener('click',()=>{state.labIndex=Number(b.dataset.labindex);state.labWork={};render()}));document.querySelectorAll('[data-seq]').forEach(b=>b.addEventListener('click',()=>{let w=state.labWork||(state.labWork={});w.seq=w.seq||[];w.seq.push(Number(b.dataset.seq));render()}));document.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>{let w=state.labWork||(state.labWork={});w.picked=w.picked||[];let j=Number(b.dataset.pick);w.picked=w.picked.includes(j)?w.picked.filter(x=>x!==j):[...w.picked,j];render()}));document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{state.labWork={...(state.labWork||{}),tab:Number(b.dataset.tab)};render()}));document.getElementById('toggle-host')?.addEventListener('click',()=>{state.labWork={...(state.labWork||{}),host:!(state.labWork||{}).host};render()});document.getElementById('clear-lab')?.addEventListener('click',()=>{state.labWork={};render()});document.getElementById('reset-lab')?.addEventListener('click',()=>{state.labWork={};render()});document.getElementById('search-query')?.addEventListener('click',()=>{state.labWork={...(state.labWork||{}),query:document.getElementById('query').value};checkLab()});document.getElementById('check-lab')?.addEventListener('click',()=>{if(ACTIVITIES[state.labIndex].kind==='search')state.labWork={...(state.labWork||{}),query:document.getElementById('query').value};checkLab()});document.getElementById('player-name')?.addEventListener('input',e=>{state.player=e.target.value.slice(0,48);document.getElementById('cert-person').textContent=state.player||'Юний цифровий фахівець';persist()});document.getElementById('export-report')?.addEventListener('click',downloadReport);document.getElementById('check-storage')?.addEventListener('click',checkStorageHealth);document.getElementById('teacher-csv')?.addEventListener('click',downloadCSV);document.getElementById('teacher-coach')?.addEventListener('change',e=>{state.teacher={...teacherConfig(),showCoach:e.target.checked};persist();render()});document.getElementById('teacher-labs')?.addEventListener('change',e=>{state.teacher={...teacherConfig(),showLabs:e.target.checked};persist();render()});document.getElementById('print-cert')?.addEventListener('click',()=>{if(completed()!==8)return;window.print()});document.getElementById('sound')?.addEventListener('click',()=>{state.sound=!state.sound;persist();render();beep()});document.getElementById('backup-progress')?.addEventListener('click',downloadProgress);document.getElementById('restore-progress')?.addEventListener('click',()=>document.getElementById('progress-file')?.click());document.getElementById('progress-file')?.addEventListener('change',e=>{restoreProgress(e.target.files?.[0]);e.target.value='';});document.getElementById('reset-progress')?.addEventListener('click',()=>{if(confirm('Скинути всі результати місій, відзнаки та ім’я? Цю дію не можна скасувати.')){state={screen:'home',ticket:0,step:0,results:{},selected:null,player:'',labIndex:0,labs:{},sound:state.sound,teacher:teacherConfig(),m1:{stage:'intro',view:'shared',copyMade:false,edited:false,submitted:false,mistakes:0,notes:''},m6:{stage:'intro',tab:'new',visited:false,firstDone:false,mistakes:0},m2:{stage:'intro',hostOn:true,selectedPrinter:'',sent:false,triedOffline:false,mistakes:0},m3:{stage:'intro',flags:[],safeActions:[],mistakes:0},mNew:{},finale:{stage:0,mistakes:0,done:false,feedback:''}};persist();render()}})}
 
 
+
+/* Three expressive, accessible vector mascots based on the six-pose reference:
+   neutral / joy / surprise / think / explain / celebrate. */
+const TEAM_DEFS=[
+ {id:"bayt",name:"БАЙТ",role:"Цифровий помічник",tip:"Поруч, щоб допомогти"},
+ {id:"pixel",name:"ПІКСЕЛЬ",role:"Підказки й відкриття",tip:"Шукає цікаві рішення"},
+ {id:"kiber",name:"КІБЕР",role:"Технічний експерт",tip:"Перевіряє безпеку"}
+];
+const TEAM_LINES={
+ neutral:["На зв’язку!","Готовий підказати.","Перевірмо завдання."],
+ joy:["Завдання виконано!","Ти знайшов рішення!","Усе працює!"],
+ surprise:["Нове повідомлення!","Ого, нові обставини!","З’явилися нові дані."],
+ think:["Є деталь для перевірки.","Який ще варіант?","Перевірмо умови."],
+ explain:["Я допоможу з кроком.","Дивись на ознаки.","Поясню важливе."],
+ celebrate:["Місію завершено!","Нова відзнака!","Чудова командна робота!"]
+};
+let teamEmotion="neutral",teamEmotionTimer=null;
+function mascotArt(kind,mood="neutral"){
+ const wide=mood==="surprise",happy=["joy","celebrate","explain"].includes(mood);
+ const eyes=wide?'<ellipse cx="58" cy="78" rx="7" ry="12"/><ellipse cx="104" cy="78" rx="7" ry="12"/>':happy?'<path d="M48 78q10-14 20 0M94 78q10-14 20 0" fill="none" stroke="#13caff" stroke-width="7" stroke-linecap="round"/>':'<ellipse cx="58" cy="78" rx="6" ry="10"/><ellipse cx="104" cy="78" rx="6" ry="10"/>';
+ const mouth=wide?'<ellipse cx="81" cy="105" rx="8" ry="12" fill="#0b2448" stroke="#4be0ff" stroke-width="3"/>':mood==="think"?'<path d="M68 108q13-7 26-2" stroke="#35caff" stroke-width="4" fill="none" stroke-linecap="round"/>':happy?'<path d="M63 104q18 24 37 0Z" fill="#e53e7b" stroke="#45e1ff" stroke-width="3"/>':'<path d="M66 103q15 13 30 0" stroke="#35caff" stroke-width="4" fill="none" stroke-linecap="round"/>';
+ if(kind==="bayt")return '<svg viewBox="0 0 164 184" role="img" aria-label="Байт">'+
+ '<defs><linearGradient id="baytMetal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#a4d7fa"/></linearGradient></defs>'+
+ '<g class="mascot-arm-left"><path d="M46 131L21 147" stroke="#c9ebff" stroke-width="17" stroke-linecap="round"/><circle cx="19" cy="149" r="10" fill="#13afff" stroke="#083d7d" stroke-width="4"/></g>'+
+ '<g class="mascot-arm-right"><path d="M119 129L145 '+(happy?'108':'143')+'" stroke="#c9ebff" stroke-width="17" stroke-linecap="round"/><circle cx="145" cy="'+(happy?'106':'144')+'" r="10" fill="#12baf4" stroke="#083d7d" stroke-width="4"/></g>'+
+ '<path d="M58 134L49 165M107 134L115 165" stroke="#dff5ff" stroke-width="16" stroke-linecap="round"/><ellipse cx="48" cy="168" rx="18" ry="10" fill="#088ceb" stroke="#042b62" stroke-width="4"/><ellipse cx="117" cy="168" rx="18" ry="10" fill="#088ceb" stroke="#042b62" stroke-width="4"/>'+
+ '<rect x="48" y="107" width="67" height="47" rx="22" fill="url(#baytMetal)" stroke="#195194" stroke-width="5"/><circle cx="82" cy="131" r="14" fill="#05c7ef" stroke="#148acc" stroke-width="4"/><path d="M82 119v16" stroke="#fff" stroke-width="4" stroke-linecap="round"/>'+
+ '<path d="M81 16V8" stroke="#39dfff" stroke-width="5"/><circle cx="81" cy="8" r="7" fill="#0cf3fd" stroke="#143a83" stroke-width="3"/>'+
+ '<rect x="22" y="22" width="119" height="104" rx="43" fill="url(#baytMetal)" stroke="#103f83" stroke-width="6"/><ellipse cx="82" cy="74" rx="47" ry="39" fill="#04142a" stroke="#1aa9f4" stroke-width="4"/>'+
+ '<g fill="#18e9ff">'+eyes+'</g>'+mouth+
+ '<circle cx="24" cy="79" r="13" fill="#10c9ff" stroke="#1162a4" stroke-width="5"/><circle cx="141" cy="79" r="13" fill="#10c9ff" stroke="#1162a4" stroke-width="5"/></svg>';
+ if(kind==="pixel"){
+  const eye=wide?'<ellipse cx="64" cy="80" rx="6" ry="10"/><ellipse cx="101" cy="80" rx="6" ry="10"/>':happy?'<path d="M55 80q10-13 18 0M92 80q10-13 18 0" fill="none" stroke="#2c1b4f" stroke-width="5" stroke-linecap="round"/>':'<ellipse cx="64" cy="80" rx="5" ry="8"/><ellipse cx="101" cy="80" rx="5" ry="8"/>';
+  const smile=wide?'<ellipse cx="83" cy="104" rx="7" ry="11" fill="#40255f"/>':mood==="think"?'<path d="M74 105h17" stroke="#3b2468" stroke-width="4" stroke-linecap="round"/>':'<path d="M70 99q13 20 26 0" fill="#e95a83" stroke="#3b2468" stroke-width="3"/>';
+  return '<svg viewBox="0 0 164 184" role="img" aria-label="Піксель">'+
+  '<g class="mascot-arm-left"><path d="M48 107L22 126" stroke="#7440d8" stroke-width="11" stroke-linecap="round"/><circle cx="19" cy="127" r="9" fill="#fff" stroke="#6c40b6" stroke-width="3"/></g>'+
+  '<g class="mascot-arm-right"><path d="M115 104L145 '+(happy?'87':'126')+'" stroke="#7440d8" stroke-width="11" stroke-linecap="round"/><circle cx="145" cy="'+(happy?'85':'127')+'" r="9" fill="#fff" stroke="#6c40b6" stroke-width="3"/></g>'+
+  '<path d="M62 126L53 161M99 126L109 161" stroke="#8e55d5" stroke-width="12" stroke-linecap="round"/><ellipse cx="50" cy="166" rx="19" ry="11" fill="#a473fc" stroke="#5e2ba9" stroke-width="4"/><ellipse cx="110" cy="166" rx="19" ry="11" fill="#a473fc" stroke="#5e2ba9" stroke-width="4"/>'+
+  '<polygon points="82,12 103,54 149,60 116,92 125,139 82,115 40,139 48,92 15,60 61,54" fill="#b256fa" stroke="#5927a3" stroke-width="7" stroke-linejoin="round" transform="translate(0 4)"/>'+
+  '<polygon points="82,18 101,57 141,63 111,93 120,132 82,110 45,132 52,93 23,63 63,57" fill="#ffe155" stroke="#ff9d36" stroke-width="5" stroke-linejoin="round"/>'+
+  '<g fill="#2f1c59">'+eye+'</g>'+smile+'</svg>';
+ }
+ const boySmile=wide?'<ellipse cx="85" cy="105" rx="7" ry="10" fill="#642839"/>':mood==="think"?'<path d="M77 104l15-3" stroke="#7b3c43" stroke-width="3" stroke-linecap="round"/>':happy?'<path d="M73 100q13 22 27 0" fill="#c93751" stroke="#7d3944" stroke-width="3"/>':'<path d="M76 103q9 10 21 0" stroke="#7d3944" stroke-width="3" fill="none"/>';
+ return '<svg viewBox="0 0 164 184" role="img" aria-label="Кібер">'+
+ '<g class="mascot-arm-left"><path d="M54 132L30 146" stroke="#1566cc" stroke-width="19" stroke-linecap="round"/><circle cx="27" cy="149" r="10" fill="#ecc198"/></g>'+
+ '<g class="mascot-arm-right"><path d="M109 132L138 '+(happy?'108':'143')+'" stroke="#1566cc" stroke-width="19" stroke-linecap="round"/><circle cx="138" cy="'+(happy?'105':'145')+'" r="10" fill="#ecc198"/></g>'+
+ '<path d="M61 153L56 172M102 153L109 172" stroke="#244c94" stroke-width="15" stroke-linecap="round"/>'+
+ '<path d="M43 115Q82 95 122 115L135 175H29Z" fill="#0c65d6" stroke="#073c8d" stroke-width="5"/><path d="M67 121L82 139L95 121" fill="none" stroke="#a9eaff" stroke-width="5"/>'+
+ '<ellipse cx="83" cy="78" rx="39" ry="45" fill="#f2bb8a" stroke="#ad7456" stroke-width="3"/>'+
+ '<path d="M44 76Q29 34 61 27Q69 8 90 28Q129 22 123 70Q103 43 95 40Q73 60 60 51Z" fill="#784121" stroke="#432316" stroke-width="5"/>'+
+ '<path d="M46 63Q35 56 38 87" stroke="#2095f2" stroke-width="13" stroke-linecap="round"/><path d="M117 62Q128 56 125 87" stroke="#2095f2" stroke-width="13" stroke-linecap="round"/><circle cx="39" cy="82" r="12" fill="#26bafa" stroke="#0b4e9e" stroke-width="5"/><circle cx="125" cy="82" r="12" fill="#26bafa" stroke="#0b4e9e" stroke-width="5"/>'+
+ '<g fill="#1864b1"><ellipse cx="69" cy="82" rx="'+(wide?8:6)+'" ry="'+(wide?10:7)+'"/><ellipse cx="100" cy="82" rx="'+(wide?8:6)+'" ry="'+(wide?10:7)+'"/></g>'+boySmile+'</svg>';
+}
+function teamMarkup(compact=false){
+ const roleMessages=TEAM_LINES[teamEmotion]||TEAM_LINES.neutral;
+ return '<section class="character-team'+(compact?' compact':'')+'" aria-label="Команда цифрових помічників">'+
+ TEAM_DEFS.map((d,i)=>'<div class="character-member" data-team="'+d.id+'" data-emotion="'+teamEmotion+'"><div class="character-avatar">'+mascotArt(d.id,teamEmotion)+'</div><div class="character-body"><strong>'+d.name+'</strong><small>'+d.role+'</small><div class="character-message">'+roleMessages[i]+'</div></div></div>').join('')+'</section>';
+}
+function setTeamEmotion(mood){
+ if(!TEAM_LINES[mood])mood="neutral";
+ teamEmotion=mood;
+ document.querySelectorAll(".character-member[data-team]").forEach((card,i)=>{
+  card.dataset.emotion=mood;
+  const avatar=card.querySelector(".character-avatar"),tip=card.querySelector(".character-message");
+  if(avatar)avatar.innerHTML=mascotArt(TEAM_DEFS[i].id,mood);
+  if(tip)tip.textContent=TEAM_LINES[mood][i];
+ });
+ clearTimeout(teamEmotionTimer);
+ if(mood!=="neutral")teamEmotionTimer=setTimeout(()=>setTeamEmotion("neutral"),3300);
+}
+
 /* Character reactions are derived from the actual result, not a random animation.
    The fixed speech message does not move the current task or steal focus. */
 const REACTION_LINES=[
@@ -610,6 +725,7 @@ function missionSnapshot(){
 function showCharacterReaction(tone,i){
  if(state.screen!=='game'||state.ticket!==i)return;
  const text=REACTION_LINES[i]?.[tone];if(!text)return;
+  setTeamEmotion(tone==='happy'?(missionStatus(i).closed?'celebrate':'joy'):tone==='concerned'?'think':'surprise');
  const existing=document.getElementById('character-reaction-toast');if(existing)existing.remove();
  document.querySelectorAll('.scene-character-voice').forEach(node=>node.remove());
  const portraitElement=document.querySelector('main.stage svg.portrait');
