@@ -263,6 +263,12 @@ body{background:radial-gradient(ellipse 45% 30% at 96% 0%,#31467b55,transparent)
 @media(max-width:920px){.character-team{gap:7px}.character-member{padding:9px;gap:6px}.character-avatar{width:64px;height:64px}.character-member strong{font-size:13px}.character-member small{font-size:11px}}
 @media(max-width:680px){.character-team{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:9px 0 12px}.character-member,.character-team.compact .character-member{display:grid;justify-items:center;align-content:start;padding:7px 3px;text-align:center;gap:3px;border-radius:13px}.character-avatar,.character-team.compact .character-avatar{width:54px;height:54px}.character-member strong,.character-team.compact .character-member strong{font-size:11px}.character-member small,.character-team.compact .character-member small{font-size:10px}.character-member .character-message,.character-team.compact .character-message{font-size:10px;min-height:unset}}
 @media(prefers-reduced-motion:reduce){.character-avatar,.character-member[data-emotion] .character-avatar,.character-member .mascot-arm-left,.character-member .mascot-arm-right{animation:none!important}}
+
+.character-member .team-action{margin-top:7px;width:100%;padding:7px 9px;min-height:39px;border-radius:10px;background:#e8f6ff;color:#12365b;border:1px solid #a5dbef;font-weight:750;font-size:12px;cursor:pointer}
+.character-member .team-action:focus-visible{outline:3px solid #ffe17a;outline-offset:2px}
+.character-member .character-message{overflow-wrap:anywhere}
+.character-member .character-message[role=status]{font-weight:650;color:#fff}
+@media(max-width:680px){.character-member .team-action{font-size:10px;min-height:40px;padding:6px 3px}}
 @media print{.character-team{display:none!important}}
 </style></head><body><div id="root" class="container"></div><div id="live-bip-root" class="live-bip no-print"></div><script>
 'use strict';
@@ -690,7 +696,7 @@ function mascotArt(kind,mood="neutral"){
 function teamMarkup(compact=false){
  const roleMessages=TEAM_LINES[teamEmotion]||TEAM_LINES.neutral;
  return '<section class="character-team'+(compact?' compact':'')+'" aria-label="Команда цифрових помічників">'+
- TEAM_DEFS.map((d,i)=>'<div class="character-member" data-team="'+d.id+'" data-emotion="'+teamEmotion+'"><div class="character-avatar">'+mascotArt(d.id,teamEmotion)+'</div><div class="character-body"><strong>'+d.name+'</strong><small>'+d.role+'</small><div class="character-message">'+roleMessages[i]+'</div></div></div>').join('')+'</section>';
+ TEAM_DEFS.map((d,i)=>'<div class="character-member" data-team="'+d.id+'" data-emotion="'+teamEmotion+'"><div class="character-avatar">'+mascotArt(d.id,teamEmotion)+'</div><div class="character-body"><strong>'+d.name+'</strong><small>'+d.role+'</small><div class="character-message" role="status">'+safe(roleMessages[i])+'</div><button type="button" class="team-action" data-team-action="'+d.id+'">'+(d.id==='bayt'?'📍 Мій наступний крок':d.id==='pixel'?'💡 Підказка':'🛡️ Перевір безпеку')+'</button></div></div>').join('')+'</section>';
 }
 function setTeamEmotion(mood){
  if(!TEAM_LINES[mood])mood="neutral";
@@ -704,6 +710,63 @@ function setTeamEmotion(mood){
  clearTimeout(teamEmotionTimer);
  if(mood!=="neutral")teamEmotionTimer=setTimeout(()=>setTeamEmotion("neutral"),3300);
 }
+
+/* Active team roles: Bayt guides route, Pixel reuses tracked progressive hints,
+   Kiber checks the situation. No automatic answers, scores, or navigation jumps. */
+const KIBER_RULES=[
+ ['Перевір, чи маєш дозвіл редагувати спільний документ.','Здавай власну копію в потрібну папку, не змінюй оригінал.'],
+ ['Для друку через мережу перевір доступність спільного принтера.','Якщо комп’ютер, до якого під’єднано принтер, вимкнений, спільний друк може бути недоступним.'],
+ ['Не повідомляй особистих даних незнайомцям заради подарунка.','Якщо дані вже передано, припини спілкування й звернися до довіреного дорослого.'],
+ ['Перевір, хто створив фотографію та на яких умовах її можна використати.','Дотримуйся зазначених авторкою умов і вказуй джерело.'],
+ ['Оціни надійність джерела перед тим, як користуватися його матеріалами.','Для читання казки не потрібно повідомляти номер телефону сумнівному сайту.'],
+ ['Подивись, у якій саме вкладці відкрито сторінку.','Якщо сторінка змінилася в тій самій вкладці, перевір можливість повернутися кнопкою «Назад».'],
+ ['Перевір, чи працює мережа і чи доступна спільна папка.','Локальна копія не обов’язково оновлює мережевий оригінал автоматично.'],
+ ['Не відкривай сумнівних вкладень без перевірки.','Не вводь пароль у вікно, яке несподівано з’явилося після підозрілого вкладення.']
+];
+root.addEventListener('click',event=>{
+ const button=event.target.closest('[data-team-action]');
+ if(!button)return;
+ const id=button.dataset.teamAction;
+ if(!TEAM_DEFS.some(d=>d.id===id))return;
+ const card=button.closest('.character-member');
+ if(!card)return;
+ let reply='',emotion='explain';
+ if(id==='bayt'){
+   emotion='explain';
+   if(state.screen==='game'){
+     const stageTitle=root.querySelector('main.stage h2')?.textContent?.trim()||levelsNames[state.ticket];
+     const n=missionStatus(state.ticket).done;
+     reply='Твоя заявка № '+(state.ticket+1)+': '+stageTitle+'. Завершено '+n+' із 3 навчальних кроків. Прочитай поточне завдання та виконай дію в його картці.';
+   }else{
+     reply='Твій маршрут: '+completed()+' із 8 заявок. Обери незавершену місію на мапі. Практична лабораторія — окремо, диплом — після всіх місій.';
+   }
+ }else if(id==='pixel'){
+   if(state.screen!=='game'){
+     reply='Відкрий заявку, щоб я міг дати підказку саме до неї. Для знайомства з правилами вибери «Як грати».';
+   }else if(!teacherConfig().showCoach){
+     reply='Додаткові підказки вимкнено в налаштуваннях учителя. Спробуй знайти відповідь самостійно або запитай учителя.';
+     emotion='think';
+   }else{
+     const {id:hintId,entry,content}=coachData();
+     const count=Math.min(3,Math.max(0,Number(entry.hints)||0)+1);
+     const pool=coachPhase()==='b'?COACH_HINT_B[state.ticket]:content.hint;
+     state.coach[hintId]={...entry,hints:count};
+     persist();
+     reply='Підказка '+count+' із 3: '+pool[count-1];
+   }
+ }else{
+   emotion='think';
+   if(state.screen==='game'){
+     reply='Питання безпеки: '+KIBER_RULES[state.ticket][coachPhase()==='b'?1:0];
+   }else{
+     reply='Мої три перевірки: чи надійне джерело, чи є дозвіл на дію та чи не потрібно розкривати особисті дані.';
+   }
+ }
+ setTeamEmotion(emotion);
+ const target=card.querySelector('.character-message');
+ if(target){target.textContent=reply;target.setAttribute('role','status');}
+ // Never rerender or force focus/scroll for a helper answer.
+});
 
 /* Character reactions are derived from the actual result, not a random animation.
    The fixed speech message does not move the current task or steal focus. */
