@@ -399,7 +399,7 @@ function reflectionBlock(){
  return `<section class="student-reflection" aria-label="Світлофор розуміння після місії"><h3>🚦 Світлофор розуміння</h3><p>Як ти почуваєшся щодо цього завдання? Обери сигнал для себе й учителя. Це не оцінка і не впливає на бали чи диплом.</p><div class="reflection-options">${answers.map(([value,label])=>`<button type="button" class="traffic-${value}" data-reflection="${value}" aria-pressed="${current===value}">${label}</button>`).join('')}</div><p class="reflection-hint" role="status">${current?'Сигнал збережено на цьому пристрої. Його можна змінити.':'Це добровільне самооцінювання після місії.'}</p></section>`;
 }
 function sidebar(){return `<aside class="panel aside"><div class="caps">Твій прогрес</div><div style="font-size:28px;font-weight:950;margin:8px 0">${score()} <span class="tiny">/ 240 балів</span></div><div class="progress-track"><i style="width:${count()/24*100}%"></i></div><div class="tiny">Пройдено ${count()} із 24 рішень</div><div class="side-nav">${DATA.map((d,i)=>`<button data-ticket="${i}" class="${i===state.ticket?'current':''} ${[0,1,2].every(s=>state.results[key(i,s)]!==undefined)?'done':''}">${i+1}. ${safe(levelsNames[i])}</button>`).join('')}</div></aside>`}
-function nextMissing(i){return [0,1,2].find(s=>state.results[key(i,s)]===undefined)}function start(i){state.ticket=i;state.step=nextMissing(i)??3;state.selected=null;if(i===0){state.m1=state.m1||{stage:'intro',view:'shared',copyMade:false,edited:false,submitted:false,mistakes:0,notes:''};if(state.step===3)state.m1.stage='done';}if(i===1){state.m2=state.m2||{stage:'intro',hostOn:true,selectedPrinter:'',sent:false,triedOffline:false,mistakes:0};if(state.step===3)state.m2.stage='done';}if(i===2){state.m3=state.m3||{stage:'intro',flags:[],safeActions:[],mistakes:0};if(state.step===3)state.m3.stage='done';}if([3,4,6,7].includes(i)){let m=newMissionState(i);if(state.step===3)m.stage='done';}if(i===5){state.m6=state.m6||{stage:'intro',tab:'new',visited:false,firstDone:false,mistakes:0};if(state.step===3)state.m6.stage='done';}go('game')}
+function nextMissing(i){return [0,1,2].find(s=>state.results[key(i,s)]===undefined)}function start(i){closeGameNotice();state.ticket=i;state.step=nextMissing(i)??3;state.selected=null;if(i===0){state.m1=state.m1||{stage:'intro',view:'shared',copyMade:false,edited:false,submitted:false,mistakes:0,notes:''};if(state.step===3)state.m1.stage='done';}if(i===1){state.m2=state.m2||{stage:'intro',hostOn:true,selectedPrinter:'',sent:false,triedOffline:false,mistakes:0};if(state.step===3)state.m2.stage='done';}if(i===2){state.m3=state.m3||{stage:'intro',flags:[],safeActions:[],mistakes:0};if(state.step===3)state.m3.stage='done';}if([3,4,6,7].includes(i)){let m=newMissionState(i);if(state.step===3)m.stage='done';}if(i===5){state.m6=state.m6||{stage:'intro',tab:'new',visited:false,firstDone:false,mistakes:0};if(state.step===3)state.m6.stage='done';}go('game');const cue=currentSceneCue();if(cue)showGameNotice(cue)}
 function game(){const i=state.ticket,step=state.step,d=DATA[i],p=PEOPLE[i];if(i===0)return mission1();if(i===1)return mission2();if(i===2)return mission3();if([3,4,6,7].includes(i))return missionNew(i);if(i===5)return mission6();if(step===3)return `<div class="game-layout">${sidebar()}<main class="panel stage"><div class="mission-done"><div class="medal">🎉</div><div class="caps">Заявку № ${i+1} закрито</div><h2>Чудова робота, агенте!</h2><p>${safe(p.name)} отримав/отримала допомогу. Ти проаналізував ситуацію, обрав рішення та врахував нове повідомлення.</p><div class="metrics" style="justify-content:center"><span class="metric">Результат місії: <strong>${[0,1,2].filter(s=>state.results[key(i,s)]===true).length*10}/30</strong></span></div><div style="display:flex;justify-content:center;flex-wrap:wrap;gap:10px"><button class="btn secondary" data-go="home">До мапи місій</button>${i<7?`<button class="btn" data-ticket="${i+1}">Наступна заявка →</button>`:`<button class="btn" data-go="report">Підсумки й диплом →</button>`}</div></div></main></div>`;const q=d.questions[step],stored=state.results[key(i,step)],done=stored!==undefined,phase=step===2?'Б':'А';let selected=state.selected;let answered=done&&selected!==null;let correct=answered?selected===q.correct:stored;return `<div class="game-layout">${sidebar()}<main class="panel stage"><div class="stage-top"><span class="tag">🎧 ЗАЯВКА № ${String(d.id).padStart(2,'0')}</span><span class="tag ${step===2?'':'done'}">КАРТКА ${phase} · КРОК ${step+1}/3</span></div><div class="ticket-header"><div class="portrait-frame">${portrait(i)}</div><div><span class="caps">${safe(p.name)} звертається по допомогу</span><h2>${safe(levelsNames[i])}</h2><div class="step-label">${step===0?'1. Знайди причину':step===1?'2. Запропонуй безпечну дію':'3. Врахуй нові обставини'}</div></div></div><div class="steps">${[0,1,2].map(n=>`<span class="${n<step?'past':n===step?'now':''}"></span>`).join('')}</div>${step===2?'<div class="phase-alert">📬 Нове повідомлення! Перевір, чи залишаються твої рекомендації правильними.</div>':''}<div class="chat"><div class="sender">💬 ${safe(p.name)} · ${step===2?'уточнення':'початкове звернення'}</div><p>«${safe(step===2?d.b:d.a)}»</p></div>${step!==2?`<section class="clues"><strong style="color:#a3d6ff">🔍 Відомості для діагностики</strong><ul>${d.clues.map(s=>`<li>${safe(s)}</li>`).join('')}</ul></section>`:''}<div class="question-title">${safe(q.q)}</div><div class="answers">${q.choices.map((choice,j)=>`<button class="option ${done&&j===q.correct?'good':done&&j===selected?'bad':''}" data-answer="${j}" ${done?'disabled':''}><span class="letter">${['А','Б','В'][j]}</span><span>${safe(choice)}</span></button>`).join('')}</div>${done?`<section class="feedback ${correct?'':'wrong'}" aria-live="polite"><strong>${correct?'✅ Правильне рішення! +10 балів':'💡 Розглянь пояснення'}</strong><p>${safe(q.why)}</p>${!correct?`<p><strong>Правильний вибір:</strong> ${safe(q.choices[q.correct])}</p>`:''}</section>`:''}<div class="foot"><button class="btn ghost" data-go="home">← До мапи</button><button class="btn" id="next" ${done?'':'disabled'}>${step===2?'Закрити заявку':'Наступний крок'} →</button></div><p class="tiny" style="margin:17px 0 0">🤖 БІП: «Помилка — це привід навчитися. Після відповіді прочитай пояснення!»</p></main></div>`}
 const ACTIVITIES=[
 {title:'Права доступу',context:'Документ має доступ «Переглядач». Що потрібно зробити, щоб працювати у власному файлі?',kind:'sequence',items:['Створити дозволену копію документа','Відредагувати свою копію','Зберегти копію у власному просторі'],explain:'Доступ «Переглядач» не дає змоги редагувати оригінал. Копія — окремий документ.'},
@@ -584,22 +584,37 @@ function bipMarkup(){
   <div class="live-bip-panel" id="bip-dialog" role="dialog" aria-label="Поради БІПа" ${bipPanelOpen?'':'hidden'}>
    <div class="live-bip-bar"><div class="live-bip-face" aria-hidden="true"><span class="live-bip-head"><b class="live-bip-eye"></b><b class="live-bip-eye"></b><i></i></span></div><div><strong>БІП на зв'язку</strong><small>${safe(c.title)}</small></div><button type="button" class="live-bip-close" data-bip-close aria-label="Закрити помічника">×</button></div>
    <div class="live-bip-chat"><div class="live-bip-message" aria-live="polite"><strong>🤖 БІП:</strong> ${safe(bipReply||c.text)}</div>
-    <div class="live-bip-actions"><button type="button" data-bip-action="context">📍 Що мені робити зараз?</button><button type="button" data-bip-action="hint">💡 Дай підказку</button><button type="button" data-bip-action="steps">🧭 Як працює гра?</button></div>
+    <div class="live-bip-actions"><button type="button" data-bip-action="context">📍 Що мені робити зараз?</button><button type="button" data-bip-action="hint">💡 Дай підказку</button><button type="button" data-bip-action="steps">🧭 Як працює гра?</button><button type="button" data-bip-action="consequences">🔀 Що буде, якщо…?</button></div>${bipWhatIf&&state.screen==='game'&&teacherConfig().showCoach?'<div class="live-bip-actions" aria-label="Дослідити наслідки">'+coachData().path.choices.map((choice,j)=>'<button type="button" data-bip-branch="'+j+'">'+safe(choice[0])+'</button>').join('')+'</div>':''}
     <div class="live-bip-caption">БІП використовує перевірені підказки із цієї гри, а не спілкується зі стороннім сервісом.</div></div>
   </div>
   <button type="button" class="live-bip-launch" data-bip-open aria-controls="bip-dialog" aria-expanded="${bipPanelOpen}"><span class="live-bip-face" aria-hidden="true"><span class="live-bip-head"><b class="live-bip-eye"></b><b class="live-bip-eye"></b><i></i></span>${bipIsNew&&!bipPanelOpen?'<em class="live-bip-unread"></em>':''}</span><span class="live-bip-title">БІП <span class="live-bip-status">${bipPanelOpen?'Твій помічник':'Потрібна порада?'}</span></span></button>
  </section>`;
 }
-let bipMood='';
+let bipMood='',bipWhatIf=false;
 function updateBip(){if(!bipHolder)return;bipHolder.innerHTML=bipMarkup();if(bipMood)bipHolder.dataset.mood=bipMood;else bipHolder.removeAttribute('data-mood');}
 bipHolder.addEventListener('click',ev=>{
  const button=ev.target.closest('button');if(!button)return;
- if(button.hasAttribute('data-bip-open')){bipPanelOpen=!bipPanelOpen;bipIsNew=false;bipReply='';updateBip();if(bipPanelOpen)bipHolder.querySelector('[data-bip-close]')?.focus({preventScroll:true});else bipHolder.querySelector('[data-bip-open]')?.focus({preventScroll:true});return;}
+ if(button.hasAttribute('data-bip-open')){bipPanelOpen=!bipPanelOpen;bipIsNew=false;bipReply='';bipWhatIf=false;updateBip();if(bipPanelOpen)bipHolder.querySelector('[data-bip-close]')?.focus({preventScroll:true});else bipHolder.querySelector('[data-bip-open]')?.focus({preventScroll:true});return;}
  if(button.hasAttribute('data-bip-close')){bipPanelOpen=false;updateBip();bipHolder.querySelector('[data-bip-open]')?.focus({preventScroll:true});return;}
+ if(button.hasAttribute('data-bip-branch')){
+  if(state.screen!=='game'||!teacherConfig().showCoach)return;
+  const j=Number(button.dataset.bipBranch);
+  const {id,entry,path}=coachData();
+  if(!Number.isInteger(j)||j<0||j>=path.choices.length)return;
+  state.coach[id]={...entry,open:true,choice:j};persist();
+  bipReply=path.choices[j][1];bipWhatIf=true;updateBip();
+  bipHolder.querySelector('[data-bip-branch="'+j+'"]')?.focus({preventScroll:true});
+  return;
+ }
  const action=button.dataset.bipAction;const c=bipContext();
- if(action==='context')bipReply=c.text+' '+c.focus;
- if(action==='hint')bipOpenHint();
- if(action==='steps')bipReply='1. Прочитай звернення. 2. Досліди проблему. 3. Виконай безпечні дії. 4. Прочитай уточнення. 5. Заверши заявку. Лабораторія знаходиться окремо.';
+ if(action==='context'){bipWhatIf=false;bipReply=c.text+' '+c.focus;}
+ if(action==='hint'){bipWhatIf=false;bipOpenHint();}
+ if(action==='consequences'){
+  if(state.screen!=='game'){bipReply='Цю вправу можна відкрити під час виконання заявки.';bipWhatIf=false;}
+  else if(!teacherConfig().showCoach){bipReply='Учитель вимкнув додаткові інструменти допомоги.';bipWhatIf=false;}
+  else{bipWhatIf=true;bipReply='Обери один із двох варіантів, щоб дослідити його можливий наслідок. Це не змінить оцінку й не виконає завдання замість тебе.'}
+ }
+ if(action==='steps'){bipWhatIf=false;bipReply='1. Прочитай звернення. 2. Досліди проблему. 3. Виконай безпечні дії. 4. Прочитай уточнення. 5. Заверши заявку. Лабораторія знаходиться окремо.';}
  updateBip();bipHolder.querySelector(`[data-bip-action="${action}"]`)?.focus({preventScroll:true});
 });
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&bipPanelOpen){bipPanelOpen=false;updateBip();bipHolder.querySelector('[data-bip-open]')?.focus({preventScroll:true})}});
@@ -630,7 +645,7 @@ function render(){
  const oldStageHeight=oldStage?.offsetHeight||0;
  lastRenderedStep=nextKey;
 root.innerHTML=head()+(state.screen==='home'?home():state.screen==='game'?game():state.screen==='labs'?labs():state.screen==='finale'?finaleUI():state.screen==='teacher'?teacher():state.screen==='guide'?guideUI():report())+`<footer class="footer no-print">Авторська інтерактивна адаптація навчальних ситуацій за мотивами матеріалу видавництва «Ранок». ${state.storageWarning?'⚠️ Браузер не дозволив зберегти прогрес. Не закривай сторінку до завершення.':'Прогрес зберігається у цьому браузері, якщо браузер дозволяє локальне зберігання. Для перенесення на інший пристрій збережи резервну копію.'} <button class="navbtn" id="sound">Звук: ${state.sound?'увімкнено 🔊':'вимкнено 🔇'}</button> <button class="navbtn" id="backup-progress">💾 Зберегти прогрес у файл</button> <button class="navbtn" id="restore-progress">📂 Відновити прогрес</button><input type="file" id="progress-file" accept=".json,application/json" hidden aria-label="Вибрати резервну копію прогресу"> <button class="navbtn" id="reset-progress">Скинути прогрес</button></footer>`;if(!teacherConfig().showLabs)root.querySelectorAll('[data-go="labs"]').forEach(el=>el.hidden=true);if(state.screen==='home')root.querySelector('.campaign-hero')?.insertAdjacentHTML('afterend',teamMarkup(false));
-  if(state.screen==='game'){const stage=root.querySelector('main.panel.stage');if(stage){stage.insertAdjacentHTML('afterbegin',teamMarkup(true))}if(stage&&teacherConfig().showCoach)stage.insertAdjacentHTML('beforeend',coachUI());if(stage&&missionStatus(state.ticket).closed)stage.insertAdjacentHTML('beforeend',reflectionBlock())}attach();bipReply='';updateBip();
+  if(state.screen==='game'){const stage=root.querySelector('main.panel.stage');if(stage){stage.insertAdjacentHTML('afterbegin',teamMarkup(true))}if(stage&&missionStatus(state.ticket).closed)stage.insertAdjacentHTML('beforeend',reflectionBlock())}attach();bipReply='';updateBip();
  // Change screen -> show new page top. Change task -> show card heading.
  // Same task -> keep reading position, unless content collapsed substantially.
  if(prevKey!==null){
@@ -870,6 +885,7 @@ root.addEventListener('click',event=>{
  const action=event.target.closest('[data-m1],[data-m2],[data-m3],[data-m6],[data-new],[data-answer]');
  if(!action||state.screen!=='game')return;
  const before=missionSnapshot();
+ const previousFeedback=document.querySelector('main.stage [id$="-feedback"]')?.textContent?.trim()||'';
  setTimeout(()=>{
   if(state.screen!=='game'||before.i!==state.ticket)return;
   const after=missionSnapshot();
@@ -883,6 +899,9 @@ root.addEventListener('click',event=>{
    showCharacterReaction(isFollow?'surprised':'happy',before.i);
   }else if(after.results!==before.results){
    showCharacterReaction('happy',before.i);
+  }else{
+   const updatedFeedback=document.querySelector('main.stage [id$="-feedback"]')?.textContent?.trim()||'';
+   if(updatedFeedback&&updatedFeedback!==previousFeedback)showGameNotice({kind:'info',title:'Пояснення',text:updatedFeedback,actions:[],duration:6200});
   }
  },0);
 },true);
