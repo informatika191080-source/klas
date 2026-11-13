@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111b35">
+<title>Векторна майстерня · Онлайн-редактор для 6 класу</title>
+<meta name="description" content="Безкоштовна навчальна векторна майстерня: фігури, текст, шари та збереження SVG прямо в браузері.">
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#eff8ff;background:#0d1428;--line:#334360;--mint:#70f1ce;--panel:#17233e}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 92% 0%,#293f76 0,transparent 40%),#0d1428;min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #ffe18b;outline-offset:2px}
+a{color:#88e7fc}.top{max-width:1420px;margin:auto;padding:18px 22px 12px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.brand-icon{display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:linear-gradient(140deg,#3e80f2,#49d6b3);font-size:27px}
+h1{margin:0;font-size:clamp(22px,3vw,34px);letter-spacing:-.035em}.sub{color:#bdcce6;font-size:13px}.toplinks{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.linkbtn,.btn{border:1px solid #5f779c;color:#f2f9ff;background:#22365a;border-radius:12px;min-height:43px;padding:9px 13px;text-decoration:none;font-weight:650;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:hover,.linkbtn:hover{background:#315180}.btn.active{background:#145a5b;border-color:#75e9c8}.btn.primary{color:#062736;background:#80f5d5;border-color:#9dffe2}.btn.danger{border-color:#b77b91;background:#52354a}.btn:disabled{opacity:.4;cursor:not-allowed}
+.app{max-width:1420px;margin:auto;padding:10px 22px 35px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:16px}
+.workspace{min-width:0;display:grid;gap:12px;align-content:start}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 34px #030b2045}
+.toolbar{padding:12px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}.toolbar strong{color:#a5eadd;font-size:13px;margin:0 8px 0 4px}.group{display:flex;gap:7px;flex-wrap:wrap}
+.boardbar{padding:10px 15px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:#c3d4eb;font-size:13px}
+.boardwrap{padding:14px;background:repeating-linear-gradient(45deg,#28374f,#28374f 12px,#26334a 12px,#26334a 24px);border-radius:0 0 18px 18px}
+#board{display:block;width:100%;height:auto;aspect-ratio:8/5;background:#fff;border-radius:10px;box-shadow:0 9px 24px #0006;touch-action:none;user-select:none;cursor:crosshair}
+#board [data-shape]{cursor:grab}#board [data-shape]:active{cursor:grabbing}
+.aside{display:grid;gap:14px;align-content:start}.aside .card{padding:16px}.aside h2{font-size:17px;margin:0 0 14px}.field{display:grid;gap:6px;margin:11px 0;color:#b9cde6;font-size:13px}
+.field input:not([type=color]),.field select{width:100%;min-height:41px;padding:8px 10px;border-radius:10px;border:1px solid #63789c;background:#0d1932;color:#fff}
+.field input[type=color]{width:100%;height:42px;border:1px solid #6380a0;border-radius:10px;padding:2px;background:#162542}
+.field input[type=range]{width:100%}.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.layers{display:grid;gap:7px;max-height:240px;overflow:auto}
+.layer{width:100%;display:flex;align-items:center;gap:8px;background:#223351;border:1px solid #435776;color:#e8f5ff;border-radius:10px;padding:10px;text-align:left;font-size:13px}
+.layer.active{border-color:#8ff6d9;background:#23504f}.layer span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.empty{font-size:13px;color:#9fb4d4}.actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.actions .btn{min-width:0}
+.note{padding:14px 17px;color:#bdd0e6;font-size:13px;line-height:1.55}.note strong{color:#fff}
+.status{color:#acf8db;font-size:13px;min-height:20px}.help{line-height:1.55;color:#c7d7ec;font-size:14px}.help summary{font-weight:700;color:#fff;cursor:pointer}
+#selBox{pointer-events:none;fill:none;stroke:#1259ff;stroke-width:2;stroke-dasharray:8 5}
+footer{max-width:1420px;margin:0 auto;padding:0 22px 24px;color:#91a6c6;font-size:12px;line-height:1.6}
+@media(max-width:980px){.app{grid-template-columns:1fr}.aside{grid-template-columns:repeat(2,minmax(0,1fr))}.aside .card:last-child{grid-column:1/-1}}
+@media(max-width:620px){.top{padding:13px}.app{padding:8px 10px 25px}.brand-icon{width:44px;height:44px}.aside{grid-template-columns:1fr}.aside .card:last-child{grid-column:auto}.boardwrap{padding:7px}.toolbar{gap:5px}.btn{font-size:13px;min-height:42px;padding:8px 10px}.boardbar{font-size:12px}#board{border-radius:6px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="brand"><div class="brand-icon" aria-hidden="true">✦</div><div><h1>Векторна майстерня</h1><div class="sub">Твоя творча лабораторія · Інформатика, 6 клас</div></div></div>
+ <nav class="toplinks"><a class="linkbtn" href="../">🎮 ЦифроПоміч</a><button class="btn primary" id="saveSvg">⬇ Зберегти SVG</button><button class="btn" id="savePng">⬇ PNG</button></nav>
+</header>
+<div class="app">
+ <div class="workspace">
+  <section class="card toolbar" aria-label="Інструменти малювання">
+   <strong>Додати</strong><div class="group">
+    <button class="btn" data-add="rect">▭ Прямокутник</button><button class="btn" data-add="circle">● Коло</button><button class="btn" data-add="ellipse">⬭ Овал</button><button class="btn" data-add="triangle">△ Трикутник</button><button class="btn" data-add="line">╱ Лінія</button><button class="btn" data-add="text">Т Текст</button>
+   </div>
+   <div class="group"><button class="btn" id="undo" title="Ctrl+Z">↶ Назад</button><button class="btn" id="redo" title="Ctrl+Shift+Z">↷ Повторити</button><button class="btn danger" id="clear">Очистити</button></div>
+  </section>
+  <section class="card">
+   <div class="boardbar"><span><strong>Артборд 800 × 500</strong> · перетягни фігуру пальцем або мишкою</span><span id="counter">0 об'єктів</span></div>
+   <div class="boardwrap"><svg id="board" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" aria-label="Полотно для створення векторного зображення" role="img"><rect width="800" height="500" fill="white"/></svg></div>
+  </section>
+  <section class="card note"><strong>Майстер-завдання:</strong> створи значок «Моє цифрове місто» щонайменше з трьох різних фігур і тексту. Зміни кольори, розмісти об’єкти, експортуй SVG. SVG — векторний формат: зображення можна масштабувати без втрати чіткості контурів.</section>
+ </div>
+ <aside class="aside">
+  <section class="card">
+   <h2>🎨 Властивості об'єкта</h2>
+   <div id="notselected" class="empty">Вибери фігуру на полотні або у списку шарів.</div>
+   <div id="editor" hidden>
+    <label class="field">Заливка <input type="color" id="fill" value="#4e9cf8"></label>
+    <label class="field">Контур <input type="color" id="stroke" value="#20304f"></label>
+    <label class="field">Товщина контуру <input type="range" min="0" max="12" step="1" id="sw" value="2"></label>
+    <div class="row2"><label class="field">Ширина <input type="number" id="width" min="8" max="780" value="120"></label><label class="field">Висота <input type="number" id="height" min="8" max="480" value="90"></label></div>
+    <label class="field" id="textField" hidden>Текст <input id="textValue" maxlength="90" value="Вітаю!"></label>
+    <div class="actions"><button class="btn" id="up">⬆ Вище</button><button class="btn" id="down">⬇ Нижче</button><button class="btn" id="copy">⧉ Копія</button><button class="btn danger" id="delete">✕ Видалити</button></div>
+   </div>
+  </section>
+  <section class="card"><h2>🗂 Шари</h2><div class="layers" id="layers"><span class="empty">Додай першу фігуру.</span></div></section>
+  <section class="card">
+   <h2>💾 Збереження та допомога</h2>
+   <div id="storageStatus" class="status" role="status">Збереження перевіряється…</div>
+   <p class="help">Робота зберігається <strong>лише в цьому браузері</strong>, якщо доступне локальне сховище. Завантаж SVG для надійної копії. Роботи не надсилаються вчителю автоматично.</p>
+   <details class="help"><summary>Як працювати?</summary><p>Додай фігуру. Натисни на неї й перетягни. Зміни заливку, контур і розмір. Використовуй шари, щоб переміщувати об'єкти вперед або назад. Кнопка «Зберегти SVG» створює справжній векторний файл.</p></details>
+  </section>
+ </aside>
+</div>
+<footer>Авторська навчальна майстерня. Робота з фігурами виконується на пристрої учня, без облікового запису. Режим класів і централізоване приймання робіт поки не реалізовані.</footer>
+<script>
+"use strict";
+(function(){
+const board=document.getElementById("board"),svgNS="http://www.w3.org/2000/svg",KEY="vector_workshop_klas_v1";
+const $=id=>document.getElementById(id);
+const TYPES={rect:"Прямокутник",circle:"Коло",ellipse:"Овал",triangle:"Трикутник",line:"Лінія",text:"Текст"};
+let objects=[],selected=null,nextId=1,undoStack=[],redoStack=[],drag=null,working=true;
+function validColor(x){return /^#[0-9a-f]{6}$/i.test(x)?x:"#4e9cf8"}
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,Number(v)||0))}
+function current(){return objects.find(o=>o.id===selected)}
+function snapshot(){return JSON.stringify({objects:objects,nextId:nextId,selected:selected})}
+function save(){try{localStorage.setItem(KEY,snapshot());$("storageStatus").textContent="✓ Зміни автоматично збережено у браузері."}catch(e){$("storageStatus").textContent="⚠ Локальне збереження недоступне. Збережи SVG у файл."}}
+function commit(previous){if(previous!==snapshot()){undoStack.push(previous);if(undoStack.length>60)undoStack.shift();redoStack=[];save()}render()}
+function make(type){const n=objects.length;return {id:nextId++,type:type,x:300+(n%6)*18,y:180+(n%5)*15,w:type==="line"?130:150,h:type==="text"?40:100,fill:["#68b9ff","#71e9c2","#ffa96c","#c0a3ff"][n%4],stroke:"#203c60",sw:2,text:"Мій дизайн"}}
+function node(tag,attrs){const e=document.createElementNS(svgNS,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,String(v)));return e}
+function drawShape(o){
+ let e,common={fill:o.fill,stroke:o.stroke,"stroke-width":o.sw};
+ if(o.type==="rect")e=node("rect",{x:o.x,y:o.y,width:o.w,height:o.h,rx:6,...common});
+ if(o.type==="circle")e=node("ellipse",{cx:o.x+o.w/2,cy:o.y+o.h/2,rx:o.w/2,ry:o.h/2,...common});
+ if(o.type==="ellipse")e=node("ellipse",{cx:o.x+o.w/2,cy:o.y+o.h/2,rx:o.w/2,ry:o.h/2,...common});
+ if(o.type==="triangle")e=node("polygon",{points:(o.x+o.w/2)+","+o.y+" "+(o.x+o.w)+","+(o.y+o.h)+" "+o.x+","+(o.y+o.h),...common,"stroke-linejoin":"round"});
+ if(o.type==="line")e=node("line",{x1:o.x,y1:o.y,x2:o.x+o.w,y2:o.y+o.h,stroke:o.stroke,"stroke-width":Math.max(2,o.sw+2),"stroke-linecap":"round"});
+ if(o.type==="text"){e=node("text",{x:o.x,y:o.y+Math.max(25,o.h*.75),"font-size":clamp(o.h*.7,17,90),"font-family":"sans-serif",...common});e.textContent=o.text}
+ e.setAttribute("data-shape",o.id);return e
+}
+function render(){
+ while(board.firstChild)board.removeChild(board.firstChild);
+ board.appendChild(node("rect",{x:0,y:0,width:800,height:500,fill:"#ffffff"}));
+ objects.forEach(o=>board.appendChild(drawShape(o)));
+ const o=current();
+ if(o)board.appendChild(node("rect",{id:"selBox",x:o.x-5,y:o.y-5,width:o.w+10,height:o.h+10}));
+ $("editor").hidden=!o;$("notselected").hidden=!!o;$("counter").textContent=objects.length+" об'єкт(ів)";
+ const ls=$("layers");ls.replaceChildren();
+ if(!objects.length){const span=document.createElement("span");span.className="empty";span.textContent="Додай першу фігуру.";ls.appendChild(span)}
+ [...objects].reverse().forEach(q=>{const b=document.createElement("button");b.className="layer"+(q.id===selected?" active":"");b.type="button";b.textContent=(q.type==="text"?"Т ": "✦ ")+TYPES[q.type]+" №"+q.id;b.addEventListener("click",()=>{selected=q.id;render()});ls.appendChild(b)});
+ if(o){$("fill").value=validColor(o.fill);$("stroke").value=validColor(o.stroke);$("sw").value=o.sw;$("width").value=o.w;$("height").value=o.h;$("textField").hidden=o.type!=="text";if(o.type==="text"&&document.activeElement!==$("textValue"))$("textValue").value=o.text}
+ $("undo").disabled=!undoStack.length;$("redo").disabled=!redoStack.length;
+}
+function coords(e){const r=board.getBoundingClientRect();return {x:clamp((e.clientX-r.left)*800/r.width,0,800),y:clamp((e.clientY-r.top)*500/r.height,0,500)}}
+board.addEventListener("pointerdown",e=>{const target=e.target.closest("[data-shape]");if(!target){selected=null;render();return}const id=Number(target.dataset.shape);selected=id;const o=current(),p=coords(e);drag={id,dx:p.x-o.x,dy:p.y-o.y,old:snapshot(),moved:false};board.setPointerCapture(e.pointerId);render()});
+board.addEventListener("pointermove",e=>{if(!drag)return;const o=current();if(!o||o.id!==drag.id)return;const p=coords(e),nx=clamp(p.x-drag.dx,0,800-o.w),ny=clamp(p.y-drag.dy,0,500-o.h);if(nx!==o.x||ny!==o.y){o.x=nx;o.y=ny;drag.moved=true;render()}});
+function endDrag(){if(drag){const old=drag.old;drag=null;commit(old)}}
+board.addEventListener("pointerup",endDrag);board.addEventListener("pointercancel",endDrag);
+document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>{const old=snapshot(),o=make(b.dataset.add);objects.push(o);selected=o.id;commit(old)}));
+function edit(fn){const o=current();if(!o)return;const old=snapshot();fn(o);commit(old)}
+$("fill").addEventListener("change",e=>edit(o=>o.fill=validColor(e.target.value)));
+$("stroke").addEventListener("change",e=>edit(o=>o.stroke=validColor(e.target.value)));
+$("sw").addEventListener("change",e=>edit(o=>o.sw=clamp(e.target.value,0,12)));
+$("width").addEventListener("change",e=>edit(o=>{o.w=clamp(e.target.value,8,780);o.x=Math.min(o.x,800-o.w)}));
+$("height").addEventListener("change",e=>edit(o=>{o.h=clamp(e.target.value,8,480);o.y=Math.min(o.y,500-o.h)}));
+$("textValue").addEventListener("change",e=>edit(o=>o.text=e.target.value.slice(0,90)));
+$("delete").addEventListener("click",()=>{const old=snapshot();objects=objects.filter(o=>o.id!==selected);selected=null;commit(old)});
+$("copy").addEventListener("click",()=>{const o=current();if(!o)return;const old=snapshot();const c={...o,id:nextId++,x:clamp(o.x+25,0,800-o.w),y:clamp(o.y+25,0,500-o.h)};objects.push(c);selected=c.id;commit(old)});
+function reorder(offset){const i=objects.findIndex(o=>o.id===selected),j=i+offset;if(i<0||j<0||j>=objects.length)return;const old=snapshot();[objects[i],objects[j]]=[objects[j],objects[i]];commit(old)}
+$("up").addEventListener("click",()=>reorder(1));$("down").addEventListener("click",()=>reorder(-1));
+function restoreSnapshot(s){try{const v=JSON.parse(s);objects=v.objects;nextId=v.nextId;selected=v.selected;save();render()}catch(e){}}
+$("undo").addEventListener("click",()=>{if(!undoStack.length)return;redoStack.push(snapshot());restoreSnapshot(undoStack.pop())});
+$("redo").addEventListener("click",()=>{if(!redoStack.length)return;undoStack.push(snapshot());restoreSnapshot(redoStack.pop())});
+document.addEventListener("keydown",e=>{const input=e.target.closest("input,textarea,select,[contenteditable]");if(input)return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?$("redo").click():$("undo").click()}else if((e.key==="Delete"||e.key==="Backspace")&&selected){e.preventDefault();$("delete").click()}});
+$("clear").addEventListener("click",()=>{if(!objects.length||!confirm("Очистити полотно? Дію можна скасувати кнопкою «Назад»."))return;const old=snapshot();objects=[];selected=null;commit(old)});
+function buildSVG(){const svg=node("svg",{xmlns:svgNS,width:800,height:500,viewBox:"0 0 800 500"});svg.appendChild(node("rect",{x:0,y:0,width:800,height:500,fill:"#ffffff"}));objects.forEach(o=>{const e=drawShape(o);e.removeAttribute("data-shape");svg.appendChild(e)});return new XMLSerializer().serializeToString(svg)}
+function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
+$("saveSvg").addEventListener("click",()=>download(new Blob([buildSVG()],{type:"image/svg+xml;charset=utf-8"}),"mii-vektornyi-dyzain.svg"));
+$("savePng").addEventListener("click",()=>{const img=new Image(),url=URL.createObjectURL(new Blob([buildSVG()],{type:"image/svg+xml"}));img.onload=()=>{const canvas=document.createElement("canvas");canvas.width=800;canvas.height=500;canvas.getContext("2d").drawImage(img,0,0);canvas.toBlob(blob=>{if(blob)download(blob,"mii-vektornyi-dyzain.png");URL.revokeObjectURL(url)},"image/png")};img.onerror=()=>{URL.revokeObjectURL(url);alert("Не вдалося створити PNG. Збережи SVG.")};img.src=url});
+try{const v=JSON.parse(localStorage.getItem(KEY)||"null");if(v&&Array.isArray(v.objects)&&v.objects.length<=400&&v.objects.every(o=>TYPES[o.type]&&Number.isFinite(o.x)&&Number.isFinite(o.y)&&Number.isFinite(o.w)&&Number.isFinite(o.h))){objects=v.objects.map(o=>({...o,text:String(o.text||"").slice(0,90),fill:validColor(o.fill),stroke:validColor(o.stroke),sw:clamp(o.sw,0,12)}));nextId=Math.max(1,...objects.map(o=>o.id+1));selected=null}}catch(e){}
+save();render();
+})();
+</script>
+</body>
+</html>
