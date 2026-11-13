@@ -125,6 +125,11 @@ body{background:radial-gradient(ellipse 45% 30% at 96% 0%,#31467b55,transparent)
 .student-reflection button{background:rgba(255,255,255,.08);border:1px solid rgba(180,208,246,.25);padding:12px 15px;border-radius:12px;color:inherit;cursor:pointer;font:inherit}
 .student-reflection button[aria-pressed="true"]{background:rgba(48,169,134,.2);border-color:#63d8ae}
 .reflection-hint{margin-top:12px!important;font-size:13px}
+.student-reflection .traffic-clear{border-left:5px solid #48db93}
+.student-reflection .traffic-some{border-left:5px solid #ffd36a}
+.student-reflection .traffic-hard{border-left:5px solid #fa9089}
+.student-reflection .reflection-options button[aria-pressed="true"]{outline:2px solid #f1f6ff;outline-offset:2px}
+
 .pilot-stats{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
 .pilot-stats span{padding:9px 12px;background:rgba(255,255,255,.07);border-radius:10px}
 @media(max-width:760px){.pilot-nodes{grid-template-columns:repeat(2,minmax(0,1fr))}.pilot-route{padding:16px}}
@@ -321,8 +326,8 @@ function reflectionBlock(){
  const i=state.ticket;
  if(state.screen!=='game'||!missionStatus(i).closed)return '';
  const current=state.reflections&&state.reflections[i];
- const answers=[['clear','🙂 Було зрозуміло'],['some','🤔 Дещо було складно'],['hard','🧩 Потрібна допомога']];
- return `<section class="student-reflection" aria-label="Відгук після місії"><h3>💬 Як тобі ця місія?</h3><p>Обери відповідь для вчителя. Це не оцінка, вона не впливає на бали чи диплом.</p><div class="reflection-options">${answers.map(([value,label])=>`<button type="button" data-reflection="${value}" aria-pressed="${current===value}">${label}</button>`).join('')}</div><p class="reflection-hint" role="status">${current?'Дякуємо! Відповідь збережено на цьому пристрої. Її можна змінити.':'Відгук необов’язковий. Продовжуй, коли будеш готовий або готова.'}</p></section>`;
+ const answers=[['clear','🟢 Зрозуміло — можу пояснити'],['some','🟡 Потрібна ще одна спроба'],['hard','🔴 Потрібна допомога вчителя']];
+ return `<section class="student-reflection" aria-label="Світлофор розуміння після місії"><h3>🚦 Світлофор розуміння</h3><p>Як ти почуваєшся щодо цього завдання? Обери сигнал для себе й учителя. Це не оцінка і не впливає на бали чи диплом.</p><div class="reflection-options">${answers.map(([value,label])=>`<button type="button" class="traffic-${value}" data-reflection="${value}" aria-pressed="${current===value}">${label}</button>`).join('')}</div><p class="reflection-hint" role="status">${current?'Сигнал збережено на цьому пристрої. Його можна змінити.':'Це добровільне самооцінювання після місії.'}</p></section>`;
 }
 function sidebar(){return `<aside class="panel aside"><div class="caps">Твій прогрес</div><div style="font-size:28px;font-weight:950;margin:8px 0">${score()} <span class="tiny">/ 240 балів</span></div><div class="progress-track"><i style="width:${count()/24*100}%"></i></div><div class="tiny">Пройдено ${count()} із 24 рішень</div><div class="side-nav">${DATA.map((d,i)=>`<button data-ticket="${i}" class="${i===state.ticket?'current':''} ${[0,1,2].every(s=>state.results[key(i,s)]!==undefined)?'done':''}">${i+1}. ${safe(levelsNames[i])}</button>`).join('')}</div></aside>`}
 function nextMissing(i){return [0,1,2].find(s=>state.results[key(i,s)]===undefined)}function start(i){state.ticket=i;state.step=nextMissing(i)??3;state.selected=null;if(i===0){state.m1=state.m1||{stage:'intro',view:'shared',copyMade:false,edited:false,submitted:false,mistakes:0,notes:''};if(state.step===3)state.m1.stage='done';}if(i===1){state.m2=state.m2||{stage:'intro',hostOn:true,selectedPrinter:'',sent:false,triedOffline:false,mistakes:0};if(state.step===3)state.m2.stage='done';}if(i===2){state.m3=state.m3||{stage:'intro',flags:[],safeActions:[],mistakes:0};if(state.step===3)state.m3.stage='done';}if([3,4,6,7].includes(i)){let m=newMissionState(i);if(state.step===3)m.stage='done';}if(i===5){state.m6=state.m6||{stage:'intro',tab:'new',visited:false,firstDone:false,mistakes:0};if(state.step===3)state.m6.stage='done';}go('game')}
