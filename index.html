@@ -269,7 +269,18 @@ body{background:radial-gradient(ellipse 45% 30% at 96% 0%,#31467b55,transparent)
 .character-member .character-message{overflow-wrap:anywhere}
 .character-member .character-message[role=status]{font-weight:650;color:#fff}
 @media(max-width:680px){.character-member .team-action{font-size:10px;min-height:40px;padding:6px 3px}}
-@media print{.character-team{display:none!important}}
+
+.scene-director{border:1px solid #77cce1;background:linear-gradient(115deg,#123e63,#173355);border-radius:16px;padding:14px 16px;margin:8px 0 20px;color:#f5faff}
+.scene-director[data-scene="error"]{border-color:#f1ab92;background:linear-gradient(115deg,#52374c,#292d51)}
+.scene-director[data-scene="followup"]{border-color:#f3d675;background:linear-gradient(115deg,#54492d,#2c3e56)}
+.scene-director[data-scene="complete"]{border-color:#78edc3;background:linear-gradient(115deg,#19594c,#1c3d61)}
+.scene-director .scene-heading{display:flex;gap:10px;align-items:center;font-weight:850;margin-bottom:7px}
+.scene-director p{margin:5px 0 12px;font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.scene-director .scene-actions{display:flex;gap:8px;flex-wrap:wrap}
+.scene-director button{min-height:43px;background:#d8f4fc;color:#123553;border:1px solid #b3e2f5;border-radius:11px;padding:9px 13px;font:inherit;font-weight:720;font-size:13px;cursor:pointer}
+.scene-director button:focus-visible{outline:3px solid #ffe38b;outline-offset:2px}
+@media(max-width:680px){.scene-director{padding:11px;margin:5px 0 12px}.scene-director p{font-size:13px}.scene-director button{font-size:12px;flex:1 1 auto}}
+@media print{.character-team,.scene-director{display:none!important}}
 </style></head><body><div id="root" class="container"></div><div id="live-bip-root" class="live-bip no-print"></div><script>
 'use strict';
 const I={shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',wifi:'<path d="M2 8.82a15 15 0 0 1 20 0M5 12.55a10 10 0 0 1 14 0M8.5 16.3a5 5 0 0 1 7 0M12 20h.01"/>',file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/>',printer:'<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/>',search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>',image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>',browser:'<rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20M6 6h.01M10 6h.01"/>',folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/>',star:'<path d="m12 2 3 6.5 7 .9-5.1 5 1.2 7-6.1-3.4-6.1 3.4 1.2-7-5.1-5 7-.9z"/>',sound:'<path d="M11 5 6 9H2v6h4l5 4zM15 9a5 5 0 0 1 0 6M18 6a9 9 0 0 1 0 12"/>',mute:'<path d="M11 5 6 9H2v6h4l5 4zM17 9l5 6M22 9l-5 6"/>',arrow:'<path d="M5 12h14m-7-7 7 7-7 7"/>',back:'<path d="m15 18-6-6 6-6"/>',check:'<path d="m5 12 4 4L19 6"/>',home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zM9 21v-8h6v8"/>',trophy:'<path d="M8 21h8m-4-4v4M7 4h10v6a5 5 0 0 1-10 0zM7 6H3v3a4 4 0 0 0 4 4M17 6h4v3a4 4 0 0 1-4 4"/>',reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>',download:'<path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/>',info:'<circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7h.01"/>',bot:'<rect x="3" y="7" width="18" height="14" rx="4"/><path d="M12 7V3m-3 0h6M8 13h.01M16 13h.01M9 17q3 3 6 0"/>'};
@@ -610,7 +621,7 @@ function render(){
  const oldStageHeight=oldStage?.offsetHeight||0;
  lastRenderedStep=nextKey;
 root.innerHTML=head()+(state.screen==='home'?home():state.screen==='game'?game():state.screen==='labs'?labs():state.screen==='finale'?finaleUI():state.screen==='teacher'?teacher():state.screen==='guide'?guideUI():report())+`<footer class="footer no-print">Авторська інтерактивна адаптація навчальних ситуацій за мотивами матеріалу видавництва «Ранок». ${state.storageWarning?'⚠️ Браузер не дозволив зберегти прогрес. Не закривай сторінку до завершення.':'Прогрес зберігається у цьому браузері, якщо браузер дозволяє локальне зберігання. Для перенесення на інший пристрій збережи резервну копію.'} <button class="navbtn" id="sound">Звук: ${state.sound?'увімкнено 🔊':'вимкнено 🔇'}</button> <button class="navbtn" id="backup-progress">💾 Зберегти прогрес у файл</button> <button class="navbtn" id="restore-progress">📂 Відновити прогрес</button><input type="file" id="progress-file" accept=".json,application/json" hidden aria-label="Вибрати резервну копію прогресу"> <button class="navbtn" id="reset-progress">Скинути прогрес</button></footer>`;if(!teacherConfig().showLabs)root.querySelectorAll('[data-go="labs"]').forEach(el=>el.hidden=true);if(state.screen==='home')root.querySelector('.campaign-hero')?.insertAdjacentHTML('afterend',teamMarkup(false));
-  if(state.screen==='game'){const stage=root.querySelector('main.panel.stage');if(stage)stage.insertAdjacentHTML('afterbegin',teamMarkup(true));if(stage&&teacherConfig().showCoach)stage.insertAdjacentHTML('beforeend',coachUI());if(stage&&missionStatus(state.ticket).closed)stage.insertAdjacentHTML('beforeend',reflectionBlock())}attach();bipReply='';updateBip();
+  if(state.screen==='game'){const stage=root.querySelector('main.panel.stage');if(stage){stage.insertAdjacentHTML('afterbegin',teamMarkup(true));stage.querySelector('.character-team')?.insertAdjacentHTML('afterend',sceneMarkup())}if(stage&&teacherConfig().showCoach)stage.insertAdjacentHTML('beforeend',coachUI());if(stage&&missionStatus(state.ticket).closed)stage.insertAdjacentHTML('beforeend',reflectionBlock())}attach();bipReply='';updateBip();
  // Change screen -> show new page top. Change task -> show card heading.
  // Same task -> keep reading position, unless content collapsed substantially.
  if(prevKey!==null){
@@ -768,6 +779,52 @@ root.addEventListener('click',event=>{
  // Never rerender or force focus/scroll for a helper answer.
 });
 
+/* Scene director: reactive story cues, never changes grading or advances on its own. */
+let sceneSignal=null;
+function currentSceneCue(){
+ if(state.screen!=='game')return null;
+ const i=state.ticket,closed=missionStatus(i).closed;
+ const phase=coachPhase();
+ const base={kind:"intro",name:"БАЙТ",icon:"📍",text:"Заявка № "+(i+1)+": "+levelsNames[i]+". Прочитай звернення й обери дію в навчальній ситуації.",actions:["bayt","pixel"]};
+ if(closed)return {kind:"complete",name:"Команда ЦифроПомочі",icon:"🏆",text:"Заявку завершено! Тепер можна повернутися до мапи або перейти до наступної. Відзнака вже зарахована.",actions:["next","map"]};
+ if(sceneSignal&&sceneSignal.ticket===i&&sceneSignal.step===currentRenderedStep())return sceneSignal;
+ if(phase==="b")return {kind:"followup",name:"КІБЕР",icon:"📬",text:"Надійшло уточнення. Перевір, чи попередня порада залишилася безпечною за нових обставин.",actions:["kiber","pixel"]};
+ return base;
+}
+function sceneMarkup(){
+ const cue=currentSceneCue();
+ if(!cue)return '';
+ const labels={bayt:"📍 Що робити?",pixel:"💡 Підказка",kiber:"🛡️ Перевірити ризик",next:"➡️ Наступна місія",map:"🗺️ До мапи"};
+ const actions=cue.actions.map(id=>'<button type="button" data-scene-action="'+id+'">'+labels[id]+'</button>').join('');
+ return '<section class="scene-director no-print" id="scene-director" data-scene="'+safe(cue.kind)+'" aria-label="Сюжетне повідомлення помічників"><div class="scene-heading">'+safe(cue.icon)+' '+safe(cue.name)+'</div><p class="scene-text" role="status">'+safe(cue.text)+'</p><div class="scene-actions">'+actions+'</div></section>';
+}
+function setSceneSignal(kind, text){
+ if(state.screen!=="game")return;
+ const i=state.ticket;
+ const definitions={
+  error:{kind:"error",name:"КІБЕР",icon:"🛡️",actions:["kiber","pixel"]},
+  followup:{kind:"followup",name:"ПІКСЕЛЬ",icon:"📬",actions:["kiber","pixel"]},
+  correct:{kind:"correct",name:"БАЙТ",icon:"✅",actions:["bayt","pixel"]}
+ };
+ const value=definitions[kind]||definitions.correct;
+ sceneSignal={...value,ticket:i,step:currentRenderedStep(),text:text};
+ const host=root.querySelector("#scene-director");
+ if(host)host.outerHTML=sceneMarkup();
+}
+root.addEventListener('click',event=>{
+ const action=event.target.closest("[data-scene-action]");
+ if(!action||state.screen!=="game")return;
+ const id=action.dataset.sceneAction;
+ if(id==="map"){go("home");return}
+ if(id==="next"){if(!missionStatus(state.ticket).closed)return;if(state.ticket<7)start(state.ticket+1);else go("report");return}
+ if(["bayt","pixel","kiber"].includes(id)){
+  // Reuse the same role handlers; the scene never bypasses teacher settings.
+  root.querySelector('.character-member[data-team="'+id+'"] [data-team-action]')?.click();
+  const msg=root.querySelector('.character-member[data-team="'+id+'"] .character-message')?.textContent||"";
+  if(msg){const cue=sceneSignal||currentSceneCue();sceneSignal={kind:cue.kind,name:TEAM_DEFS.find(x=>x.id===id).name,icon:({bayt:"📍",pixel:"💡",kiber:"🛡️"})[id],text:msg,actions:cue.actions,ticket:state.ticket,step:currentRenderedStep()};const el=root.querySelector("#scene-director");if(el)el.outerHTML=sceneMarkup();}
+ }
+});
+
 /* Character reactions are derived from the actual result, not a random animation.
    The fixed speech message does not move the current task or steal focus. */
 const REACTION_LINES=[
@@ -790,6 +847,10 @@ function showCharacterReaction(tone,i){
  if(state.screen!=='game'||state.ticket!==i)return;
  const text=REACTION_LINES[i]?.[tone];if(!text)return;
   setTeamEmotion(tone==='happy'?(missionStatus(i).closed?'celebrate':'joy'):tone==='concerned'?'think':'surprise');
+ const detail=document.querySelector('main.stage [id$="-feedback"]')?.textContent?.trim();
+ if(tone==='concerned')setSceneSignal("error",detail||"Цей крок потребує перевірки. КІБЕР допоможе знайти ризик, а ПІКСЕЛЬ — отримати підказку.");
+ else if(tone==='surprised')setSceneSignal("followup","Ситуація змінилася! Перечитай уточнення користувача й перевір своє рішення.");
+ else if(!missionStatus(i).closed)setSceneSignal("correct","Цей етап виконано. Тепер переглянь наступне завдання або попроси пояснення.");
  const existing=document.getElementById('character-reaction-toast');if(existing)existing.remove();
  document.querySelectorAll('.scene-character-voice').forEach(node=>node.remove());
  const portraitElement=document.querySelector('main.stage svg.portrait');
@@ -818,6 +879,8 @@ root.addEventListener('click',event=>{
    if(before.stage==='intro')return;
    const isFollow=coachPhase()==='b'&&(['newmessage','message','newMessage','update','bridge','second'].includes(after.stage));
    showCharacterReaction(isFollow?'surprised':'happy',before.i);
+  }else if(after.results!==before.results){
+   showCharacterReaction('happy',before.i);
   }
  },0);
 },true);
