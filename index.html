@@ -550,6 +550,7 @@ function bipOpenHint(){
   state.coach[id]={...entry,hints:n};persist();
   const pool=coachPhase()==='b'?COACH_HINT_B[state.ticket]:content.hint;
   bipReply=`Підказка ${n} із 3: ${pool[n-1]}`;
+   setTeamEmotion("explain");
 }
 function bipMarkup(){
  const c=bipContext();
