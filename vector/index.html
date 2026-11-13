@@ -93,7 +93,7 @@ function current(){return objects.find(o=>o.id===selected)}
 function snapshot(){return JSON.stringify({objects:objects,nextId:nextId,selected:selected})}
 function save(){try{localStorage.setItem(KEY,snapshot());$("storageStatus").textContent="✓ Зміни автоматично збережено у браузері."}catch(e){$("storageStatus").textContent="⚠ Локальне збереження недоступне. Збережи SVG у файл."}}
 function commit(previous){if(previous!==snapshot()){undoStack.push(previous);if(undoStack.length>60)undoStack.shift();redoStack=[];save()}render()}
-function make(type){const n=objects.length;return {id:nextId++,type:type,x:300+(n%6)*18,y:180+(n%5)*15,w:type==="line"?130:150,h:type==="text"?40:100,fill:["#68b9ff","#71e9c2","#ffa96c","#c0a3ff"][n%4],stroke:"#203c60",sw:2,text:"Мій дизайн"}}
+function make(type){const n=objects.length;return {id:nextId++,type:type,x:300+(n%6)*18,y:180+(n%5)*15,w:type==="line"?130:type==="circle"?110:150,h:type==="text"?40:type==="circle"?110:100,fill:["#68b9ff","#71e9c2","#ffa96c","#c0a3ff"][n%4],stroke:"#203c60",sw:2,text:"Мій дизайн"}}
 function node(tag,attrs){const e=document.createElementNS(svgNS,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,String(v)));return e}
 function drawShape(o){
  let e,common={fill:o.fill,stroke:o.stroke,"stroke-width":o.sw};
@@ -128,8 +128,8 @@ function edit(fn){const o=current();if(!o)return;const old=snapshot();fn(o);comm
 $("fill").addEventListener("change",e=>edit(o=>o.fill=validColor(e.target.value)));
 $("stroke").addEventListener("change",e=>edit(o=>o.stroke=validColor(e.target.value)));
 $("sw").addEventListener("change",e=>edit(o=>o.sw=clamp(e.target.value,0,12)));
-$("width").addEventListener("change",e=>edit(o=>{o.w=clamp(e.target.value,8,780);o.x=Math.min(o.x,800-o.w)}));
-$("height").addEventListener("change",e=>edit(o=>{o.h=clamp(e.target.value,8,480);o.y=Math.min(o.y,500-o.h)}));
+$("width").addEventListener("change",e=>edit(o=>{o.w=clamp(e.target.value,8,780);if(o.type==="circle")o.h=o.w;o.x=Math.min(o.x,800-o.w);o.y=Math.min(o.y,500-o.h)}));
+$("height").addEventListener("change",e=>edit(o=>{o.h=clamp(e.target.value,8,480);if(o.type==="circle")o.w=o.h;o.y=Math.min(o.y,500-o.h);o.x=Math.min(o.x,800-o.w)}));
 $("textValue").addEventListener("change",e=>edit(o=>o.text=e.target.value.slice(0,90)));
 $("delete").addEventListener("click",()=>{const old=snapshot();objects=objects.filter(o=>o.id!==selected);selected=null;commit(old)});
 $("copy").addEventListener("click",()=>{const o=current();if(!o)return;const old=snapshot();const c={...o,id:nextId++,x:clamp(o.x+25,0,800-o.w),y:clamp(o.y+25,0,500-o.h)};objects.push(c);selected=c.id;commit(old)});
