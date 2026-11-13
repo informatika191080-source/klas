@@ -181,6 +181,12 @@ body{background:radial-gradient(ellipse 45% 30% at 96% 0%,#31467b55,transparent)
 @keyframes live-panel-in{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:550px){.live-bip{bottom:max(10px,env(safe-area-inset-bottom));right:max(9px,env(safe-area-inset-right))}.live-bip-launch{min-height:54px;padding:4px 11px 4px 5px}.live-bip-face{width:45px;height:45px}.live-bip-title{font-size:13px}.live-bip-panel{bottom:66px;max-height:min(500px,calc(100dvh - 105px))}.live-bip-chat{padding:13px}}
 @media(prefers-reduced-motion:reduce){.portrait,.portrait .live-eyes,.portrait .live-mouth,.portrait .live-cheek,.live-bip-face,.live-bip-eye,.live-bip-panel{animation:none!important}.live-bip-launch{transition:none!important}}
+/* On-scene character dialogue: tied to decisions and kept inside the mission. */
+.scene-character-voice{flex:1 1 100%;order:20;padding:11px 15px;border-radius:15px;background:#153e58;color:#f3fcff;border:1px solid #80d5ef;font-size:14px;line-height:1.5;box-shadow:0 5px 18px #0002;animation:live-panel-in .2s ease-out}
+.scene-character-voice[data-tone="happy"]{background:#154d44;border-color:#76eac0}
+.scene-character-voice[data-tone="concerned"]{background:#4a3545;border-color:#ffba99}
+.scene-character-voice[data-tone="surprised"]{background:#514625;border-color:#f8da89}
+@media(prefers-reduced-motion:reduce){.scene-character-voice{animation:none!important}}
 /* Characters act out meaningful, short reactions instead of looping the same motion. */
 .portrait .live-gesture-left,.portrait .live-gesture-right{transform-box:fill-box;transform-origin:center 80%;transition:transform .22s ease-out}
 .portrait .live-gesture-left{transform:rotate(-10deg)}
@@ -600,12 +606,15 @@ function showCharacterReaction(tone,i){
  if(state.screen!=='game'||state.ticket!==i)return;
  const text=REACTION_LINES[i]?.[tone];if(!text)return;
  const existing=document.getElementById('character-reaction-toast');if(existing)existing.remove();
+ document.querySelectorAll('.scene-character-voice').forEach(node=>node.remove());
  const portraitElement=document.querySelector('main.stage svg.portrait');
  if(portraitElement){portraitElement.classList.remove('is-happy','is-concerned','is-surprised');void portraitElement.getBoundingClientRect();portraitElement.classList.add('is-'+tone);}
- const bubble=document.createElement('div');bubble.id='character-reaction-toast';bubble.className='character-reaction-toast';bubble.dataset.tone=tone;bubble.setAttribute('role','status');bubble.textContent=text;
- document.body.appendChild(bubble);
+ const bubble=document.createElement('div');bubble.id='character-reaction-toast';bubble.className='scene-character-voice';bubble.dataset.tone=tone;bubble.setAttribute('role','status');bubble.textContent=text;
+ const sceneHeader=portraitElement?.closest('.m1-head,.m2-head,.m3-head,.m6-head,.m4-head,.m5-head,.m7-head,.m8-head')||portraitElement?.parentElement?.parentElement;
+ if(sceneHeader){sceneHeader.appendChild(bubble)}else{bubble.className='character-reaction-toast';document.body.appendChild(bubble)}
  bipMood=tone;
- bipMoment=tone==='happy'?'🤖 БІП: Вдале рішення!':tone==='concerned'?'🤖 БІП: Перевіримо ще раз.':'🤖 БІП: Нові обставини!';
+ const actualFeedback=document.querySelector('main.stage [id$="-feedback"]')?.textContent?.trim();
+ bipMoment=tone==='happy'?'🤖 БІП: Вдале рішення!':tone==='concerned'?(actualFeedback?'🤖 '+actualFeedback.slice(0,115):'🤖 БІП: Перевіримо ще раз.'):'🤖 БІП: Нові обставини!';
  updateBip();
  clearTimeout(reactionTimer);reactionTimer=setTimeout(()=>{bubble.remove();portraitElement?.classList.remove('is-'+tone);bipMoment='';bipMood='';updateBip()},2900);
 }
