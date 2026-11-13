@@ -936,7 +936,7 @@ root.addEventListener('click',event=>{
 function m1State(){return state.m1||(state.m1={stage:'intro',view:'shared',copyMade:false,edited:false,submitted:false,mistakes:0,notes:''})}
 const m1Stages={intro:4,diagnose:17,viewer:31,copy:46,edit:60,newmessage:73,delivery:88,done:100};
 function m1Chat(t){return `<section class="m1-call"><strong>💬 ОЛЯ · СЛУЖБА ПІДТРИМКИ</strong>${safe(t)}</section>`}
-function m1Bip(t){return `<aside class="m1-bip">🤖 <strong>БІП радить:</strong> ${safe(t)}</aside>`}
+function m1Bip(t){return ''}
 function m1Drive(mode){const m=m1State();let inner='';
  const fileHeader=`<div class="m1-file-row"><span class="m1-file-icon">📄</span><div><strong>Правила безпеки</strong><div style="font-size:12px;color:#46617e">Власник: учителька · Доступ: Переглядач</div></div><span class="m1-chip">👁 Лише перегляд</span></div>`;
  if(mode==='viewer')inner=`<div class="m1-file">${fileHeader}<div class="m1-doc"><strong>Правила безпеки</strong><p>1. Не повідомляй пароль іншим.</p><p>2. Перевіряй підозрілі повідомлення.</p></div><div class="m1-actions"><button data-m1="edit-original">✏️ Редагувати оригінал</button><button class="primary" data-m1="make-copy">📑 Створити копію</button></div><div style="font-size:12px;color:#516b85">Власник дозволив створювати копії документа.</div></div>`;
@@ -977,7 +977,7 @@ root.addEventListener('click',e=>{const b=e.target.closest('[data-m1]');if(b)m1A
 function m2State(){return state.m2||(state.m2={stage:'intro',hostOn:true,selectedPrinter:'',sent:false,triedOffline:false,mistakes:0})}
 const m2Stages={intro:4,diagnose:18,printer:36,sent:52,message:65,offline:79,repair:89,reprint:95,done:100};
 function m2Chat(t){return `<div class="m2-call"><strong>💬 МАКСИМ · ЗАЯВКА 02</strong>${safe(t)}</div>`}
-function m2Tip(t){return `<aside class="m2-tip">🤖 <strong>БІП допомагає:</strong> ${safe(t)}</aside>`}
+function m2Tip(t){return ''}
 function m2Network(mode){const m=m2State();let host=m.hostOn;let disconnected=!host;
  let info='Комп’ютер Б надсилає завдання через локальну мережу на комп’ютер А. Принтер під’єднаний до комп’ютера А.';
  let panel='';
@@ -1019,7 +1019,7 @@ root.addEventListener('click',e=>{const b=e.target.closest('[data-m2]');if(b)m2A
 /* Integrated browser mission №06. All screens remain within the parent game. */
 function m6State(){return state.m6||(state.m6={stage:'intro',tab:'new',visited:false,firstDone:false,mistakes:0})}
 const m6Step={intro:0,diagnose:13,tab:33,bridge:52,second:68,back:85,done:100};
-function m6Bip(msg){return `<div class="m6-bip">🤖 <strong>БІП підказує:</strong> ${safe(msg)}</div>`}
+function m6Bip(msg){return ''}
 function m6Chat(msg){return `<div class="m6-talk"><strong>💬 АРТЕМ · ЗВЕРНЕННЯ</strong>${safe(msg)}</div>`}
 function m6Browser(same=false){const m=m6State(),old=same?!m.visited:m.tab==='article';return `<section class="m6-browser" aria-label="Навчальний віртуальний браузер"><div class="m6-bar"><span class="m6-dots" aria-hidden="true">● ● ●</span>${same?`<button class="m6-tab" aria-selected="true" disabled>🌳 Світ тварин</button>`:`<button class="m6-tab" aria-selected="${old}" data-m6="tab-article">🌳 Світ тварин</button><button class="m6-tab" aria-selected="${!old}" data-m6="tab-new">🎬 Відео про лисиць</button>`}</div><div class="m6-toolbar"><button class="m6-back" data-m6="back" ${!same||!m.visited?'disabled':''} aria-label="Повернутися до попередньої вебсторінки">←</button><div class="m6-address">${same?(m.visited?'навчальний-сайт/лисиці':'навчальний-сайт/тварини'):(old?'навчальний-сайт/тварини':'навчальний-сайт/відео')}</div></div><div class="m6-page"><div class="tiny">🌐 НАВЧАЛЬНА ІМІТАЦІЯ БРАУЗЕРА</div><h3>${same?(m.visited?'Поведінка лисиць':'Світ тварин'):(old?'Світ тварин':'Цікаве відео')}</h3><p>${same?(m.visited?'Ти відкрив іншу сторінку в тій самій вкладці.':'Зараз відкрита початкова стаття про тварин.'):(old?'Знайдено попередню сторінку! Вона залишалася у першій вкладці.':'Посилання відкрило другу вкладку. Перша сторінка не зникла.')}</p>${same&&!m.visited&&m.stage==='second'?'<button class="m6-action" data-m6="follow">Відкрити статтю про лисиць →</button>':''}</div></section>`}
 function mission6(){const m=m6State();let body='',hint='';switch(m.stage){
@@ -1056,7 +1056,7 @@ const M3_FLAGS=[
  ['prize','Обіцяють подарунок за участь у розіграші, якого не було'],
  ['private','Просять домашню адресу й особисті дані'],
  ['hurry','Кваплять із відповіддю'],
- ['nice','У повідомленні є ввічливе привітання']
+ ['nice','Відправник вітається на початку повідомлення']
 ];
 const M3_SAFE=[
  ['stop','Не відповідати незнайомцю й не надсилати більше даних'],
@@ -1068,7 +1068,7 @@ const M3_SAFE=[
 function m3State(){return state.m3||(state.m3={stage:'intro',flags:[],safeActions:[],mistakes:0})}
 const M3_PROGRESS={intro:5,flags:19,advice:36,newMessage:57,followup:72,review:89,done:100};
 function m3Messenger(second=false){const first='Вітаю! 🎁 Ти виграла чудовий подарунок! Надішли домашню адресу, номер телефону та прізвища батьків. Але швидше — пропозиція скоро зникне!';return `<section class="m3-chatapp" aria-label="Навчальний месенджер з вигаданим повідомленням"><div class="m3-chathead"><div><strong>💬 Повідомлення · Невідомий контакт</strong><div><small>Навчальна симуляція — листування не надсилається</small></div></div><span class="m3-pill">⚠️ Не перевірено</span></div><div class="m3-bubbles"><div class="m3-bubble warning">${safe(first)}</div>${second?'<div class="m3-bubble own">Я вже відправила свій номер телефону, але адресу не надсилала.</div><div class="m3-bubble warning">Надішли решту даних прямо зараз, інакше подарунок скасують!</div>':''}</div><div class="m3-mute">🔒 Справжніх контактів, адрес або телефонів тут вводити не потрібно.</div></section>`}
-function m3Help(msg){return `<aside class="m3-tip">🤖 <strong>БІП:</strong> ${safe(msg)}</aside>`}
+function m3Help(msg){return ''}
 function m3Person(msg){return `<div class="m3-report"><strong>💬 СОФІЙКА · ЗВЕРНЕННЯ № 03</strong><div>${safe(msg)}</div></div>`}
 function mission3(){const m=m3State();let body='',hint='';switch(m.stage){
 case 'intro':hint='У цій місії ти захищаєш особисті дані. Нічого справжнього вводити не потрібно.';body=`<h2>Операція «Несподіваний подарунок»</h2>${m3Person('Привіт! Мені написала незнайома людина й пообіцяла подарунок. Вона просить мої особисті дані. Я не знаю, як діяти!')}<p>Працюй як фахівець служби підтримки: <strong>помічай тривожні ознаки, радь безпечні дії та реагуй на нові обставини</strong>.</p>${m3Messenger()}<div class="m3-actions"><button class="btn" data-m3="begin">Перевірити повідомлення →</button></div>`;break;
@@ -1124,7 +1124,7 @@ function v4Scene(i,m){
  }
  if(i===7){
   const email=`<div class="v4-mail"><div class="v4-mail-head"><strong>✉️ Нова пошта · Невідомий відправник</strong><div><b>Тема:</b> Вітаємо, ти виграв комп’ютерну гру!</div><div>Щоб отримати подарунок, вимкни антивірус і відкрий файл.</div></div><div class="v4-mail-body"><div>🎮 Несподіваний подарунок тільки сьогодні!</div><div class="v4-attachment">📎 bonus-game.zip — підозріле вкладення (неактивне)</div><div style="font-size:12px">Навчальна симуляція: вкладення неможливо завантажити або запустити.</div></div></div>`;
-  if(m.stage==='diagnose')return `<div class="v4-scene"><div class="v4-scene-head">🔍 Перевір поштове повідомлення</div>${email}<p>Познач три небезпечні ознаки.</p><div class="v4-choices">${[['unknown','Невідомий відправник'],['gift','Несподівана обіцянка подарунка'],['disable','Прохання вимкнути захист'],['subject','У листа є тема (саме по собі це не небезпека)']].map(([id,title])=>`<button class="v4-tile" data-new="flag" data-val="${id}" aria-pressed="${m.flags.includes(id)}">${safe(title)}</button>`).join('')}</div><button class="btn" data-new="confirm-flags">Перевірити ознаки ✓</button></div>`;
+  if(m.stage==='diagnose')return `<div class="v4-scene"><div class="v4-scene-head">🔍 Перевір поштове повідомлення</div>${email}<p>Познач три небезпечні ознаки.</p><div class="v4-choices">${[['unknown','Невідомий відправник'],['gift','Несподівана обіцянка подарунка'],['disable','Прохання вимкнути захист'],['subject','У листі зазначено тему повідомлення']].map(([id,title])=>`<button class="v4-tile" data-new="flag" data-val="${id}" aria-pressed="${m.flags.includes(id)}">${safe(title)}</button>`).join('')}</div><button class="btn" data-new="confirm-flags">Перевірити ознаки ✓</button></div>`;
   if(m.stage==='action')return `<div class="v4-scene"><div class="v4-scene-head">🛡️ Безпечна відповідь на лист</div>${email}<p>Що порадиш Богданові?</p><div class="v4-choices">${v4Btn('🚫 Не відкривати вкладення, не вимикати захист, повідомити дорослого','advice','safe')}${v4Btn('📦 Відкрити файл і перевірити, чи справжній подарунок','advice','open')}${v4Btn('🔓 Тимчасово вимкнути захист, а після повернути','advice','disable')}</div></div>`;
   if(m.stage==='follow')return `<div class="v4-scene"><div class="v4-scene-head">⚠️ Підозріле вікно просить пароль</div><div class="v4-mail"><div class="v4-mail-body"><strong>🔒 «Для підтвердження призу введіть пароль»</strong><div class="v4-attachment">Поле пароля вимкнене — справжні паролі не вводимо.</div></div></div><p>Богдан уже відкрив файл. Обери три безпечні дії після появи такого вікна.</p><div class="v4-choices">${[['stop','Не вводити пароль і закрити підозрілий запит'],['adult','Негайно звернутися до довіреного дорослого або шкільного фахівця'],['scan','Попросити перевірити пристрій захисними засобами'],['password','Ввести пароль, щоб прибрати вікно']].map(([id,label])=>`<button class="v4-tile" data-new="pick" data-val="${id}" aria-pressed="${m.picked.includes(id)}">${safe(label)}</button>`).join('')}</div><button class="btn" data-new="confirm">Перевірити безпечний план ✓</button></div>`;
  }
