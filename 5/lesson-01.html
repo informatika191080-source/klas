@@ -78,7 +78,7 @@ body.decision-enhanced .card [data-safe],body.decision-enhanced .card [data-kind
   let wrong=-1;
   if(b.dataset.check==="safe"){const fields=[...document.querySelectorAll("[data-safe]")];wrong=fields.findIndex(x=>x.value!=="yes");if(wrong<0)stage=1}
   else if(b.dataset.check==="kind"){const values=["Явище","Предмет","Явище","Предмет"];const fields=[...document.querySelectorAll("[data-kind]")];wrong=fields.findIndex((x,i)=>x.value!==values[i]);if(wrong<0)stage=2}
-  else if(b.dataset.check==="catalog"){wrong=$("material").value==="Гума"&&$("color").value==="Помаранчевий"?-1:0;if(wrong<0)stage=3}
+  else if(b.dataset.check==="catalog"){wrong=$("material").value==="Гума"&&["Помаранчевий","Зелений","Синій"].includes($("color").value)?-1:0;if(wrong<0)stage=3}
   else return;
   if(wrong>=0){errors++;save();const coach=b.dataset.check==="safe"?"КІБЕР":b.dataset.check==="kind"?"ПІКСЕЛЬ":"БАЙТ";msg(coach+": перевір рішення у картці "+(wrong+1)+". Спробуй з’ясувати причину.",true);document.dispatchEvent(new CustomEvent("cyfro-mission-result",{detail:{ok:false,step:stage,card:wrong}}));if(errors>=2&&errors%2===0)document.dispatchEvent(new CustomEvent("cyfro-assist-offer"))}
   else{save();show();const hero=stage===1?"КІБЕР":stage===2?"ПІКСЕЛЬ":"БАЙТ";msg(hero+": "+(stage===3?"Місію завершено! Команда впоралася.":"Чудово! Відкрито наступне завдання."));document.dispatchEvent(new CustomEvent("cyfro-mission-result",{detail:{ok:true,step:stage,completed:stage===3}}))}
@@ -103,6 +103,7 @@ selectors.forEach(select=>{
    panel.querySelectorAll(".decision-choice").forEach((item,i)=>item.setAttribute("aria-pressed",String(i===index)));
    select.dispatchEvent(new Event("change",{bubbles:true}));
    if(select.id==="color"||select.id==="material")paintBall();
+   updateSimulation();
   });
   panel.appendChild(button);
  });
@@ -120,6 +121,48 @@ function paintBall(){
  document.getElementById("ball-label").textContent=(material||"Матеріал не вибрано")+" · "+(color||"Колір не вибрано");
 }
 paintBall();
+
+function updateSimulation(){
+ const stationIcons=[["🔌","🧑‍🏫"],["🥤","🧹"],["🖥️","🛡️"]];
+ document.querySelectorAll("[data-station]").forEach((node,i)=>{
+  const selection=document.querySelector('[data-safe="'+i+'"]');
+  const chosen=!!selection?.value;
+  node.dataset.selected=String(chosen);
+  const icon=node.querySelector(".station-icon");
+  const state=node.querySelector(".station-state");
+  if(icon)icon.textContent=chosen?stationIcons[i][1]:stationIcons[i][0];
+  if(state)state.textContent=chosen?"Дію вибрано · перевір результат":"Потрібне рішення";
+ });
+ const bins=[["Предмет","bin-object"],["Явище","bin-phenomenon"]];
+ const icons=["🌧️","🖥️","🚴","✏️"];
+ const names=["Дощ","Комп’ютер","Рух велосипеда","Олівець"];
+ for(const [type,id] of bins){
+  const target=document.getElementById(id);if(!target)continue;
+  target.replaceChildren();
+  const chosen=[...document.querySelectorAll("[data-kind]")].flatMap((sel,i)=>sel.value===type?[i]:[]);
+  if(!chosen.length){const e=document.createElement("span");e.className="empty-token";e.textContent="Порожньо";target.appendChild(e);continue;}
+  chosen.forEach(i=>{const e=document.createElement("span");e.className="token";e.textContent=icons[i]+" "+names[i];target.appendChild(e)});
+ }
+}
+document.querySelectorAll("[data-safe],[data-kind]").forEach(node=>node.addEventListener("change",updateSimulation));
+document.addEventListener("cyfro-mission-stage",()=>{updateSimulation();paintBall();document.querySelectorAll(".decision-options").forEach(panel=>{
+ const select=panel.previousElementSibling?.matches("select")?panel.previousElementSibling:panel.parentElement?.querySelector("select");
+ if(!select)return;
+ const opts=[...select.options].filter(o=>o.value!=="");
+ panel.querySelectorAll(".decision-choice").forEach((btn,i)=>btn.setAttribute("aria-pressed",String(select.value===opts[i]?.value)));
+})});
+document.addEventListener("cyfro-mission-result",event=>{
+ const info=event.detail||{};
+ const step=info.ok?info.step:info.step;
+ const host=document.querySelector('[data-step="'+step+'"] .mission-scene');
+ if(!host)return;
+ host.dataset.mood=info.ok?"joy":"concerned";
+ const icon=host.querySelector(".mission-avatar");
+ if(icon)icon.setAttribute("aria-label",info.ok?"Успіх":"Перевір рішення");
+ setTimeout(()=>host.dataset.mood="neutral",1900);
+});
+
+updateSimulation();
 if(selectors.length===9)document.body.classList.add("decision-enhanced");
 })();
 </script>
