@@ -209,6 +209,21 @@ document.querySelectorAll(".mission-scene[data-hero]").forEach(host=>setCharacte
 document.querySelectorAll(".hero-team [data-figure]").forEach(node=>{node.innerHTML=mascotArt(node.dataset.figure,"joy")});
 document.addEventListener("cyfro-mission-result",event=>{
  const info=event.detail||{},step=info.step;
+ const heroGroup=document.querySelector(".hero-team");
+ if(info.completed){
+  // The completion screen has no character panel, so the full team celebrates.
+  document.querySelectorAll(".hero-team [data-figure]").forEach(node=>{
+   node.innerHTML=mascotArt(node.dataset.figure,"celebrate");
+   node.classList.remove("celebrating");
+   void node.offsetWidth;
+   node.classList.add("celebrating");
+  });
+  setTimeout(()=>document.querySelectorAll(".hero-team [data-figure]").forEach(node=>{
+   node.innerHTML=mascotArt(node.dataset.figure,"joy");
+   node.classList.remove("celebrating");
+  }),2800);
+  return;
+ }
  const host=document.querySelector('[data-step="'+step+'"] .mission-scene');
  if(!host)return;
  setCharacterPose(host,info.ok?"joy":"think");
