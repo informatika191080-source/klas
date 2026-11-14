@@ -31,14 +31,18 @@ host.innerHTML='<div class="bip-invite" role="status"></div><section class="bip-
 document.body.appendChild(host);
 const panel=host.querySelector(".bip-panel"),toggle=host.querySelector(".bip-launch"),invite=host.querySelector(".bip-invite"),msg=host.querySelector(".bip-text");
 const page=lesson?"mission":grade?"grade"+grade:"home";
-let hideTimer=null;
+let hideTimer=null,offerTimer=null,lastIssue=null;
+document.addEventListener("cyfro-mission-result",e=>{
+ const d=e.detail||{};
+ lastIssue=d.ok?null:{step:Number(d.step),card:Number(d.card)};
+});
 function currentStep(){return [...document.querySelectorAll("[data-step]")].findIndex(n=>!n.hidden)}
 function answer(type){
  if(lesson){
   const i=currentStep();
-  if(i===0)msg.textContent=type==="hint"?"Перевір, чи безпечно торкатися несправного обладнання. Хто може допомогти?":type==="next"?"Розглянь три ситуації, обери безпечну дію в кожній і натисни «Перевірити».":"Ти перевіряєш робоче місце. Для кожної ситуації потрібно знайти безпечне рішення.";
-  else if(i===1)msg.textContent=type==="hint"?"Комп’ютер — предмет, а рух або дощ — явища. Порівняй із цими прикладами.":type==="next"?"Визнач тип усіх чотирьох об’єктів і натисни «Перевірити».":"Зверни увагу на різницю між предметом і явищем.";
-  else if(i===2)msg.textContent=type==="hint"?"«Матеріал» і «колір» — назви властивостей. Потрібно вказати їхні значення для м’яча.":type==="next"?"Вибери матеріал і колір м’яча, а потім перевір картку.":"Потрібно описати один предмет за двома властивостями.";
+  if(i===0)msg.textContent=type==="hint"?(lastIssue?.step===0&&lastIssue.card===0?"Поміркуй, хто повинен перевіряти пошкоджений кабель.":lastIssue?.step===0&&lastIssue.card===1?"Що станеться, якщо напій проллється біля клавіатури?":lastIssue?.step===0&&lastIssue.card===2?"Хто має вирішувати, що робити, якщо комп’ютер несправний?":"Перевір, чи безпечно торкатися несправного обладнання. Хто може допомогти?"):type==="next"?"Розглянь три ситуації, обери безпечну дію в кожній і натисни «Перевірити».":"Ти перевіряєш робоче місце. Для кожної ситуації потрібно знайти безпечне рішення.";
+  else if(i===1)msg.textContent=type==="hint"?(lastIssue?.step===1?"У картці, яку потрібно перевірити, названо "+["дощ","комп’ютер","рух велосипеда","олівець"][lastIssue.card]+". Це річ чи явище?":"Чи можна доторкнутися до предмета? А що означає явище?"):type==="next"?"Визнач тип усіх чотирьох об’єктів і натисни «Перевірити».":"Зверни увагу на різницю між предметом і явищем.";
+  else if(i===2)msg.textContent=type==="hint"?"Згадай, із чого зазвичай виготовляють пружні м’ячі. А колір моделі можна обрати на свій смак.":type==="next"?"Вибери матеріал і колір м’яча, а потім перевір картку.":"Потрібно описати один предмет за двома властивостями.";
   else msg.textContent="Вітаю! Ти завершив місію. Можеш повернутися до інших завдань.";
  }else if(grade){
   msg.textContent=document.querySelector(".topic a.action")?(type==="hint"?"Зверни увагу на назву місії та її завдання.":type==="next"?"Натисни кнопку місії, щоб відкрити навчальну пригоду.":"Тут ти обираєш навчальні місії свого класу."): "Це сторінка твого класу. Щоб повернутися на головну, скористайся кнопкою вгорі.";
@@ -54,10 +58,14 @@ host.addEventListener("click",e=>{const button=e.target.closest("[data-bip-answe
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!panel.hidden)close()});
 invite.textContent=lesson?"Я БІП! Потрібна підказка? Натисни на мене.":grade?"Привіт! Я БІП, твій цифровий помічник.":"Привіт! Я БІП. Допоможу обрати твій клас.";
 document.addEventListener("cyfro-assist-offer",()=>{
- if(!panel.hidden)return;
- invite.textContent="Складно? Натисни на мене — підкажу, як міркувати.";
- invite.hidden=false;clearTimeout(hideTimer);
- hideTimer=setTimeout(()=>invite.hidden=true,6500);
+ clearTimeout(offerTimer);
+ // Delay the invitation until the mission's existing result popup has disappeared.
+ offerTimer=setTimeout(()=>{
+  if(!panel.hidden||document.hidden)return;
+  invite.textContent="Складно? Натисни на мене — підкажу, як міркувати.";
+  invite.hidden=false;clearTimeout(hideTimer);
+  hideTimer=setTimeout(()=>invite.hidden=true,6200);
+ },5800);
 });
 try{
  if(sessionStorage.getItem("cyfro-bip-invite-"+page))invite.hidden=true;
