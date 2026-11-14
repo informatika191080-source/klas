@@ -66,10 +66,16 @@ body.decision-enhanced .card [data-safe],body.decision-enhanced .card [data-kind
 (function(){
  const $=id=>document.getElementById(id);
  const storageKey="cyfropomich5_lesson01_v1";
- let stage=0,errors=0;
- try{const saved=JSON.parse(localStorage.getItem(storageKey)||"null");if(saved&&Number.isInteger(saved.stage)&&saved.stage>=0&&saved.stage<=3){stage=saved.stage;errors=Number(saved.errors)||0;}}catch(e){}
+ let stage=0,errors=0,storedChoices=null;
+ try{const saved=JSON.parse(localStorage.getItem(storageKey)||"null");if(saved&&Number.isInteger(saved.stage)&&saved.stage>=0&&saved.stage<=3){stage=saved.stage;errors=Number(saved.errors)||0;storedChoices=Array.isArray(saved.picks)?saved.picks:null;}}catch(e){}
+ const missionSelects=[...document.querySelectorAll("main select")];
+ if(storedChoices)missionSelects.forEach((node,i)=>{
+  const saved=storedChoices[i];
+  if(typeof saved==="string"&&[...node.options].some(o=>o.value===saved))node.value=saved;
+ });
  let timer;
- function save(){try{localStorage.setItem(storageKey,JSON.stringify({stage,errors}))}catch(e){}}
+ function save(){try{localStorage.setItem(storageKey,JSON.stringify({stage,errors,picks:missionSelects.map(node=>node.value)}))}catch(e){}}
+ document.querySelector("main").addEventListener("change",event=>{if(event.target.matches("select"))save()});
  function show(){document.querySelectorAll("[data-step]").forEach(e=>e.hidden=Number(e.dataset.step)!==stage);document.querySelectorAll("#progress i").forEach((e,i)=>{e.className=i<stage?"done":i===stage?"current":""});$("summary").textContent="Повторні спроби: "+errors+".";}
  function msg(text,error){clearTimeout(timer);$("message").textContent=text;$("note").classList.toggle("error",!!error);$("note").hidden=false;timer=setTimeout(()=>$("note").hidden=true,5500)}
  $("close").addEventListener("click",()=>{clearTimeout(timer);$("note").hidden=true});
