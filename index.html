@@ -370,7 +370,7 @@ document.addEventListener("click",e=>{
  const item=TRANSFER_CHECKS[i];if(!item||!Number.isInteger(index)||index<0||index>=item.choices.length)return;
  showGameNotice({kind:index===item.good?"complete":"followup",title:index===item.good?"✅ Застосував знання!":"🔎 Поміркуй іще",text:item.why,actions:[],duration:7800});
 });
-root.addEventListener("click",e=>{
+document.addEventListener("click",e=>{
  const button=e.target.closest("[data-transfer-check]");if(!button)return;
  const i=Number(button.dataset.transferCheck);
  showTransferQuestion(i);
