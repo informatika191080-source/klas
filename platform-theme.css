@@ -24,6 +24,10 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #ffe
 .mission-scene[data-mood="concerned"]{border-color:#ffbe84;background:linear-gradient(130deg,#544058,#263356)}
 .mission-scene[data-mood="think"]{border-color:#ffbe84;background:linear-gradient(130deg,#544058,#263356)}
 .mission-scene[data-mood="surprise"]{border-color:#ffd98b}
+
+.cp-mission .mission-scene[data-mood="think"] .mission-avatar{animation:mission-think .55s ease-in-out 2}
+.cp-mission .hero-team .team-figure.celebrating{animation:cp-party .48s ease-in-out 5}
+@keyframes cp-party{0%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(-12px) rotate(-8deg)}70%{transform:translateY(-7px) rotate(8deg)}}
 @keyframes cp-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes cp-hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes cp-glow{0%,100%{filter:drop-shadow(0 0 2px #66eac055)}50%{filter:drop-shadow(0 0 10px #66eac099)}}
