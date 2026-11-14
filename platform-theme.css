@@ -1,0 +1,71 @@
+/* ЦифроПоміч · єдина візуальна система платформи.
+   Палітра, панелі, елементи керування та анімації узгоджені з базовою грою. */
+:root{--cp-bg:#0a1023;--cp-card:#17233e;--cp-card-2:#1b2b49;--cp-line:#ffffff22;--cp-muted:#b1c1dd;--cp-accent:#69efd3;--cp-blue:#81adff;--cp-gold:#ffd98b;--cp-glow:#48e3db}
+html{scroll-behavior:auto}
+body{color:#f2f7ff;background:radial-gradient(ellipse 70% 30% at 80% 0,#39387275,transparent),radial-gradient(ellipse 55% 40% at 0% 60%,#087d7960,transparent),#0a1023;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+button,a,select{touch-action:manipulation}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #ffe19b;outline-offset:3px}
+:is(.hero,.panel,.step,.topic,.grade,.card){box-shadow:0 15px 55px #0003}
+:is(.hero,.panel,.step){background:linear-gradient(145deg,#192843f5,#121c32f8);border:1px solid var(--cp-line);border-radius:26px}
+:is(.card,.topic){background:linear-gradient(155deg,#213754,#192840);border:1px solid #ffffff30;border-radius:18px}
+:is(.button,.btn,.action){background:linear-gradient(120deg,#74f5d5,#8baeff);color:#07152b;border:0;border-radius:15px;box-shadow:0 9px 32px #36e6bd2c;font-weight:900;text-decoration:none}
+:is(.button.secondary,.btn.secondary){background:#263555;color:#fff;border:1px solid #ffffff30;box-shadow:none}
+:is(.eyebrow,.meta,.caps){color:var(--cp-accent)}
+:is(.guide,.mission-scene){background:linear-gradient(120deg,#23395e,#182b48);border:1px solid #7badff66;border-radius:18px}
+:is(.step,.panel){overflow:visible}
+:is(.note,.game-notice){background:linear-gradient(145deg,#172f55,#13223f);border:1px solid #81adff;border-radius:18px;box-shadow:0 20px 55px #0009}
+:is(.note.error,.game-notice[data-kind="error"]){background:#503748;border-color:#ffa98f}
+:is(.workstation,.scene-bin){background:#111d37;border-color:#526fa8}
+:is(.decision-choice,.card select){background:#172c4c;border-color:#63799e;color:#f1f7ff}
+.decision-choice:hover{border-color:#a3f2de;background:#234c65}
+.decision-choice[aria-pressed="true"]{background:linear-gradient(130deg,#215d5d,#253d70);border-color:#84eed4}
+.mission-avatar{filter:drop-shadow(0 7px 14px #0af3dd18)}
+.mission-scene[data-mood="joy"]{border-color:#69efd3;background:linear-gradient(130deg,#1d5855,#223764)}
+.mission-scene[data-mood="concerned"]{border-color:#ffbe84;background:linear-gradient(130deg,#544058,#263356)}
+.mission-scene[data-mood="think"]{border-color:#ffbe84;background:linear-gradient(130deg,#544058,#263356)}
+.mission-scene[data-mood="surprise"]{border-color:#ffd98b}
+@keyframes cp-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cp-hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes cp-glow{0%,100%{filter:drop-shadow(0 0 2px #66eac055)}50%{filter:drop-shadow(0 0 10px #66eac099)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+/* Mission-only rules: preserve stable gameplay and layout, update visual language. */
+body:has(.cp-mission) .wrap{max-width:1150px;padding:17px 20px 40px}
+.cp-mission .hero{position:relative;min-height:220px;display:grid;grid-template-columns:minmax(0,1fr) 250px;align-items:center;gap:16px;padding:30px 37px;overflow:hidden;background:linear-gradient(130deg,#1e3152,#14213c 68%,#164851)}
+.cp-mission .hero::after{content:"";position:absolute;pointer-events:none;inset:0;background:radial-gradient(circle at 85% 35%,#72cfff25,transparent 32%)}
+.cp-mission .hero-content{position:relative;z-index:1}
+.cp-mission h1{font-size:clamp(29px,5vw,52px);line-height:1.12;letter-spacing:-.04em;margin:10px 0}
+.cp-mission .hero p{color:#c3d3ed;font-size:16px;max-width:620px}
+.cp-mission .hero-team{position:relative;z-index:1;display:flex;justify-content:center;align-items:end;gap:0;min-height:160px}
+.cp-mission .hero-team .team-figure{width:96px;height:130px;display:grid;align-items:end;filter:drop-shadow(0 12px 10px #0007);animation:cp-hover 4.2s ease-in-out infinite}
+.cp-mission .hero-team .team-figure:nth-child(2){animation-delay:-1.1s;z-index:2;transform:scale(1.07)}
+.cp-mission .hero-team .team-figure:nth-child(3){animation-delay:-2.1s}
+.cp-mission .hero-team svg{width:100%;height:100%}
+.cp-mission header{display:flex;align-items:center;gap:13px;min-height:63px;padding:0 0 16px}
+.cp-mission header .cp-brand{display:flex;align-items:center;gap:12px;font-size:21px;letter-spacing:-.03em}
+.cp-mission header .cp-brand-icon{display:grid;place-items:center;background:linear-gradient(135deg,#70f5d2,#88a8ff);width:49px;height:49px;border-radius:15px;color:#0b1b2d;font-size:25px}
+.cp-mission header .cp-brand small{display:block;color:#b1c1dd;font-size:11px;letter-spacing:.08em}
+.cp-mission header .back{margin-left:auto;padding:11px 15px;border-radius:14px;border:1px solid #ffffff30;background:#ffffff12;color:#f2f7ff}
+.cp-mission .progress{margin:18px 0 17px;gap:10px}
+.cp-mission .progress i{height:11px;background:#263a60;box-shadow:inset 0 2px 4px #0004}
+.cp-mission .progress i.done{background:linear-gradient(90deg,#57e2a5,#79dbf9)}
+.cp-mission .progress i.current{background:linear-gradient(90deg,#ffd98b,#f2bde8);animation:cp-glow 2.5s ease-in-out infinite}
+.cp-mission .step{padding:clamp(19px,3.4vw,32px);animation:cp-rise .3s ease-out}
+.cp-mission .step[hidden]{display:none}
+.cp-mission .step h2{font-size:clamp(23px,3.3vw,34px);letter-spacing:-.035em}
+.cp-mission .choices{gap:13px}
+.cp-mission .card{padding:17px}
+.cp-mission .mission-scene{padding:13px 18px;margin:0 0 18px;min-height:114px}
+.cp-mission .mission-scene .mission-avatar{min-width:90px}
+.cp-mission .mission-scene .mission-avatar svg{width:85px;height:97px}
+.cp-mission .mission-scene b{font-size:17px}
+.cp-mission .mission-scene small{font-size:13px;color:#c6d8ef}
+.cp-mission .workstation{background:#121f38;border:1px solid #6383b3;min-height:75px}
+.cp-mission .workstation[data-selected="true"]{background:#1c4659;border-color:#69efd3}
+.cp-mission .scene-bin{min-height:97px;background:#101e36;border:1px dashed #7193c7}
+.cp-mission .scene-bin .token{background:#2a4266;border-color:#81adff}
+.cp-mission .decision-choice{font-size:14px;min-height:54px;border-radius:13px}
+.cp-mission .decision-choice[aria-pressed="true"]::before{color:#81ffd5}
+.cp-mission .viz-ball svg{filter:drop-shadow(0 14px 12px #0006)}
+.cp-mission footer{color:#9eafcb}
+@media(max-width:760px){.cp-mission .hero{grid-template-columns:1fr 130px;padding:24px 22px}.cp-mission .hero-team{min-height:95px}.cp-mission .hero-team .team-figure{width:51px;height:87px}.cp-mission .mission-scene .mission-avatar{min-width:67px}.cp-mission .mission-scene .mission-avatar svg{height:75px;width:65px}}
+@media(max-width:570px){body:has(.cp-mission) .wrap{padding:10px 10px 32px}.cp-mission .hero{grid-template-columns:1fr;min-height:unset;padding:21px 19px;border-radius:23px}.cp-mission .hero-team{display:none}.cp-mission .hero p{font-size:14px}.cp-mission .step{padding:14px}.cp-mission .card{padding:12px}.cp-mission .mission-scene{gap:10px;min-height:95px;padding:9px}.cp-mission .mission-scene .mission-avatar{min-width:54px}.cp-mission .mission-scene .mission-avatar svg{width:55px;height:70px}.cp-mission .mission-scene b{font-size:14px}.cp-mission .mission-scene small{font-size:11px}.cp-mission header .cp-brand{font-size:17px}.cp-mission header .cp-brand-icon{width:42px;height:42px}.cp-mission header .back{font-size:12px;padding:9px}.cp-mission .decision-choice{font-size:13px}}
