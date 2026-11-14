@@ -81,7 +81,8 @@ selectors.forEach(select=>{
   });
   panel.appendChild(button);
  });
- select.after(panel);
+ const parentLabel=select.closest("label");
+ if(parentLabel)parentLabel.after(panel);else select.after(panel);
  select.closest(".card")?.classList.add("interactive-choice");
 });
 function paintBall(){
