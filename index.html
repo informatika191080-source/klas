@@ -356,6 +356,7 @@ function showTransferQuestion(i){
  const item=TRANSFER_CHECKS[i];if(!item)return;
  showGameNotice({kind:"info",title:"🧠 Перевір себе · "+item.source,text:item.q,actions:[],duration:0});
  const popup=document.getElementById("game-notice");if(!popup)return;
+ if(popup.querySelector("[data-transfer-answer]"))return; // Same open question: never append duplicate options.
  const options=document.createElement("div");options.className="notice-actions";
  item.choices.forEach((choice,index)=>{
   const b=document.createElement("button");b.type="button";b.dataset.transferAnswer=String(index);b.dataset.transferMission=String(i);b.textContent=choice;options.appendChild(b);
