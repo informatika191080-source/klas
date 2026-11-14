@@ -53,6 +53,12 @@ host.querySelector(".bip-close").addEventListener("click",close);
 host.addEventListener("click",e=>{const button=e.target.closest("[data-bip-answer]");if(button)answer(button.dataset.bipAnswer)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!panel.hidden)close()});
 invite.textContent=lesson?"Я БІП! Потрібна підказка? Натисни на мене.":grade?"Привіт! Я БІП, твій цифровий помічник.":"Привіт! Я БІП. Допоможу обрати твій клас.";
+document.addEventListener("cyfro-assist-offer",()=>{
+ if(!panel.hidden)return;
+ invite.textContent="Складно? Натисни на мене — підкажу, як міркувати.";
+ invite.hidden=false;clearTimeout(hideTimer);
+ hideTimer=setTimeout(()=>invite.hidden=true,6500);
+});
 try{
  if(sessionStorage.getItem("cyfro-bip-invite-"+page))invite.hidden=true;
  else{sessionStorage.setItem("cyfro-bip-invite-"+page,"1");hideTimer=setTimeout(()=>invite.hidden=true,6500)}
