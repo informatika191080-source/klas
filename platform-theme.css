@@ -1,6 +1,9 @@
 /* ЦифроПоміч · єдина візуальна система платформи.
    Палітра, панелі, елементи керування та анімації узгоджені з базовою грою. */
 :root{--cp-bg:#0a1023;--cp-card:#17233e;--cp-card-2:#1b2b49;--cp-line:#ffffff22;--cp-muted:#b1c1dd;--cp-accent:#69efd3;--cp-blue:#81adff;--cp-gold:#ffd98b;--cp-glow:#48e3db}
+.brand-mark,.brand-icon{background:linear-gradient(135deg,#70f5d2,#88a8ff)!important;color:#081a29;border-radius:15px;border:0;box-shadow:0 8px 30px #36e6bd2c}
+.brand small,.brand-caption{color:#b1c1dd}
+.brand,.brand-title{color:#f2f7ff;font-weight:900}
 html{scroll-behavior:auto}
 body{color:#f2f7ff;background:radial-gradient(ellipse 70% 30% at 80% 0,#39387275,transparent),radial-gradient(ellipse 55% 40% at 0% 60%,#087d7960,transparent),#0a1023;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
 button,a,select{touch-action:manipulation}
