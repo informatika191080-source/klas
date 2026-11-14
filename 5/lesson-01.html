@@ -11,7 +11,7 @@
 .decision-choice[aria-pressed="true"]::before{content:"✓";color:#b7ffda}
 .decision-choice:focus-visible{outline:3px solid #ffd880;outline-offset:2px}
 .card label{font-weight:650}
-.card [data-safe],.card [data-kind],.card #material,.card #color{display:none}
+body.decision-enhanced .card [data-safe],body.decision-enhanced .card [data-kind],body.decision-enhanced .card #material,body.decision-enhanced .card #color{display:none}
 .activity-heading{font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:850;color:#a6eccd}
 .card.interactive-choice{border-color:#5a92ad;transition:border-color .2s}
 .card.interactive-choice:has(.decision-choice[aria-pressed="true"]){border-color:#73e7b7}
@@ -95,6 +95,7 @@ function paintBall(){
  document.getElementById("ball-label").textContent=(material||"Матеріал не вибрано")+" · "+(color||"Колір не вибрано");
 }
 paintBall();
+if(selectors.length===9)document.body.classList.add("decision-enhanced");
 })();
 </script>
 <script src="../assistant.js" defer></script></body></html>
