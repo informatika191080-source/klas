@@ -338,7 +338,44 @@ const LESSON_RECAP=[
  {why:'Папка зберігається на комп’ютері А, а локальна копія — окремий файл.',do:'Дочекатися доступу до А, перевірити дозволи й передати змінену копію без втрати інших версій.',avoid:'Не припускати автоматичної синхронізації та не перезаписувати чужу роботу без дозволу.'},
  {why:'Невідомий відправник, підозріле вкладення та вимога вимкнути захист небезпечні.',do:'Не вводити пароль; звернутися до дорослого або фахівця й перевірити пристрій.',avoid:'Не відкривати підозрілих вкладень і не вимикати захист на вимогу листа.'}
 ];
-function lessonRecap(i){const x=LESSON_RECAP[i];return `<section class="lesson-recap" aria-label="Пам’ятка агента"><h3>🧠 Пам’ятка агента: що ми з’ясували?</h3><p><strong>Причина:</strong> ${x.why}</p><p><strong>Безпечна дія:</strong> ${x.do}</p><p><strong>Чого не робити:</strong> ${x.avoid}</p></section>`;}
+
+/* Original transfer-of-learning checks aligned to topics §6–§10 and practical work 2.
+   Optional, ungraded, and deliberately different from the scored mission questions. */
+const TRANSFER_CHECKS=[
+ {source:"§ 6 · Файли та папки",q:"Ти скопіював документ у папку свого проєкту. Що сталося з початковим файлом?",choices:["Він залишився у початковій папці, а копія з’явилася в іншій.","Він зник із початкової папки."],good:0,why:"Копіювання створює додатковий примірник. Переміщення — інша операція."},
+ {source:"§ 7 · Локальна мережа",q:"Принтер під’єднано до комп’ютера вчителя й відкрито для спільного використання. Від чого залежить мережевий друк за цією схемою?",choices:["Лише від того, чи працює інтернет.","Від доступності комп’ютера, який надає принтер, і мережевого з’єднання."],good:1,why:"У цій схемі комп’ютер з під’єднаним принтером надає ресурс іншим комп’ютерам локальної мережі."},
+ {source:"§ 9 · Безпека в інтернеті",q:"У чаті незнайомець просить повідомити адресу друга. Що порадиш?",choices:["Не передавати чужі дані та розповісти довіреному дорослому.","Надіслати адресу, адже це не мої дані."],good:0,why:"Особисті дані інших людей теж потрібно захищати. Про підозрілі звернення варто повідомляти дорослих."},
+ {source:"§ 10 · Авторське право",q:"Автор дозволив використати зображення за умови вказати ім’я та джерело. Що потрібно зробити перед публікацією презентації?",choices:["Вказати лише назву презентації.","Перевірити умови дозволу та зазначити авторство й джерело."],good:1,why:"Зазначення джерела не замінює перевірки дозволу. Тут дозвіл прямо передбачає обидва елементи підпису."},
+ {source:"§ 10 · Пошук; практична робота 2",q:"Ти знайшов текст казки для навчального документа. Які відомості допоможуть надалі знайти першоджерело?",choices:["Адреса сторінки, де знайдено текст.","Лише дата виконання вправи."],good:0,why:"Адреса джерела допомагає повторно відкрити матеріал і перевірити його походження."},
+ {source:"§ 8 · Вебсторінки та браузер",q:"Ти перейшов за посиланням у тій самій вкладці й хочеш повернути попередню сторінку. Що спробуєш?",choices:["Закрити браузер і видалити історію.","Скористатися кнопкою «Назад», якщо сторінка є в історії вкладки."],good:1,why:"Кнопка «Назад» повертає до попереднього запису історії вкладки, якщо він доступний."},
+ {source:"§ 7 · Мережеві ресурси; § 6 · Копії",q:"Мережеву папку тимчасово не видно, але на твоєму пристрої є локальна копія. Чи з’являться її зміни у спільній папці самі?",choices:["Не обов’язково: треба перевірити спосіб синхронізації та права доступу.","Так, будь-який локальний файл завжди оновлює мережевий."],good:0,why:"Звичайна локальна копія не означає автоматичної синхронізації. Перед передаванням файла перевір дозвіл."},
+ {source:"§ 9 · Небезпеки інтернету",q:"Невідомий лист містить вкладення та прохання ввести пароль. Який перший безпечний крок?",choices:["Ввести пароль, щоб закрити вікно.","Не вводити пароль; припинити взаємодію та звернутися до довіреного дорослого."],good:1,why:"Несподівані запити паролів і невідомі вкладення потребують обережності. Справжні паролі в навчальній грі не вводять."}
+];
+function showTransferQuestion(i){
+ if(state.screen!=='game'||i!==state.ticket||!missionStatus(i).closed)return;
+ const item=TRANSFER_CHECKS[i];if(!item)return;
+ showGameNotice({kind:"info",title:"🧠 Перевір себе · "+item.source,text:item.q,actions:[],duration:0});
+ const popup=document.getElementById("game-notice");if(!popup)return;
+ const options=document.createElement("div");options.className="notice-actions";
+ item.choices.forEach((choice,index)=>{
+  const b=document.createElement("button");b.type="button";b.dataset.transferAnswer=String(index);b.dataset.transferMission=String(i);b.textContent=choice;options.appendChild(b);
+ });
+ popup.appendChild(options);
+}
+document.addEventListener("click",e=>{
+ const answer=e.target.closest("#game-notice [data-transfer-answer]");if(!answer)return;
+ const i=Number(answer.dataset.transferMission),index=Number(answer.dataset.transferAnswer);
+ if(!Number.isInteger(i)||i!==state.ticket||state.screen!=="game"||!missionStatus(i).closed)return;
+ const item=TRANSFER_CHECKS[i];if(!item||!Number.isInteger(index)||index<0||index>=item.choices.length)return;
+ showGameNotice({kind:index===item.good?"complete":"followup",title:index===item.good?"✅ Застосував знання!":"🔎 Поміркуй іще",text:item.why,actions:[],duration:7800});
+});
+root.addEventListener("click",e=>{
+ const button=e.target.closest("[data-transfer-check]");if(!button)return;
+ const i=Number(button.dataset.transferCheck);
+ showTransferQuestion(i);
+});
+
+function lessonRecap(i){const x=LESSON_RECAP[i];return `<section class="lesson-recap" aria-label="Пам’ятка агента"><h3>🧠 Пам’ятка агента: що ми з’ясували?</h3><p><strong>Причина:</strong> ${x.why}</p><p><strong>Безпечна дія:</strong> ${x.do}</p><p><strong>Чого не робити:</strong> ${x.avoid}</p><button type="button" class="btn ghost no-print" data-transfer-check="${i}">🧠 Перевір себе в новій ситуації</button><p class="tiny">Необов’язкова самоперевірка. Бали й диплом не змінюються.</p></section>`;}
 
 const PEOPLE=[
  {name:'Оля',role:'Учениця, працює зі спільними документами',personality:'Любить усе впорядковувати й не хоче випадково змінити чужий файл.',hair:'#64354b',shirt:'#ffb45c',skin:'#f2b68d',type:0},
