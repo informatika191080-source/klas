@@ -4,7 +4,7 @@
 if(document.getElementById("cyfro-assistant"))return;
 const rootBase=new URL(".",document.currentScript.src).href;
 const path=location.pathname;
-const lesson=/\/5\/lesson-01\.html$/.test(path);
+const lesson=/\/5\/lesson-\d+\.html$/.test(path);
 const grade=path.match(/\/([5-9])\/(?:index\.html)?$/)?.[1];
 const css=[
 '#cyfro-assistant{position:fixed;z-index:2000;right:14px;bottom:max(14px,env(safe-area-inset-bottom));font:14px/1.5 system-ui,sans-serif;color:#143550}',
@@ -37,14 +37,21 @@ const host=document.createElement("aside");host.id="cyfro-assistant";
 host.innerHTML='<div class="bip-invite" role="status"></div><section class="bip-panel" aria-label="Допомога БІПа" hidden><div class="bip-top"><span aria-hidden="true">🤖</span><strong>БІП допомагає</strong><button type="button" class="bip-close" aria-label="Закрити">×</button></div><p class="bip-text"></p><div class="bip-choices"><button type="button" data-bip-answer="help">❓ Щось незрозуміло</button><button type="button" data-bip-answer="next">🧭 Що робити далі?</button><button type="button" data-bip-answer="hint">💡 Дай підказку</button><a class="bip-home" href="'+rootBase+'">🏠 На головну</a></div></section><button type="button" class="bip-launch" aria-expanded="false" aria-label="Відкрити цифрового помічника">🤖</button>';
 document.body.appendChild(host);
 const panel=host.querySelector(".bip-panel"),toggle=host.querySelector(".bip-launch"),invite=host.querySelector(".bip-invite"),msg=host.querySelector(".bip-text");
-const page=lesson?"mission":grade?"grade"+grade:"home";
+const page=lesson?"mission:"+path:grade?"grade"+grade:"home";
 let hideTimer=null,offerTimer=null,lastIssue=null;
+document.addEventListener("cyfro-mission-stage",()=>{
+ clearTimeout(offerTimer);lastIssue=null;
+ if(!panel.hidden&&window.CyfroMission)answer("help");
+});
 document.addEventListener("cyfro-mission-result",e=>{
  const d=e.detail||{};
  lastIssue=d.ok?null:{step:Number(d.step),card:Number(d.card)};
 });
 function currentStep(){return [...document.querySelectorAll("[data-step]")].findIndex(n=>!n.hidden)}
 function answer(type){
+ if(window.CyfroMission&&typeof window.CyfroMission.help==="function"){
+  msg.textContent=window.CyfroMission.help(type);return;
+ }
  if(lesson){
   const i=currentStep();
   if(i===0)msg.textContent=type==="hint"?(lastIssue?.step===0&&lastIssue.card===0?"Поміркуй, хто повинен перевіряти пошкоджений кабель.":lastIssue?.step===0&&lastIssue.card===1?"Що станеться, якщо напій проллється біля клавіатури?":lastIssue?.step===0&&lastIssue.card===2?"Хто має вирішувати, що робити, якщо комп’ютер несправний?":"Перевір, чи безпечно торкатися несправного обладнання. Хто може допомогти?"):type==="next"?"Розглянь три ситуації, обери безпечну дію в кожній і натисни «Перевірити».":"Ти перевіряєш робоче місце. Для кожної ситуації потрібно знайти безпечне рішення.";
@@ -59,6 +66,7 @@ function answer(type){
 }
 function close(){panel.hidden=true;toggle.setAttribute("aria-expanded","false")}
 function open(){panel.hidden=false;invite.hidden=true;clearTimeout(hideTimer);toggle.setAttribute("aria-expanded","true");answer("help")}
+document.addEventListener("cyfro-assist-open",()=>{open();answer("next")});
 toggle.addEventListener("click",()=>panel.hidden?open():close());
 host.querySelector(".bip-close").addEventListener("click",close);
 host.addEventListener("click",e=>{const button=e.target.closest("[data-bip-answer]");if(button)answer(button.dataset.bipAnswer)});
@@ -79,3 +87,4 @@ try{
  else{sessionStorage.setItem("cyfro-bip-invite-"+page,"1");hideTimer=setTimeout(()=>invite.hidden=true,6500)}
 }catch(e){hideTimer=setTimeout(()=>invite.hidden=true,6500)}
 })();
+
