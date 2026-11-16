@@ -147,9 +147,8 @@ $('check').addEventListener('click',()=>{
  if(missing.length){const failureKey=state.stage+':'+missing[0].text;failures=failureKey===lastFailure?failures+1:1;lastFailure=failureKey;state.errors++;lastIssue=missing[0].text;save();pose('think');notice('Ще не все: '+lastIssue+' Перевір властивості вибраного об’єкта.',true);
  document.dispatchEvent(new CustomEvent('cyfro-mission-result',{detail:{ok:false,step:state.stage,card:0}}));
  if(failures===2)document.dispatchEvent(new CustomEvent('cyfro-assist-offer'));return;}
- const messages=['ПІКСЕЛЬ: основу налаштовано! Змінилися колір і ширина, а висота залишилася сталою.','БАЙТ: заголовок готовий! Ти змінив вміст, розмір символів і положення об’єкта.','КІБЕР: замовлення виконано! Афіша готова.'];
- const message=messages[state.stage];state.stage++;save();showStage(true);notice(message);
- document.dispatchEvent(new CustomEvent('cyfro-mission-result',{detail:{ok:true,step:state.stage,completed:state.stage===3}}));
+ const messages=['Основу налаштовано! Змінилися колір і ширина, а висота залишилася сталою.','Заголовок готовий! Ти змінив вміст, розмір символів і положення об’єкта.','Замовлення виконано! Афіша готова.'];
+ const message=messages[state.stage];window.CyfroUX.pass({role:['pixel','bayt','kiber'][state.stage],text:message,title:state.stage===2?'Афішу створено!':'Правильно!',nextLabel:state.stage===2?'Переглянути афішу →':'Далі →',onNext:()=>{state.stage++;save();showStage(true);document.dispatchEvent(new CustomEvent('cyfro-mission-result',{detail:{ok:true,step:state.stage,completed:state.stage===3}}));}});
 });
 $('help').addEventListener('click',()=>document.dispatchEvent(new CustomEvent('cyfro-assist-open')));
 window.CyfroMission={title:"Програмні об’єкти: "+scenes[Math.min(state.stage,2)][2],help(type){

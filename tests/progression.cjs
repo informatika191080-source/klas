@@ -3,13 +3,14 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
 const html=fs.readFileSync('5/game.html','utf8');
 const nodes=new Map();const node=id=>{if(!nodes.has(id))nodes.set(id,{value:'',className:'',textContent:''});return nodes.get(id);};
 const context={window:{},document:{getElementById:node},state:{screen:'game',ticket:0,step:0,results:{}},key:(i,j)=>`${i+1}-${j}`,persist(){},render(){},beep(){},toast(){}};
+let pendingAck=null;context.window.CyfroUX={pass(p){assert.equal(pendingAck,null);pendingAck=p;}};
 context.nextMissing=i=>[0,1,2].find(j=>context.state.results[context.key(i,j)]===undefined);
 vm.createContext(context);
 function block(start,end){const a=html.indexOf(start),b=html.indexOf(end,a);assert(a>=0&&b>a,start);return html.slice(a,b);}
 for(const name of ['m1State','m2State','m3State','m6State','newMissionState']){const line=html.split('\n').find(x=>x.startsWith(`function ${name}(`));vm.runInContext(line,context);}
 for(const [start,end] of [['function m1Action(','root.addEventListener'],['function m2Action(','root.addEventListener'],['function m6Action(','root.addEventListener'],['function m3Action(','/* Integrated mission engine'],['function newMissionAction(','root.addEventListener']])vm.runInContext(block(start,end),context);
 const s=context.state;
-function act(i,a,v='') {s.ticket=i;const kind=i===0?'m1':i===1?'m2':i===2?'m3':i===5?'m6':'new';const fn=kind==='new'?context.newMissionAction:context[kind+'Action'];fn({dataset:{[kind]:a,value:v,val:v}});}
+function act(i,a,v='') {s.ticket=i;const kind=i===0?'m1':i===1?'m2':i===2?'m3':i===5?'m6':'new';const fn=kind==='new'?context.newMissionAction:context[kind+'Action'];const beforeResults=JSON.stringify(s.results);const beforeStage=(i===0?s.m1:i===1?s.m2:i===2?s.m3:i===5?s.m6:s.mNew?.[i])?.stage;fn({dataset:{[kind]:a,value:v,val:v}});if(pendingAck){assert.equal(JSON.stringify(s.results),beforeResults,'A correct answer must wait for acknowledgment before earning a result');assert.equal((i===0?s.m1:i===1?s.m2:i===2?s.m3:i===5?s.m6:s.mNew?.[i])?.stage,beforeStage,'No automatic task jump');const acknowledgment=pendingAck;pendingAck=null;acknowledgment.onNext();}}
 function closed(i){assert([0,1,2].every(j=>s.results[context.key(i,j)]===true),`Mission ${i+1} requires all three outcomes`);}
 act(0,'add-copy');assert.equal(Object.keys(s.results).length,0,'Cannot submit before editing');
 act(0,'begin');act(0,'diagnose','network');assert.equal(s.m1.stage,'diagnose');assert(node('m1-feedback').textContent);
@@ -36,3 +37,9 @@ console.log('PASS: partial first-step status, last unfinished activity, preserve
 const backupCode=block('function validateMissionBackup(','async function restoreProgress(');vm.runInContext(backupCode,context);assert(context.validateMissionBackup(s));assert.throws(()=>context.validateMissionBackup({m1:{stage:'invalid'}}));assert.throws(()=>context.validateMissionBackup({m3:{stage:'flags',flags:'not-an-array'}}));
 if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify({format:'cyfropomich-progress',version:1,createdAt:'2026-11-16T12:00:00.000Z',player:'Тестування',results:s.results,labs:{},m1:s.m1,m2:s.m2,m3:s.m3,m6:s.m6,mNew:s.mNew,finale:{stage:0,mistakes:0,done:false},finishedAt:'2026-11-16T12:00:00.000Z'}));
 console.log('PASS: valid legacy mission states accepted; corrupt stages and answer types rejected before import.');
+
+assert(!html.includes('data-go=\"teacher\"'));assert(!html.includes('function teacher(){'));a.window.CyfroVisual={character(){}};a.root={addEventListener(){}};a.document={addEventListener(){}};a.addEventListener=()=>{};a.history.replaceState=(_a,_b,h)=>location.hash=h;location.hash='#teacher';api.init();assert.equal(location.hash,'#topics');assert.equal(state.screen,'academy');console.log('PASS: public teacher view removed, bookmarked teacher route returns to the map, and correct answers wait for explicit acknowledgment.');
+// The optional finale also waits for acknowledgment, including its final completion.
+context.root={addEventListener(_event,handler){context.finalHandler=handler;}};context.completed=()=>8;vm.runInContext(block('const FINAL_QUESTIONS=','window.CyfroAcademy.init();'),context);s.screen='finale';s.finale={stage:0,mistakes:0,done:false,feedback:''};
+for(const [stage,choice] of [[0,1],[1,0],[2,1]]){context.finalHandler({target:{closest:()=>({dataset:{finalOption:String(choice)}})}});assert(pendingAck,'Finale needs a visible acknowledgment');assert.equal(s.finale.stage,stage);assert.equal(s.finale.done,false);const ack=pendingAck;pendingAck=null;ack.onNext();assert.equal(s.finale.stage,stage+1);}
+assert.equal(s.finale.done,true);console.log('PASS: all 3 finale answers remain on their current question until Next, including final completion.');

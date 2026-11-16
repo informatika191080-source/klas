@@ -114,9 +114,9 @@ function mount(){
   if(s.stage===1)problem=s.phase==='meaning'?phaseIssue(s):combinedIssue(s);
   if(s.stage===2){const issue=slidesIssue(s);if(issue){slideIndex=issue.index;problem='Слайд '+(issue.index+1)+': '+issue.text;}}
   if(problem){s.errors++;failures=problem===lastFailure?failures+1:1;lastFailure=problem;save();draw();setTeamEmotion('think');notify(problem,true);if(failures===2)document.dispatchEvent(new CustomEvent('cyfro-assist-offer'));return;}
-  if(s.stage===1&&s.phase==='meaning'){s.phase='combined';changed();setTeamEmotion('surprise');notify('Позначення розшифровано. Софійка надіслала нове уточнення про двох відвідувачів.');}
-  else{s.stage++;changed();setTeamEmotion(s.stage===3?'celebrate':'joy');notify(s.stage===3?'Презентацію перевірено, місію завершено!':'Завдання виконано. Переходимо до наступного доручення.');}
-  window.CyfroUX.step(host);
+  const meaning=s.stage===1&&s.phase==='meaning';
+  const explanation=s.stage===0?'Для кожної ситуації ти визначив орган чуття, яким Софійка сприйняла повідомлення.':meaning?'Пояснення знака допомогло зрозуміти, що майстерня розташована в павільйоні.':s.stage===1?'Софійка бачить екран і чує оголошення. У сприйнятті беруть участь зір і слух — це комбіноване повідомлення.':'На одному слайді показано один спосіб сприйняття, на іншому — поєднання способів. Обидва приклади узгоджені.';
+  window.CyfroUX.pass({text:explanation,title:s.stage===2?'Слайди готові!':'Правильно!',nextLabel:s.stage===2?'Переглянути результат →':'Далі →',onNext:()=>{if(meaning)s.phase='combined';else s.stage++;changed();setTeamEmotion(s.stage===3?'celebrate':'joy');window.CyfroUX.step(host);}});
  }
  });
  host.addEventListener('input',e=>{if(e.target.id==='msg-slide-title'){s.slides[slideIndex].title=e.target.value.slice(0,60);s.started=true;save();host.querySelector('#msg-slide-preview').innerHTML=slideCard(s.slides[slideIndex],slideIndex);failures=0;depth=0;}});

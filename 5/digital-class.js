@@ -55,8 +55,9 @@ window.CyfroDigitalClass={mount(){
   if(b.hasAttribute('data-class-back')){s.stage=Math.max(0,s.stage-1);refresh();window.CyfroUX.step(host);return;}
   if(b.hasAttribute('data-class-check')){
    const wrong=missing();if(wrong>=0){const incomplete=s.stage===0?!s.safe[wrong]:s.stage===1?!s.kind[wrong]:s.followup?!s.moved||!s.observed:!s.material||!s.color;if(!incomplete)s.errors++;failStreak++;issue=wrong;save();setTeamEmotion('think');const explanation=s.stage===0?safety[wrong].why:s.stage===1?'Перевір картку «'+objects[wrong]+'». Річ належить до предметів, а подія або процес — до явищ.':s.followup?'Спочатку виконай дію з моделлю й порівняй значення її властивостей.':'Звір матеріал із замовленням; колір можна обрати самостійно.';note(explanation,true);if(failStreak===2)document.dispatchEvent(new CustomEvent('cyfro-assist-offer'));return;}
-   if(s.stage===2&&!s.followup){s.followup=true;refresh();setTeamEmotion('surprise');note('Максим надіслав уточнення. Досліди, як дія змінює властивість об’єкта.');return;}
-   s.stage++;refresh();setTeamEmotion(s.stage===3?'celebrate':'joy');window.CyfroUX.step(host);note(s.stage===3?'Звернення завершено. Клас готовий!':'Завдання виконано. Надійшло наступне доручення.');
+   const special=s.stage===2&&!s.followup;
+   const explanation=s.stage===0?'Ти обрав дії, які захищають людину й обладнання. Про несправності повідомляємо вчителя.':s.stage===1?'Комп’ютер та олівець — предмети. Дощ і рух велосипеда — явища.':special?'Матеріал і колір — властивості. Гума та обраний колір — їхні значення.':'Змінилося положення м’яча. Його матеріал і колір залишилися тими самими.';
+   window.CyfroUX.pass({title:special?'Опис готовий!':'Правильно!',text:explanation,nextLabel:s.stage===2&&!special?'Завершити місію →':'Далі →',onNext:()=>{if(special)s.followup=true;else s.stage++;refresh();setTeamEmotion(s.stage===3?'celebrate':'joy');window.CyfroUX.step(host);}});
   }
  });
  window.CyfroMission={title:'Цифровий клас',help(type){
