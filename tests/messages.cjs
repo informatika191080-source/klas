@@ -1,0 +1,18 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
+const values=new Map(),context={window:{},localStorage:{getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)},location:{hash:''}};vm.createContext(context);
+vm.runInContext(fs.readFileSync('5/messages.js','utf8'),context);vm.runInContext(fs.readFileSync('5/academy.js','utf8'),context);
+const m=context.window.CyfroMessages,a=context.window.CyfroAcademy;
+let s=m.defaults();assert.equal(m.validate(s).stage,0);
+assert.throws(()=>m.validate({...s,stage:1}),'Unanswered investigations must not count as complete');
+s.answers=['vision','hearing','smell','taste','touch'];s.stage=1;assert.equal(m.validate(s).stage,1);
+assert.throws(()=>m.validate({...s,phase:'combined'}),'Combined phase requires understanding the symbol first');
+s.legend=true;s.meaning='pavilion';s.phase='combined';s.visual=true;s.audio=true;s.combinedSenses=['vision','hearing'];s.combinedType='Комбіноване';s.stage=2;
+assert.equal(m.validate(s).stage,2);assert.throws(()=>m.validate({...s,combinedSenses:['vision']}));
+s.slides=[{title:'Напис на дверях',scene:'door',senses:['vision'],type:'Візуальне'},{title:'Прогноз погоди',scene:'weather',senses:['vision','hearing'],type:'Комбіноване'}];s.stage=3;
+assert.equal(m.validate(s).stage,3);assert.throws(()=>m.validate({...s,slides:[s.slides[0],s.slides[0]]}));
+assert.throws(()=>m.validate({...s,slides:[{...s.slides[0],senses:['hearing']},s.slides[1]]}));
+a.importProgress(a.validateImport({messages:s}));assert.equal(a.exportProgress().messages.stage,3);assert.throws(()=>a.validateImport({messages:{...s,stage:9}}));
+const html=m.deckHTML([{...s.slides[0],title:'<img src=x onerror=alert(1)>'},s.slides[1]]);
+assert(html.includes('&lt;img'));assert(!html.includes('<img src=x'));assert(html.includes('</script>'),'Export must close its script element');
+const code=html.match(/<script>([\s\S]*?)<\/script>/)[1];new vm.Script(code);assert.equal((html.match(/class="slide"/g)||[]).length,2);
+console.log('PASS: staged completion rules, sense validation, combined messages, two-slide criteria, backup round-trip, export escaping and executable slide navigation.');

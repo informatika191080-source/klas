@@ -1,0 +1,18 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
+const values=new Map();let failOnce=false;
+const storage={getItem:k=>values.get(k)||null,setItem(k,v){if(failOnce&&k.includes('02')){failOnce=false;throw Error('QuotaExceeded');}values.set(k,v);},removeItem:k=>values.delete(k)};
+const context={window:{},localStorage:storage,location:{hash:""}};vm.createContext(context);vm.runInContext(fs.readFileSync('5/academy.js','utf8'),context);
+const api=context.window.CyfroAcademy;
+const lesson1={stage:3,errors:2,picks:['yes','yes','yes','Явище','Предмет','Явище','Предмет','Гума','Синій']};
+const lesson2={stage:3,color:'mint',width:240,title:'Цифрова майстерня',size:24,place:'top',copy:true,right:true,triangle:false,errors:1,hints:2,actions:8};
+const data={'digital-class':lesson1,objects:lesson2};
+const valid=api.validateImport(data);api.importProgress(valid);
+assert.equal(api.exportProgress()['digital-class'].stage,3);assert.equal(api.exportProgress().objects.hints,2);
+assert.throws(()=>api.validateImport({objects:{...lesson2,width:120}}));
+assert.throws(()=>api.validateImport({'unknown-lesson':lesson2}));
+assert.throws(()=>api.validateImport({objects:{...lesson2,errors:-1}}));
+assert.equal(api.validateImport(undefined),null);
+const before=JSON.stringify(api.exportProgress());failOnce=true;
+assert.throws(()=>api.importProgress({'digital-class':{...lesson1,errors:8},objects:{...lesson2,hints:9}}));
+assert.equal(JSON.stringify(api.exportProgress()),before,'Failed import must restore previous lesson saves');
+console.log('PASS: old-save compatibility, combined backup, invalid milestone rejection, transactional rollback.');

@@ -19,6 +19,7 @@ function requirements(s=state){return [
 try{
  const s=JSON.parse(localStorage.getItem(key)||'null');
  if(s&&typeof s==='object'){
+  state.started=s.started===true;state.finished=s.finished===true||s.stage===3;
   for(const k of ['stage','width','size','errors','hints','actions'])if(Number.isInteger(s[k])&&s[k]>=0)state[k]=s[k];
   if(![0,1,2,3].includes(state.stage))state.stage=0;
   if(![120,160,200,240].includes(state.width))state.width=120;
@@ -31,6 +32,7 @@ try{
  }
 }catch(e){storageOK=false;}
 function save(){
+ state.finished=state.finished===true||state.stage===3;
  try{localStorage.setItem(key,JSON.stringify(state));storageOK=true;}catch(e){storageOK=false;}
  $('save-state').textContent=storageOK?'Прогрес збережено в цьому браузері.':'Прогрес доступний лише до закриття сторінки: браузер не дозволяє збереження.';
 }
@@ -87,6 +89,7 @@ function draw(){renderObjects();renderInspector();renderChecklist();}
 function showStage(moveFocus=false){
  selected=null;history=[];hintLevel=0;lastIssue='';closeContext();
  if(window.CyfroMission)window.CyfroMission.title='Програмні об’єкти: '+(state.stage===3?'завершено':scenes[state.stage][2]);
+ let progress=document.getElementById('workshop-progress-label');if(!progress){progress=document.createElement('p');progress.id='workshop-progress-label';progress.className='task-progress-label';$('workspace').before(progress);}progress.textContent=state.stage===3?'✓ Три частини виконано':'Частина '+(state.stage+1)+' із 3';
  $('workspace').hidden=state.stage===3;$('finale').hidden=state.stage!==3;
  document.querySelectorAll('.route span').forEach((n,i)=>{n.classList.toggle('done',i<state.stage);if(i===state.stage)n.setAttribute('aria-current','step');else n.removeAttribute('aria-current');});
  if(state.stage<3){const s=scenes[state.stage];$('coach-name').textContent=s[0];$('coach-line').textContent=s[1];$('task-title').textContent=s[2];$('task-text').textContent=s[3];pose();draw();}
@@ -97,10 +100,11 @@ function showStage(moveFocus=false){
   $('completion-storage').textContent=storageOK?'Результат збережено в цьому браузері.': 'Браузер не дозволяє зберегти результат після закриття сторінки.';
   document.querySelectorAll('.hero-team [data-figure]').forEach(n=>{if(window.CyfroWorkshopCharacter)n.innerHTML=window.CyfroWorkshopCharacter(n.dataset.figure,'celebrate');});
  }
- if(moveFocus)$('mission').focus();
+ if(moveFocus)window.CyfroUX.step(state.stage===3?$('finale'):$('workspace'));
  document.dispatchEvent(new CustomEvent('cyfro-mission-stage',{detail:{step:state.stage}}));
 }
 function mutate(patch){
+ state.started=true;
  failures=0;lastFailure='';
  history.push({...state});if(history.length>60)history.shift();Object.assign(state,patch);state.actions++;lastIssue='';save();draw();
 }
@@ -189,7 +193,7 @@ window.CyfroMission={title:"Програмні об’єкти: "+scenes[Math.mi
  if(state.stage===2)id=!state.copy?(selected==='star'?'context-toggle':'obj-star'):!state.right?(selected==='copy'?'context-toggle':'obj-copy'):state.triangle?(selected==='triangle'?'context-toggle':'obj-triangle'):'check';
  const n=$(id);if(!n)return;n.scrollIntoView({block:'center',behavior:'instant'});n.classList.add('academy-highlight');n.focus?.({preventScroll:true});clearTimeout(highlightTimer);highlightTimer=setTimeout(()=>n.classList.remove('academy-highlight'),4500);
 }};
-$('replay').addEventListener('click',()=>{state=defaults();selected=null;history=[];save();showStage(true);notice('Нове замовлення! Усі об’єкти повернуто до початкового стану.');});
+$('replay').addEventListener('click',()=>{state={...defaults(),finished:state.finished,started:true};selected=null;history=[];save();showStage(true);notice('Нове замовлення! Усі об’єкти повернуто до початкового стану.');});
 document.querySelectorAll('.hero-team [data-figure]').forEach(n=>{if(window.CyfroWorkshopCharacter)n.innerHTML=window.CyfroWorkshopCharacter(n.dataset.figure,'joy');});
 save();showStage();
 };
