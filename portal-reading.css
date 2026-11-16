@@ -1,0 +1,119 @@
+/* Shared reading scale. Loaded last so compact legacy layouts cannot shrink task text. */
+:root {
+  --reading-body: 18px;
+  --reading-ui: 16px;
+  --reading-note: 15px;
+  --reading-label: 14px;
+}
+body { font-size: var(--reading-body); line-height: 1.6; }
+button, input, textarea, select { font-family: inherit; }
+button, summary { line-height: 1.45; white-space: normal; }
+input, textarea, select { font-size: var(--reading-body); }
+.tiny, .container .tiny { font-size: var(--reading-ui); line-height: 1.6; }
+.caps, .container .caps { font-size: var(--reading-label); line-height: 1.5; letter-spacing: .06em; }
+.container .tag { font-size: var(--reading-label); line-height: 1.5; }
+.header .logo small { font-size: 13px; line-height: 1.5; letter-spacing: .06em; }
+.toplinks .navbtn, .toplinks > .navbtn, .toplinks summary,
+.container .navbtn, .container .btn.small, .portal-tools summary,
+.mission-switcher > summary, .side-nav button, .academy-side button {
+  font-size: var(--reading-ui); line-height: 1.45; min-height: 46px;
+}
+.container .btn { font-size: var(--reading-body); line-height: 1.4; }
+.world-welcome p, .hero-text .campaign-lead { font-size: var(--reading-body) !important; line-height: 1.65; }
+.world-welcome .world-badge, .hero-eyebrow { font-size: var(--reading-label); letter-spacing: .06em; }
+.world-welcome .learning-resume small { font-size: var(--reading-note); }
+.world-welcome .learning-resume strong { font-size: var(--reading-body); line-height: 1.5; }
+.world-welcome .overall-progress, .world-section-heading p { font-size: var(--reading-ui); line-height: 1.5; }
+.world-label { font-size: 12px; letter-spacing: .04em; }
+.world-section-heading .tag, .card-status-pill { font-size: var(--reading-label); line-height: 1.4; }
+.learning-cards .mission-card .mission-description { font-size: 17px; line-height: 1.6; color: #d0e1f5; }
+.learning-cards .card-progress, .card-action { font-size: var(--reading-ui); }
+.campaign-cards .mission-number, .campaign-cards .mission-flag,
+.mission-card .order, .mission-card .status, .mission-status { font-size: var(--reading-label); line-height: 1.5; }
+.campaign-cards .mission-title { font-size: 21px; line-height: 1.35; }
+.campaign-cards .mission-subtitle { font-size: var(--reading-ui); line-height: 1.5; }
+.campaign-cards .mission-card { min-width: 0; }
+.mission-team { flex-wrap: wrap; }
+.mission-team > span, .mission-team .team-label { font-size: var(--reading-label); line-height: 1.5; }
+.task-progress-label, .step-label, .chat .sender { font-size: var(--reading-note); letter-spacing: .03em; }
+.chat p, .clues ul, .feedback p, .mission-feedback,
+.container .game-notice p, .scene-character-voice, .live-bip-moment,
+.academy-mission .task-heading p, .class-card .lab-choice,
+.success-card .success-copy p { font-size: var(--reading-body); line-height: 1.65; }
+.container :is(.option,.lab-choice,.lab-pill,.lab-menu button,.final-option,
+  .m1-choices button,.m2-choices button,.m3-choice,.v4-tile) {
+  font-size: var(--reading-body); line-height: 1.5;
+}
+.academy-mission .route { flex-wrap: wrap; font-size: var(--reading-ui); }
+.academy-mission .route span { min-width: 0; }
+.academy-mission .route span, .academy-mission .task-heading button,
+.academy-mission .editor-bar, .academy-mission .editor-foot,
+.academy-mission .editor-foot button, .academy-mission .context-menu button,
+.academy-mission dl, .academy-mission legend, .academy-mission .field-label,
+.academy-mission label, .academy-mission .skills, .class-summary span {
+  font-size: var(--reading-ui); line-height: 1.5;
+}
+.academy-mission .editor-foot button { white-space: normal; }
+.academy-mission .eyebrow, .academy-mission .micro { font-size: var(--reading-label); line-height: 1.5; }
+.academy-mission .paper-heading, .academy-mission .paper-caption {
+  font-size: var(--reading-label); line-height: 1.35; letter-spacing: .02em;
+}
+.academy-mission .brief h3 { font-size: 20px; }
+.academy-mission .brief ul, .class-card p, .academy-task { font-size: var(--reading-body); line-height: 1.6; }
+.academy-mission .inspector .concept, .phase-alert, .v4-tip,
+.v4-choice-note, .v4-inspect-result, .v4-investigate label,
+.m1-legend, .m1-footer > .m1-legend, .m2-mission .m2-note,
+.m2-footer > .m2-note, .m6 .m6-note, .m6-footer > .m6-note,
+.m2-device .m2-desc, .m2-printlog, .m3-explain, .m3-warn,
+.coach-head p, .coach-consequence p, .coach-muted {
+  font-size: var(--reading-ui); line-height: 1.6;
+}
+.m1-call strong, .m2-call strong, .m6 .m6-talk strong,
+.m1-chip, .m2-status, .m3-count, .m3-pill { font-size: var(--reading-note); }
+.m1-doc textarea { font-size: var(--reading-body); line-height: 1.6; }
+.m2-device strong, .v4-device strong, .m6 .m6-address, .m6 .m6-tab {
+  font-size: var(--reading-ui); line-height: 1.5;
+}
+.success-kicker { font-size: var(--reading-label); line-height: 1.5; letter-spacing: .04em; }
+.live-bip .live-bip-message, .live-bip .live-bip-chat { font-size: 17px; line-height: 1.65; }
+.live-bip .live-bip-actions button, .live-bip .live-bip-title,
+.live-bip .live-bip-role { font-size: var(--reading-ui); line-height: 1.5; }
+.live-bip .live-bip-caption, .live-bip .live-bip-status,
+.live-bip .live-bip-bar small, .live-bip .live-bip-role small {
+  font-size: var(--reading-label) !important; line-height: 1.5;
+}
+.character-member strong, .character-team.compact .character-member strong { font-size: var(--reading-ui); }
+.character-member small, .character-team.compact .character-member small,
+.character-member .character-message, .character-team.compact .character-message,
+.character-member .team-action { font-size: var(--reading-label); line-height: 1.5; }
+.character-body { min-width: 0; }
+.character-member .character-message { overflow-wrap: anywhere; }
+.topic-info strong, .academy-result span, .topic-count { font-size: var(--reading-ui); line-height: 1.5; }
+.topic-info small, .progress-ident small, .progress-stat small,
+.map-legend, .portal-tools > p, .portal-tools .reset-note,
+.footer, .cert-kicker, .cert-bottom, .cert-results { font-size: var(--reading-note); line-height: 1.6; }
+.container .academy-grade span { font-size: var(--reading-body); }
+.container .academy-grade small { font-size: var(--reading-label); }
+.msg-mission label, .msg-mission legend { font-size: var(--reading-ui); line-height: 1.5; }
+.msg-mission .msg-organ-choices button, .msg-mission .msg-samples .navbtn {
+  font-size: var(--reading-ui); line-height: 1.5;
+}
+.msg-mission .msg-slide-preview h3 { font-size: 25px; line-height: 1.3; }
+.msg-mission .msg-slide-preview p,
+.msg-mission .msg-slide-preview .tiny { font-size: var(--reading-body); line-height: 1.6; }
+.msg-mission .msg-slide-preview .caps { font-size: var(--reading-label); }
+.msg-mission select, .msg-mission input { font-size: var(--reading-body); }
+.msg-mission .msg-slide-tabs { flex-wrap: wrap; }
+@media (max-width: 720px) {
+  .header .logo small { font-size: 12px; }
+  .world-welcome .learning-resume .btn { min-width: 0; }
+  .learning-cards .card-progress { flex-wrap: wrap; }
+  .learning-cards .card-progress .progress-track { min-width: 70px; }
+  .card-status-pill { max-width: calc(100% - 60px); }
+  .academy-mission .route span { flex: 1 1 120px; }
+  .mission-team .team-label { display: none; }
+  .success-card { grid-template-columns: 44px minmax(0, 1fr); }
+  .success-hero { width: 44px; }
+  .live-bip .live-bip-title { font-size: 15px; }
+  .msg-mission .msg-slide-preview h3 { font-size: 24px; }
+}
