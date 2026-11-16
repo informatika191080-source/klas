@@ -1,12 +1,16 @@
 /* Workshop mission: isolated state; no writes to existing mission keys. */
 (function(){
 'use strict';
+window.CyfroWorkshopMount=function(){
+const lifetime=new AbortController();
+let highlightTimer=null;
+window.CyfroLessonDispose=()=>{lifetime.abort();clearTimeout(highlightTimer);};
 const $=id=>document.getElementById(id);
 const key='cyfropomich5_lesson02_v1';
 const defaults=()=>({stage:0,color:'blue',width:120,title:'Майстерня',size:18,place:'middle',copy:false,right:false,triangle:true,errors:0,hints:0,actions:0});
 const colors={blue:['Синій','#81adff'],mint:['М’ятний','#69efd3'],pink:['Рожевий','#ec9ccc']};
 const names={ribbon:'Прямокутник',title:'Заголовок',star:'Зірка',copy:'Копія зірки',triangle:'Трикутник'};
-let state=defaults(),selected=null,history=[],noticeTimer,storageOK=true,lastIssue='',hintLevel=0;
+let state=defaults(),selected=null,history=[],noticeTimer,storageOK=true,lastIssue='',hintLevel=0,failures=0,lastFailure='';
 function requirements(s=state){return [
  [{ok:s.color==='mint',text:'Прямокутник: м’ятний колір заливки.'},{ok:s.width===240,text:'Ширина прямокутника — 240 умовних одиниць.'}],
  [{ok:s.title.trim()==='Цифрова майстерня',text:'Заголовок: «Цифрова майстерня».'},{ok:s.size===24,text:'Розмір символів заголовка — 24.'},{ok:s.place==='top',text:'Заголовок розміщено вгорі афіші.'}],
@@ -31,10 +35,11 @@ function save(){
  $('save-state').textContent=storageOK?'Прогрес збережено в цьому браузері.':'Прогрес доступний лише до закриття сторінки: браузер не дозволяє збереження.';
 }
 function notice(text,error=false){
+ if(typeof showGameNotice==='function'){showGameNotice({title:error?'Перевірмо разом':'Команда ЦифроПомочі',text,kind:error?'error':'info',duration:7500});return;}
  clearTimeout(noticeTimer);$('notice').querySelector('span').textContent=text;$('notice').dataset.error=String(error);$('notice').hidden=false;
  noticeTimer=setTimeout(()=>$('notice').hidden=true,6500);
 }
-$('close-notice').addEventListener('click',()=>{clearTimeout(noticeTimer);$('notice').hidden=true;});
+$('close-notice')?.addEventListener('click',()=>{clearTimeout(noticeTimer);$('notice').hidden=true;});
 function pose(mood='neutral'){
  const kinds=['pixel','bayt','kiber'];
  $('coach').dataset.mood=mood;
@@ -81,6 +86,7 @@ function selectObject(id){selected=id;closeContext();renderObjects();renderInspe
 function draw(){renderObjects();renderInspector();renderChecklist();}
 function showStage(moveFocus=false){
  selected=null;history=[];hintLevel=0;lastIssue='';closeContext();
+ if(window.CyfroMission)window.CyfroMission.title='Програмні об’єкти: '+(state.stage===3?'завершено':scenes[state.stage][2]);
  $('workspace').hidden=state.stage===3;$('finale').hidden=state.stage!==3;
  document.querySelectorAll('.route span').forEach((n,i)=>{n.classList.toggle('done',i<state.stage);if(i===state.stage)n.setAttribute('aria-current','step');else n.removeAttribute('aria-current');});
  if(state.stage<3){const s=scenes[state.stage];$('coach-name').textContent=s[0];$('coach-line').textContent=s[1];$('task-title').textContent=s[2];$('task-text').textContent=s[3];pose();draw();}
@@ -95,6 +101,7 @@ function showStage(moveFocus=false){
  document.dispatchEvent(new CustomEvent('cyfro-mission-stage',{detail:{step:state.stage}}));
 }
 function mutate(patch){
+ failures=0;lastFailure='';
  history.push({...state});if(history.length>60)history.shift();Object.assign(state,patch);state.actions++;lastIssue='';save();draw();
 }
 $('canvas').addEventListener('click',e=>{const n=e.target.closest('[data-object]');if(n)selectObject(n.dataset.object);});
@@ -110,7 +117,7 @@ $('canvas').addEventListener('keydown',e=>{
  }
 });
 $('context-toggle').addEventListener('click',()=>$('context-menu').hidden?openContext():closeContext());
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeContext();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeContext();},{signal:lifetime.signal});
 document.querySelectorAll('[data-color]').forEach(b=>b.addEventListener('click',()=>{if(state.stage===0&&selected==='ribbon')mutate({color:b.dataset.color});}));
 $('width').addEventListener('input',()=>{if(state.stage===0&&selected==='ribbon')mutate({width:Number($('width').value)});});
 $('title-input').addEventListener('input',()=>{if(state.stage===1&&selected==='title')mutate({title:$('title-input').value.slice(0,24)});});
@@ -133,34 +140,57 @@ $('undo').addEventListener('click',()=>{
 $('check').addEventListener('click',()=>{
  if(state.stage>2)return;
  const missing=requirements()[state.stage].filter(r=>!r.ok);
- if(missing.length){state.errors++;lastIssue=missing[0].text;save();pose('think');notice('Ще не все: '+lastIssue+' Перевір властивості вибраного об’єкта.',true);
+ if(missing.length){const failureKey=state.stage+':'+missing[0].text;failures=failureKey===lastFailure?failures+1:1;lastFailure=failureKey;state.errors++;lastIssue=missing[0].text;save();pose('think');notice('Ще не все: '+lastIssue+' Перевір властивості вибраного об’єкта.',true);
  document.dispatchEvent(new CustomEvent('cyfro-mission-result',{detail:{ok:false,step:state.stage,card:0}}));
- if(state.errors%2===0)document.dispatchEvent(new CustomEvent('cyfro-assist-offer'));return;}
+ if(failures===2)document.dispatchEvent(new CustomEvent('cyfro-assist-offer'));return;}
  const messages=['ПІКСЕЛЬ: основу налаштовано! Змінилися колір і ширина, а висота залишилася сталою.','БАЙТ: заголовок готовий! Ти змінив вміст, розмір символів і положення об’єкта.','КІБЕР: замовлення виконано! Афіша готова.'];
  const message=messages[state.stage];state.stage++;save();showStage(true);notice(message);
  document.dispatchEvent(new CustomEvent('cyfro-mission-result',{detail:{ok:true,step:state.stage,completed:state.stage===3}}));
 });
 $('help').addEventListener('click',()=>document.dispatchEvent(new CustomEvent('cyfro-assist-open')));
-window.CyfroMission={help(type){
+window.CyfroMission={title:"Програмні об’єкти: "+scenes[Math.min(state.stage,2)][2],help(type){
  if(state.stage===3)return 'Афіша готова! Можеш повернутися до місій або пройти цю пригоду ще раз.';
+ if(type==='risk')return ['Змінюй властивості вибраного об’єкта. Колір і розмір — різні параметри; зміна одного не повинна непомітно змінювати інший.','Зміна вмісту заголовка — редагування; зміна його вигляду — форматування. Спочатку перевір, який об’єкт вибрано.','Видалення прибирає вибраний об’єкт. Якщо помилився, скористайся «Скасувати дію». Оригінал зірки має залишитися.'][state.stage];
+ if(type==='whatif')return 'Досліди наслідки двох дій. Це пояснення: воно не змінить твою афішу.';
  if(type==='help')return [
   'На афіші є програмні об’єкти: прямокутник, заголовок, зірка й трикутник. Натисни прямокутник: праворуч відкриються його властивості. На телефоні панель розташована під афішею.',
   'Вміст і оформлення заголовка — різні властивості. Натисни сам заголовок на афіші, а потім скористайся полем введення та списками в панелі керування.',
   'Команди виконуються над вибраним об’єктом. Натисни об’єкт і кнопку «Команди об’єкта». На комп’ютері можна також натиснути праву кнопку миші на об’єкті.'
  ][state.stage];
- if(type==='next')return [
-  'Обери прямокутник, зміни заливку та пересунь повзунок ширини. Звірся із замовленням під студією, потім натисни «Перевірити результат».',
-  'Обери заголовок, зміни його вміст і розмір символів та вибери положення. Виконані вимоги позначатимуться в замовленні.',
-  state.copy?(state.right?'Тепер вибери зайвий трикутник і знайди команду, що прибирає його з афіші.':'Копія вже існує. Вибери її та знайди команду зміни положення.'):'Вибери зірку й відкрий команди. Знайди команду створення нового такого самого об’єкта.'
- ][state.stage];
+ if(type==='next'){
+  if(state.stage===0){
+   if(selected!=='ribbon')return 'Натисни прямокутник на світлій афіші. Відкриється панель його властивостей. На телефоні вона під афішею.';
+   if(state.color!=='mint')return 'У панелі прямокутника знайди «Колір заливки». Порівняй кольорові кнопки із замовленням команди.';
+   if(state.width!==240)return 'Зміни ширину повзунком у панелі прямокутника. Поточне число показано над ним; потрібне значення є в замовленні.';
+   return 'Обидві вимоги виконано. Натисни «Перевірити результат» під замовленням.';
+  }
+  if(state.stage===1){
+   if(selected!=='title')return 'Натисни слово заголовка на афіші. Панель має показати «Заголовок».';
+   if(state.title.trim()!=='Цифрова майстерня')return 'У полі «Вміст заголовка» введи назву із замовлення. Поле змінює текст; решта інструментів — його вигляд.';
+   if(state.size!==24)return 'Відкрий список «Розмір символів» і звір значення із замовленням.';
+   if(state.place!=='top')return 'Відкрий список «Положення заголовка». Обери розміщення, зазначене в замовленні.';
+   return 'Три вимоги виконано. Перевір результат кнопкою під замовленням.';
+  }
+  if(!state.copy)return selected==='star'?'Відкрий «Команди об’єкта». Знайди дію, що створює ще одну таку саму зірку.':'Вибери зірку ліворуч на афіші. Далі відкрий її команди.';
+  if(!state.right)return selected==='copy'?'Відкрий команди копії й знайди дію зміни її положення.':'Вибери копію зірки посередині. Оригінал ліворуч не переміщуй.';
+  if(state.triangle)return selected==='triangle'?'Відкрий команди трикутника. Знайди дію, що прибирає зайвий об’єкт.':'Вибери трикутник на афіші. Він зайвий у цьому замовленні.';
+  return 'Команди виконано. Натисни «Перевірити результат», щоб завершити звернення.';
+ }
  hintLevel++;state.hints++;save();
  const stepHints=[
   ['Спочатку вибери прямокутник. Заливка — це колір його внутрішньої області.','Кольорові кнопки змінюють заливку, повзунок — ширину. Значення ширини видно над повзунком.'],
   ['Щоб змінити текст, працюй із полем «Вміст заголовка». Щоб змінити його вигляд — зі списками нижче.','Порівняй три властивості заголовка з трьома вимогами замовлення: вміст, розмір символів, положення.'],
   [state.copy?'Копія — самостійний об’єкт. Її можна вибрати й перемістити окремо від оригіналу.':'Створення копії додає ще один об’єкт, а переміщення змінює положення наявного.',state.copy&&state.right?'Перевір, чи залишився на афіші трикутник. Команди залежать від того, який об’єкт вибрано.':'Перевір напис «Вибрано» над афішею. Команда має стосуватися саме того об’єкта, який потрібно змінити.']
- ];return stepHints[state.stage][Math.min(hintLevel-1,1)]+(lastIssue?' Зараз перевір: '+lastIssue:'');
+ ];return 'Підказка '+Math.min(hintLevel,3)+' із 3. '+(hintLevel>=3?window.CyfroMission.help('next'):stepHints[state.stage][Math.min(hintLevel-1,1)])+(lastIssue?' Зараз перевір: '+lastIssue:'');
+},branches(){if(state.stage===3)return [];if(state.stage===1)return [['Змінити текст заголовка','Зміниться його вміст. Це редагування текстового об’єкта.'],['Змінити розмір символів','Зміниться вигляд заголовка. Його текст залишиться тим самим.']];return state.stage===2?[['Перемістити оригінал замість копії','Оригінал змінить положення, а копія залишиться посередині. Умова про переміщення копії не буде виконана.'],['Видалити зайвий трикутник','З афіші зникне трикутник. Інші об’єкти залишаться; помилкове видалення можна скасувати.']]:[['Змінити колір вибраного об’єкта','Зміниться його колір. Ширина, положення та інші об’єкти залишаться без змін.'],['Змінювати параметри без вибору потрібного об’єкта','Можна змінити не той об’єкт. Перевіряй напис «Вибрано» перед дією.']];},locate(){
+ let id=state.stage===3?'final-title':'check';
+ if(state.stage===0)id=selected!=='ribbon'?'obj-ribbon':state.color!=='mint'?'ribbon-tools':state.width!==240?'width':'check';
+ if(state.stage===1)id=selected!=='title'?'obj-title':state.title.trim()!=='Цифрова майстерня'?'title-input':state.size!==24?'font-size':state.place!=='top'?'title-place':'check';
+ if(state.stage===2)id=!state.copy?(selected==='star'?'context-toggle':'obj-star'):!state.right?(selected==='copy'?'context-toggle':'obj-copy'):state.triangle?(selected==='triangle'?'context-toggle':'obj-triangle'):'check';
+ const n=$(id);if(!n)return;n.scrollIntoView({block:'center',behavior:'instant'});n.classList.add('academy-highlight');n.focus?.({preventScroll:true});clearTimeout(highlightTimer);highlightTimer=setTimeout(()=>n.classList.remove('academy-highlight'),4500);
 }};
 $('replay').addEventListener('click',()=>{state=defaults();selected=null;history=[];save();showStage(true);notice('Нове замовлення! Усі об’єкти повернуто до початкового стану.');});
 document.querySelectorAll('.hero-team [data-figure]').forEach(n=>{if(window.CyfroWorkshopCharacter)n.innerHTML=window.CyfroWorkshopCharacter(n.dataset.figure,'joy');});
 save();showStage();
+};
 })();
