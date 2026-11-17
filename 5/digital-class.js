@@ -3,7 +3,7 @@
 'use strict';
 window.CyfroDigitalClass={mount(){
  const host=document.getElementById('digital-class'),key='cyfropomich5_lesson01_v1',lifetime=new AbortController();
- let s={finished:false,started:false,stage:0,safe:['','',''],kind:['','','',''],material:'',color:'',followup:false,moved:false,observed:'',errors:0,hints:0},selected=null,issue=null,hintDepth=0,failStreak=0,timer;
+ let s={finished:false,started:false,stage:0,safe:['','',''],kind:['','','',''],material:'',color:'',followup:false,moved:false,observed:'',errors:0,hints:0},selected=null,issue=null,feedbackText='',hintDepth=0,failStreak=0,timer;
  try{const x=JSON.parse(localStorage.getItem(key)||'null');if(x&&typeof x==='object'){
   if(Number.isInteger(x.stage)&&x.stage>=0&&x.stage<=3)s.stage=x.stage;
   s.errors=Math.max(0,Number(x.errors)||0);s.hints=Math.max(0,Number(x.hints)||0);
@@ -21,7 +21,7 @@ window.CyfroDigitalClass={mount(){
  function ball(){return `<div class="class-ball-track"><div class="class-ball ${s.moved?'moved':''}" style="--ball:${{Помаранчевий:'#ef9f37',Зелений:'#66c876',Синій:'#4aa9e9'}[s.color]||'#bfcdd9'}" aria-label="Модель м’яча"><svg viewBox="0 0 140 140" role="img" aria-label="Баскетбольний м’яч"><circle cx="70" cy="70" r="58" fill="var(--ball)" stroke="#163b54" stroke-width="4"/><path d="M70 12v116M12 70h116M29 27q69 43 0 87M111 27q-69 43 0 87" fill="none" stroke="#294254" stroke-width="3.5"/></svg></div></div>`;}
  function choice(label,attrs,active){return '<button class="lab-choice '+(active?'selected':'')+'" '+attrs+' aria-pressed="'+active+'">'+safe(label)+'</button>';}
  function draw(){
-  const savedFocus=window.CyfroUX.capture(host);
+  const savedFocus=window.CyfroUX.capture(host),guideKey=s.stage===0?'safety':s.stage===1?'objects':s.followup?'movement':'properties',guide=s.stage<3?window.CyfroGuide.render(guideKey,host):'';
   const titles=['Підготуй безпечний клас','Розбери цифрові картки','Створи картку об’єкта'];
   let body='';
   if(s.stage===0)body='<p class="academy-task">Розглянь три робочі місця. У кожній ситуації обери дію. Потім натисни «Перевірити й продовжити». Якщо потрібно, виправ рішення за поясненням.</p><div class="class-stations">'+safety.map((x,i)=>'<article class="class-card" id="station-'+i+'">'+workspaceSVG(i)+'<h3>'+x.title+'</h3><p>'+x.story+'</p>'+x.choices.map(([t,v])=>choice(t,'data-safe="'+i+'" data-value="'+v+'"',s.safe[i]===v)).join('')+'</article>').join('')+'</div>';
@@ -31,7 +31,7 @@ window.CyfroDigitalClass={mount(){
   }else if(s.stage===2){
    body=s.followup?'<div class="phase-alert">Нове повідомлення від Максима: «А якщо м’яч перемістити — які властивості зміняться?»</div>'+ball()+'<button class="btn secondary" id="roll" '+(s.moved?'disabled':'')+'>Прокотити модель →</button><p class="academy-task">Спостерігай за моделлю. Яку властивість змінила ця дія?</p>'+[['Положення','position'],['Колір','color'],['Матеріал','material']].map(([t,v])=>choice(t,'data-observed="'+v+'"',s.observed===v)).join(''):'<p class="academy-task">У каталозі є гумовий баскетбольний м’яч. Матеріал і колір — назви властивостей; «гума» та «синій» — приклади їхніх значень. Підготуй опис м’яча, колір моделі обери на свій смак.</p><div class="class-property-grid"><div class="class-card">'+ball()+'<p>Об’єкт: баскетбольний м’яч<br>Діаметр: 24 см<br>Матеріал у замовленні: гума</p><p class="tiny">На екрані показана цифрова модель предмета. Зміна моделі не змінює справжній м’яч.</p></div><div><h3>Матеріал</h3>'+['Гума','Дерево','Папір'].map(v=>choice(v,'data-material="'+v+'"',s.material===v)).join('')+'<h3>Колір моделі</h3>'+['Помаранчевий','Зелений','Синій'].map(v=>choice(v,'data-ball-color="'+v+'"',s.color===v)).join('')+'</div></div>';
   }else body='<div class="mission-done"><div class="medal">🏅</div><h2>Клас готовий до роботи!</h2><p>Робочі місця перевірено, об’єкти розподілено, каталог заповнено. Ти навчився розрізняти об’єкт, властивість і значення властивості.</p><div class="class-summary"><div><strong>Безпека</strong><span>Обрано безпечні дії</span></div><div><strong>Об’єкти</strong><span>Розрізнено предмети та явища</span></div><div><strong>Властивості</strong><span>Досліджено значення й наслідки дії</span></div></div><p>Повторні перевірки: '+s.errors+' · підказки: '+s.hints+'</p><div class="foot"><button class="btn secondary" data-class-replay>Пройти ще раз</button><button class="btn" data-lesson="objects">Програмні об’єкти →</button></div></div>';
-  host.innerHTML='<p class="task-progress-label">'+(s.stage===3?'✓ Три частини виконано':'Частина '+(s.stage+1)+' із 3')+'</p><div class="steps" role="progressbar" aria-label="Виконані частини" aria-valuenow="'+s.stage+'" aria-valuemin="0" aria-valuemax="3">'+[0,1,2].map(i=>'<span class="'+(i<s.stage?'past':i===s.stage?'now':'')+'"></span>').join('')+'</div>'+(s.stage<3?'<div class="class-task-heading"><h2>'+titles[s.stage]+'</h2></div>':'')+body+(s.stage<3?'<div class="foot"><button class="btn secondary small" data-class-back '+(s.stage===0?'disabled':'')+'>← Попередня частина</button><button class="btn" id="class-check" data-class-check>'+(s.stage===2?(s.followup?'Завершити звернення':'Перевірити опис'):'Перевірити й продовжити')+' →</button></div>':'')+'<p class="tiny" role="status">'+(storageOK?'Прогрес зберігається в цьому браузері.':'Браузер не дозволяє збереження. Залишай сторінку відкритою до завершення.')+'</p>';
+  host.innerHTML='<p class="task-progress-label">'+(s.stage===3?'✓ Три частини виконано':(s.finished?'Повторення · ':'')+'Частина '+(s.stage+1)+' із 3')+'</p>'+window.CyfroGuide.route(['Робочі місця','Скриньки об’єктів','Каталог'],s.stage)+(s.stage<3?'<div class="class-task-heading"><h2>'+titles[s.stage]+'</h2></div>':'')+guide+body+window.CyfroGuide.feedback(feedbackText)+(s.stage<3?'<div class="foot"><button class="btn secondary small" data-class-back '+(s.stage===0?'disabled':'')+'>← Попередня частина</button><button class="btn" id="class-check" data-class-check>'+(s.stage===2?(s.followup?'Завершити звернення':'Перевірити опис'):'Перевірити й продовжити')+' →</button></div>':'')+'<p class="tiny" role="status">'+(storageOK?'Прогрес зберігається в цьому браузері.':'Браузер не дозволяє збереження. Залишай сторінку відкритою до завершення.')+'</p>';
   window.CyfroUX.restore(savedFocus,host);
   if(window.CyfroMission)window.CyfroMission.title=s.stage===3?'Цифровий клас: завершено':titles[s.stage];
  }
@@ -41,11 +41,11 @@ window.CyfroDigitalClass={mount(){
  if(s.stage===1)return n<0?'Усі картки у відповідних скриньках. Натисни кнопку перевірки.':selected===null?'Вибери картку «'+objects[n]+'». Подумай, це річ чи подія, і натисни відповідну скриньку.':'Зараз вибрано «'+objects[selected]+'». Натисни скриньку, яка відповідає типу цього об’єкта.';
  if(s.followup)return !s.moved?'Натисни «Прокотити модель». Спостерігай, що змінилося; потім назви властивість.':s.observed!=='position'?'Порівняй модель до й після переміщення: чи змінилися колір і матеріал? Обери властивість, значення якої змінилося.':'Спостереження виконано. Натисни «Завершити звернення».';
  return s.material!=='Гума'?'Прочитай матеріал у замовленні біля м’яча. Обери відповідне значення властивості «Матеріал».':!s.color?'Обери один із трьох кольорів моделі. Тут немає єдиного обов’язкового кольору.':'Картка об’єкта готова. Натисни «Перевірити опис».';}
- function refresh(){s.started=true;save();draw();hintDepth=0;failStreak=0;issue=null;document.dispatchEvent(new CustomEvent('cyfro-mission-stage'));}
+ function refresh(){s.started=true;feedbackText='';issue=null;save();draw();hintDepth=0;failStreak=0;document.dispatchEvent(new CustomEvent('cyfro-mission-stage'));}
  host.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.hasAttribute('data-class-help')){document.dispatchEvent(new CustomEvent('cyfro-assist-open'));return;}
   if(b.hasAttribute('data-safe')){s.safe[Number(b.dataset.safe)]=b.dataset.value;refresh();return;}
-  if(b.hasAttribute('data-object-card')){selected=Number(b.dataset.objectCard);draw();return;}
+  if(b.hasAttribute('data-object-card')){selected=Number(b.dataset.objectCard);feedbackText='';draw();return;}
   if(b.hasAttribute('data-bin')){if(selected===null){note('Спочатку вибери картку, яку хочеш перемістити.');return;}s.kind[selected]=b.dataset.bin;selected=null;refresh();return;}
   if(b.hasAttribute('data-material')){s.material=b.dataset.material;refresh();return;}
   if(b.hasAttribute('data-ball-color')){s.color=b.dataset.ballColor;refresh();return;}
@@ -54,14 +54,14 @@ window.CyfroDigitalClass={mount(){
   if(b.hasAttribute('data-class-replay')){s={finished:s.finished,started:true,stage:0,safe:['','',''],kind:['','','',''],material:'',color:'',followup:false,moved:false,observed:'',errors:0,hints:0};refresh();window.CyfroUX.step(host);return;}
   if(b.hasAttribute('data-class-back')){s.stage=Math.max(0,s.stage-1);refresh();window.CyfroUX.step(host);return;}
   if(b.hasAttribute('data-class-check')){
-   const wrong=missing();if(wrong>=0){const incomplete=s.stage===0?!s.safe[wrong]:s.stage===1?!s.kind[wrong]:s.followup?!s.moved||!s.observed:!s.material||!s.color;if(!incomplete)s.errors++;failStreak++;issue=wrong;save();setTeamEmotion('think');const explanation=s.stage===0?safety[wrong].why:s.stage===1?'Перевір картку «'+objects[wrong]+'». Річ належить до предметів, а подія або процес — до явищ.':s.followup?'Спочатку виконай дію з моделлю й порівняй значення її властивостей.':'Звір матеріал із замовленням; колір можна обрати самостійно.';note(explanation,true);if(failStreak===2)document.dispatchEvent(new CustomEvent('cyfro-assist-offer'));return;}
+   const wrong=missing();if(wrong>=0){const incomplete=s.stage===0?!s.safe[wrong]:s.stage===1?!s.kind[wrong]:s.followup?!s.moved||!s.observed:!s.material||!s.color;if(!incomplete)s.errors++;failStreak++;issue=wrong;save();setTeamEmotion('think');feedbackText=window.CyfroGuide.classProblem(s);draw();document.dispatchEvent(new CustomEvent('cyfro-mission-stage'));host.querySelector('.learning-feedback').scrollIntoView({block:'nearest',behavior:'instant'});if(failStreak===2)document.dispatchEvent(new CustomEvent('cyfro-assist-offer'));return;}
    const special=s.stage===2&&!s.followup;
    const explanation=s.stage===0?'Ти обрав дії, які захищають людину й обладнання. Про несправності повідомляємо вчителя.':s.stage===1?'Комп’ютер та олівець — предмети. Дощ і рух велосипеда — явища.':special?'Матеріал і колір — властивості. Гума та обраний колір — їхні значення.':'Змінилося положення м’яча. Його матеріал і колір залишилися тими самими.';
    window.CyfroUX.pass({title:special?'Опис готовий!':'Правильно!',text:explanation,nextLabel:s.stage===2&&!special?'Завершити місію →':'Далі →',onNext:()=>{if(special)s.followup=true;else s.stage++;refresh();setTeamEmotion(s.stage===3?'celebrate':'joy');window.CyfroUX.step(host);}});
   }
  });
  window.CyfroMission={title:'Цифровий клас',help(type){
-  if(type==='next')return next();
+  if(type==='next')return feedbackText||next();
   if(type==='risk')return s.stage===0?'Не ремонтуй обладнання самостійно. Про пошкодження або незвичні сигнали повідом учителя.':s.stage===1?'Назва картки має значення: велосипед — предмет, а рух велосипеда — явище.':'Не плутай властивість і її значення: «колір» — властивість, «синій» — її значення. Переміщення змінює положення.';
   if(type==='help')return 'Прочитай звернення, досліди сцену та виконай дії. Кнопка перевірки пояснить помилку й дозволить її виправити. «Покажи потрібний інструмент» підсвітить поточний крок.';
   if(type==='whatif')return 'Обери ситуацію й досліди можливий наслідок. Це пояснення не виконує завдання замість тебе.';
@@ -77,6 +77,7 @@ window.CyfroDigitalClass={mount(){
   if(!target)return;target.scrollIntoView({block:'center',behavior:'instant'});target.classList.add('academy-highlight');if(target.tabIndex<0)target.setAttribute('tabindex','-1');target.focus?.({preventScroll:true});clearTimeout(timer);timer=setTimeout(()=>target.classList.remove('academy-highlight'),4500);
  }};
  window.CyfroLessonDispose=()=>{lifetime.abort();clearTimeout(timer);};
- save();draw();
+ window.CyfroGuide.bind(host);save();draw();
 }};
 })();
+
