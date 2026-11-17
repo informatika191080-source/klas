@@ -2,6 +2,22 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
 const values=new Map(),context={window:{},localStorage:{getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)},location:{hash:''}};vm.createContext(context);
 vm.runInContext(fs.readFileSync('5/messages.js','utf8'),context);vm.runInContext(fs.readFileSync('5/academy.js','utf8'),context);
 const m=context.window.CyfroMessages,a=context.window.CyfroAcademy;
+const untouched=m.defaults(),before=JSON.stringify(untouched);
+assert.equal(m.guideId(untouched),'senses');
+assert.equal(m.guideId({...untouched,stage:1,phase:'meaning'}),'meaning');
+assert.equal(m.guideId({...untouched,stage:1,phase:'combined'}),'combined');
+assert.equal(m.guideId({...untouched,stage:2}),'slides');
+assert.match(m.senseIssue(1,''),/ще не обрано/);
+assert.match(m.senseIssue(1,'vision'),/Обрано «Очі — зір»/);
+assert.match(m.senseIssue(1,'vision'),/слухом/);
+assert.equal(m.senseIssue(1,'hearing'),'');
+assert.match(m.phaseIssue({...untouched,legend:true,meaning:'closed'}),/години роботи/);
+assert.match(m.phaseIssue({...untouched,legend:true,meaning:'umbrella'}),/погоду/);
+assert.match(m.combinedIssue({...untouched,visual:true,audio:false}),/Максим/);
+assert.match(m.combinedIssue({...untouched,visual:false,audio:true}),/Оля/);
+assert.equal(JSON.stringify(untouched),before,'Explanations and guide selection must not mutate learning progress');
+assert.match(m.slideIssue({title:'Дзвінок',scene:'bell',senses:['vision'],type:'Візуальне'}),/Вуха — слух/);
+assert.match(m.slideIssue({title:'Дзвінок',scene:'bell',senses:['hearing'],type:'Візуальне'}),/Звукове/);
 let s=m.defaults();assert.equal(m.validate(s).stage,0);
 assert.throws(()=>m.validate({...s,stage:1}),'Unanswered investigations must not count as complete');
 s.answers=['vision','hearing','smell','taste','touch'];s.stage=1;assert.equal(m.validate(s).stage,1);
@@ -16,3 +32,4 @@ const html=m.deckHTML([{...s.slides[0],title:'<img src=x onerror=alert(1)>'},s.s
 assert(html.includes('&lt;img'));assert(!html.includes('<img src=x'));assert(html.includes('</script>'),'Export must close its script element');
 const code=html.match(/<script>([\s\S]*?)<\/script>/)[1];new vm.Script(code);assert.equal((html.match(/class="slide"/g)||[]).length,2);
 console.log('PASS: staged completion rules, sense validation, combined messages, two-slide criteria, backup round-trip, export escaping and executable slide navigation.');
+

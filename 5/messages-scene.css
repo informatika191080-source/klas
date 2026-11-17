@@ -1,0 +1,116 @@
+/* Field journal for the Park of Messages. Original scene and controls, scoped to one pilot mission. */
+body:has(.msg-portal){background:#e4e9da;background-image:radial-gradient(#547b6220 .8px,transparent .8px);background-size:19px 19px;color:#203e39}
+body:has(.msg-portal)::before{display:none}
+body:has(.msg-portal) .header{background:#153f3c;border-color:#153f3c;border-radius:8px;box-shadow:0 4px 0 #b4c6b5;color:#edf8ee}
+body:has(.msg-portal) .portal-tools{color:#37534c;border-color:#8ea999}
+body:has(.msg-portal) .portal-tools #reset-progress{color:#973d26}
+html body .game-layout>main.msg-portal{position:relative;background:#fbf8ec;border:1px solid #91aa96;border-top:7px solid #d89148;border-radius:8px 28px 8px 8px;box-shadow:7px 8px 0 #b9c8b6;color:#203e39;padding:24px 30px 32px}
+main.msg-portal .stage-top{margin-bottom:8px}
+main.msg-portal .stage-top>.navbtn{display:none}
+main.msg-portal .stage-top .tag{background:#f4dfb6;border:1px solid #b58e59;border-radius:4px;color:#624521;letter-spacing:.04em}
+main.msg-portal .ticket-header{background:none;border:0!important;border-radius:0;box-shadow:none;min-height:88px;padding:8px 0!important;margin:8px 0 12px;overflow:visible}
+main.msg-portal .ticket-header .mission-scenery{display:none}
+main.msg-portal .portrait-frame{border:0;border-radius:44% 46% 39% 42%;background:#f1ce7e;transform:rotate(-4deg);width:78px;height:86px}
+main.msg-portal .portrait-frame .portrait{width:83px;height:90px}
+main.msg-portal .ticket-header h1{color:#173f3a;text-shadow:none;font-size:clamp(27px,3vw,40px);letter-spacing:-.035em;line-height:1.15;margin-top:8px}
+main.msg-portal .caps{color:#326a5c}
+main.msg-portal .mission-team{display:none}
+main.msg-portal .mission-team .team-label{color:#4d6b60}
+main.msg-portal .msg-story{border-top:1px dashed #99af9b;border-bottom:1px dashed #99af9b;background:#f4efdc;padding:0 14px}
+main.msg-portal .msg-story summary{cursor:pointer;padding:12px 0;font-size:16px;font-weight:750;color:#315448;min-height:46px}
+main.msg-portal .msg-story p{color:#314d45;font-size:18px;margin:3px 0 17px}
+main.msg-portal :is(.btn,.navbtn,.lab-pill,.lab-choice){border-radius:6px;border:1px solid #729687;box-shadow:none;background:#fffef8;color:#254c42;line-height:1.5}
+main.msg-portal .btn{background:#1a6b5b;color:#fffef2;border-color:#124c41;border-bottom:4px solid #0c4539;font-weight:800;box-shadow:3px 3px 0 #ccdac9}
+main.msg-portal .btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:3px 5px 0 #ccdac9;background:#125b4d}
+main.msg-portal :is(.btn.secondary,.btn.ghost){background:#f5f0df;color:#34594b;border-color:#91a78d;box-shadow:none}
+main.msg-portal .navbtn:hover:not(:disabled),main.msg-portal .lab-pill:hover:not(:disabled),main.msg-portal .lab-choice:hover:not(:disabled){background:#e7f0df;border-color:#295f4e;transform:none}
+main.msg-portal .msg-mission .lab-choice.selected,main.msg-portal .msg-mission .lab-pill.selected,main.msg-portal .msg-mission .navbtn.active{background:#d8ebd7!important;color:#164d3f;border:2px solid #347a5b!important;box-shadow:inset 4px 0 #347a5b}
+main.msg-portal :is(button,input,select,summary):focus-visible{outline-color:#b66418;outline-width:3px;outline-offset:4px}
+main.msg-portal .task-progress-label{font-size:15px;color:#547164;text-transform:none;letter-spacing:0;margin:14px 0 8px}
+main.msg-portal .msg-park{position:relative;display:block;padding:12px 18px 16px;border:1px solid #a6b89c;border-radius:3px;background:#f0f2df;box-shadow:0 4px 0 #dde2ca;margin:0 0 28px}
+main.msg-portal .msg-map-heading{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#3f6552;font-size:14px;font-weight:750;letter-spacing:.03em;padding:0 0 2px}
+main.msg-portal .msg-map-heading span:first-child{font-size:17px;letter-spacing:0}
+main.msg-portal .msg-park-art{display:block;width:100%;height:125px;margin:0 auto}
+main.msg-portal .msg-park-art svg{width:100%;height:100%}
+main.msg-portal .msg-park ol{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+main.msg-portal .msg-park li{color:#4d6959;border-top:1px dashed #9db094;padding-top:10px;align-items:flex-start}
+main.msg-portal .msg-park strong{font-size:16px;color:#325a48}
+main.msg-portal .msg-park small{font-size:14px;line-height:1.4}
+main.msg-portal .msg-park-token{height:29px;flex-basis:29px;border-radius:50%;background:#edf0de;border-color:#8da58e;color:#59735e}
+main.msg-portal .msg-park .is-current .msg-park-token{background:#f8c871;border:2px solid #ae6c25;box-shadow:none;color:#654315}
+main.msg-portal .msg-park .is-done .msg-park-token{background:#216a53;border-color:#216a53;color:#fffce9}
+main.msg-portal .msg-park .is-done small{color:#256344}
+main.msg-portal .msg-task-heading{margin:20px 0 16px;border-bottom:2px solid #3d6c55;padding-bottom:13px}
+main.msg-portal .msg-task-heading h2{color:#244d3f;font-size:clamp(26px,3vw,34px);letter-spacing:-.035em;margin:7px 0 0}
+main.msg-portal .msg-learning-guide{background:#edf2df;border:1px solid #9bb491;border-radius:6px;box-shadow:4px 4px 0 #dfe5cf;overflow:visible}
+main.msg-portal .msg-learning-guide summary{color:#275742}
+main.msg-portal .msg-learning-guide summary small{color:#4b6a55}
+main.msg-portal .msg-guide-body{border-color:#a8baa0;color:#294e3f}
+main.msg-portal .msg-guide-body h3{color:#275742}
+main.msg-portal .msg-example{background:#fcfaf0;border:1px solid #a2b49b;border-radius:4px}
+main.msg-portal .msg-example-result{border:0;border-left:4px solid #b8863f;border-radius:0;background:#f6ead0;min-height:190px;color:#334a35}
+main.msg-portal .msg-example-sign{border-radius:50%;background:#ffe4a5;border-color:#c4933b;color:#725218}
+main.msg-portal .msg-example-result :is(h4,p){color:#334a35}
+main.msg-portal .msg-example-result .msg-example-reason{border-color:#c2b58a}
+main.msg-portal .msg-guide-body>.tiny{color:#526747}
+main.msg-portal .msg-investigation{gap:23px;grid-template-columns:235px minmax(0,1fr);margin-top:24px;align-items:start}
+main.msg-portal .msg-samples{position:relative;gap:12px;padding:8px 0 10px 15px;border-left:5px solid #bba47a}
+main.msg-portal .msg-samples .navbtn{position:relative;text-align:left;min-height:60px;border:1px solid #9baf91;background:#e7ecd8;border-radius:2px 14px 14px 2px;padding:12px 15px;color:#355340}
+main.msg-portal .msg-samples .navbtn::before{content:'';position:absolute;width:6px;height:6px;border-radius:50%;background:#827453;left:5px;top:7px}
+main.msg-portal .msg-samples .navbtn.active{box-shadow:4px 4px 0 #d7dfc4;background:#cfdfbd!important}
+main.msg-portal .msg-observation{position:relative;border:1px solid #a7b39a;border-top:6px solid #789b6f;background:#fffef7;border-radius:4px;box-shadow:5px 5px 0 #e1e4cc;padding:24px}
+main.msg-portal .msg-observation h3{color:#234b3c;font-size:22px}
+main.msg-portal .msg-observation>svg{background:#e4f0de;border-radius:47% 41% 43% 38%;margin:20px auto;height:210px;padding:10px 14px}
+main.msg-portal .msg-organ-choices{gap:10px}
+main.msg-portal .msg-organ-choices button{flex-basis:150px;min-height:50px;border-style:dashed;background:#fffdf5}
+main.msg-portal .msg-mission>.tiny,main.msg-portal .msg-mission .tiny{color:#4c6858}
+main.msg-portal .msg-code-sign{border-radius:3px;border:1px solid #a8b391;background:#e0e8cb}
+main.msg-portal .msg-code-sign strong{color:#2c5846;background:#f2cb79;border:2px solid #8d743b;padding:18px 22px;clip-path:polygon(0 0,88% 0,100% 50%,88% 100%,0 100%)}
+main.msg-portal .phase-alert{background:#f4e9c8;color:#5c4d2c;border:1px solid #c6b37f;border-radius:4px;font-size:17px}
+main.msg-portal .msg-legend{background:#fff2c7;color:#584925;border-color:#b6a16a;border-radius:4px}
+main.msg-portal .msg-broadcast{background:#e9eedb;border-color:#a1b28f;border-radius:4px}
+main.msg-portal .msg-broadcast h3{font-size:24px;color:#264d3b}
+main.msg-portal .msg-recipients article{border-radius:3px;border:1px dashed #96ad8a;background:#f9f6e9;box-shadow:none}
+main.msg-portal .msg-recipients strong{color:#3d6043}
+main.msg-portal .msg-recipients article.has-message{border:2px solid #4a8965;background:#dbead1;box-shadow:inset 0 5px #4a8965}
+main.msg-portal .msg-recipient-status,main.msg-portal .has-message .msg-recipient-status{color:#3e6846}
+main.msg-portal .msg-mission fieldset{border:1px solid #a5b498;border-radius:4px;background:#f5f5e8}
+main.msg-portal .msg-mission :is(input,select){background:#fffefa;color:#244c40;border:1px solid #789f87;border-radius:4px;font-size:18px}
+main.msg-portal .msg-slide-preview{background:#fffef8;border:2px solid #748f76;border-radius:3px;box-shadow:5px 6px 0 #d9dec9}
+main.msg-portal .msg-slide-preview .caps{color:#4e6952}
+main.msg-portal .msg-task-feedback{background:#f9e6ca;border:1px solid #bc8747;border-left:6px solid #bc8747;border-radius:3px}
+main.msg-portal .msg-task-feedback :is(.caps,h3,p){color:#614529}
+main.msg-portal .success-card{background:#e0eed3;border:1px solid #6b9669;border-bottom:5px solid #467653;border-radius:5px;box-shadow:5px 5px 0 #d5dfc7}
+main.msg-portal .success-kicker{color:#3d6b46}
+main.msg-portal .success-card .success-copy h2{color:#255835}
+main.msg-portal .success-card .success-copy p{color:#2e513b}
+main.msg-portal .success-sparks{color:#b17d2d}
+main.msg-portal .msg-mastery{background:#e4edd6;border:1px solid #86a077;border-radius:3px}
+main.msg-portal .msg-mastery :is(h3,li strong){color:#2d563b}
+main.msg-portal .msg-mastery li span{color:#446049}
+main.msg-portal .msg-mastery li::before{color:#3b7b46}
+main.msg-portal .mission-done h2{color:#2d563b}
+main.msg-portal .mission-done p{color:#446049}
+@media(max-width:1060px){main.msg-portal .msg-investigation{grid-template-columns:1fr}main.msg-portal .msg-samples{grid-template-columns:repeat(2,minmax(0,1fr));border-left:0;border-top:4px solid #bba47a;padding:13px 0 0}}
+@media(max-width:720px){
+ html body .game-layout>main.msg-portal{padding:16px 14px 24px;box-shadow:3px 4px 0 #b9c8b6;border-radius:5px 22px 5px 5px}
+ main.msg-portal .ticket-header{gap:12px}
+ main.msg-portal .portrait-frame{width:48px;height:58px;flex-basis:48px}
+ main.msg-portal .portrait-frame .portrait{width:58px;height:65px}
+ main.msg-portal .ticket-header h1{font-size:25px!important}
+ main.msg-portal .ticket-header .caps{font-size:12px}
+ main.msg-portal .mission-team{justify-content:flex-start;gap:14px}
+ main.msg-portal .msg-park{padding:10px 12px 14px;margin-bottom:23px}
+ main.msg-portal .msg-park-art{height:auto;min-height:76px}
+ main.msg-portal .msg-park-art svg{display:block}
+ main.msg-portal .msg-park ol{grid-template-columns:1fr;gap:8px}
+ main.msg-portal .msg-park li{padding-top:8px;gap:10px;align-items:center}
+ main.msg-portal .msg-park strong{font-size:16px}
+ main.msg-portal .msg-map-heading{font-size:13px}
+ main.msg-portal .msg-observation{padding:19px 16px}
+ main.msg-portal .msg-observation>svg{height:185px}
+ main.msg-portal .msg-samples{gap:10px}
+ main.msg-portal .msg-samples .navbtn{padding:13px 10px;font-size:16px}
+ main.msg-portal .msg-guide-body h3{font-size:21px}
+ main.msg-portal .msg-learning-guide summary strong{font-size:17px}
+}
