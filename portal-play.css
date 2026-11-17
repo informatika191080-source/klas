@@ -1,0 +1,163 @@
+/* One shared, colourful adventure identity for the whole portal. */
+:root{color-scheme:light;--play-ink:#263568;--play-muted:#53618a;--play-purple:#6843d7;--play-blue:#187dc4;--play-pink:#e84f92;--play-yellow:#ffce46;--play-line:#bdc9ee;--muted:#53618a;--accent:#6341c4;--line:#bdc9ee;--bg:#eaf5ff}
+html body{color:var(--play-ink);background:radial-gradient(ellipse at 2% 6%,#c4efff 0,transparent 45%),radial-gradient(ellipse at 98% 40%,#e6d5ff 0,transparent 45%),#edf5ff;background-attachment:fixed}
+body::before{display:block;opacity:.5;background-image:radial-gradient(circle,#6abce4 1.5px,transparent 2px),radial-gradient(circle,#bb9bf1 1.5px,transparent 2px);background-size:81px 83px,131px 137px;background-position:12px 20px,55px 45px}
+.container{max-width:1280px}
+html body .header{background:#fff;border:2px solid #c3d2f3;border-bottom:5px solid #aebfea;border-radius:24px;color:#303972;box-shadow:0 8px 0 #dce6fc;padding:15px 20px;gap:15px}
+.header .logo small{color:#5b6492}.header .logo-icon{background:#b9ecff;border:2px solid #6dc8f0;box-shadow:0 4px 0 #87b8e4}
+.container .navbtn,.header .toplinks .navbtn{background:#f0edff;border:2px solid #c9baf1;color:#50379c;border-radius:15px;box-shadow:0 3px 0 #dfd5f5;min-height:46px}
+.container .navbtn:hover:not(:disabled){background:#e5dcff;border-color:#9773de}
+.toplinks>.navbtn.active,.container .navbtn.active{background:#6e46d9;color:white;border-color:#5b32c1;box-shadow:0 3px 0 #442795}
+.container .btn{background:#ffcf48;color:#493361;border:2px solid #efb72c;border-bottom:5px solid #d4931d;box-shadow:0 6px 0 #ffe5a1;border-radius:17px;font-weight:850}
+.container .btn:hover:not(:disabled){background:#ffdc6f;box-shadow:0 8px 0 #ffe5a1;transform:translateY(-2px)}
+.container .btn.secondary,.container .btn.ghost{background:#ede9ff;color:#523a9d;border-color:#c5b5ed;border-bottom-color:#ad94dc;box-shadow:none}
+button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #a238a4;outline-offset:4px}
+.container .caps{color:#6641b3}.container .muted,.container .tiny,.footer,.portal-tools{color:#53618a}
+.container .tag{background:#f0e9ff;color:#6542ab;border:1px solid #c7b1ed}
+.container .panel{border:2px solid #b8c9ee;border-radius:25px;box-shadow:0 6px 0 #d8e4fc;background:#fff;color:#263568}
+.section-intro h2,.world-section-heading h2{color:#34447f}
+.section-intro p,.world-section-heading p,.map-legend{color:#57658e}
+
+/* The same illustrated sky appears at the entrance, each class, and the map. */
+html body .container .campaign-hero,.container .world-welcome,.container .portal-grade-hero{position:relative;isolation:isolate;background:#caf0ff;border:3px solid #fff;border-radius:34px 34px 70px 34px;box-shadow:0 8px 0 #a9c7ee;overflow:hidden;color:#2e3973}
+html body .campaign-hero{min-height:390px;padding:12px 32px;grid-template-columns:1.05fr .95fr}
+.campaign-hero::before,.world-welcome::before,.portal-grade-hero::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 83% 36%,#ffe27b 0 125px,transparent 126px),radial-gradient(ellipse at 90% 94%,#9bdccc 0 24%,transparent 24.2%),radial-gradient(ellipse at 65% 108%,#a6c9ff 0 35%,transparent 35.2%);mask-image:none}
+.campaign-hero::after,.world-welcome::after,.portal-grade-hero::after{content:'✦';position:absolute;color:#f292ba;font-size:43px;top:24px;right:37%;transform:rotate(15deg);pointer-events:none}
+.campaign-hero .hero-text{padding:25px 0}.campaign-hero h1,.world-welcome h1{color:#303c80;font-size:clamp(36px,4.2vw,57px);line-height:1.12;letter-spacing:-.045em}
+.campaign-hero .gradient,.world-welcome h1 em{background:none;-webkit-text-fill-color:#8346c5;color:#8346c5;font-style:normal}
+.campaign-hero .hero-text .campaign-lead,.world-welcome p{color:#455784!important}
+.hero-eyebrow,.world-welcome .world-badge{display:inline-flex;color:#5e399a;background:#fff7ca;border:2px solid #f0cd66;border-radius:13px;padding:8px 13px;box-shadow:3px 3px 0 #f4dc91;font-weight:850}
+.signal-dot{background:#ed73a7;box-shadow:none}.world-badge::before{color:#b27419}
+.campaign-art{min-height:320px}.campaign-art .world-hero-art{height:320px}
+.world-hero-art>.world-scene{opacity:1;filter:drop-shadow(0 15px 10px #5673ba35)}
+.world-orbit{border:2px dashed #ffffffcc;box-shadow:none}.world-orbit.orbit-small{border-color:#91b9eb}
+.world-hero-character{filter:drop-shadow(0 9px 0 #7589c02c)}
+.world-label{color:#604197;background:#fff1af;border:2px solid #e5c45e;box-shadow:0 4px 0 #d5b2533d;border-radius:12px;font-size:12px}
+.world-label i{background:#318461;box-shadow:none}
+.world-welcome{padding:30px 35px;min-height:390px}
+.world-welcome .learning-resume{background:#ffffffdb;border:2px solid #a9c2ec;box-shadow:0 5px 0 #a9c2ec55;border-radius:20px}
+.world-welcome .learning-resume small{color:#5c6694}.world-welcome .learning-resume strong{color:#35447d}
+.world-welcome .overall-progress{color:#44527f}.world-welcome .progress-track,.progress-track{background:#d5dff7;box-shadow:none}
+.progress-track i,.world-welcome .progress-track i{background:linear-gradient(90deg,#22b8b3,#7751dc)}
+
+/* Class choices are colourful destinations, with the same geometry everywhere. */
+.portal-grades{gap:16px}
+.portal-grades .academy-grade{--tile:#7150d7;--edge:#5336a8;background:var(--tile)!important;color:#fff;border:3px solid #fff;border-bottom:6px solid var(--edge);border-radius:24px 24px 38px 24px;min-height:136px;box-shadow:0 6px 0 #c1d1f1;overflow:hidden;isolation:isolate}
+.portal-grades .academy-grade:nth-child(2){--tile:#168ba5;--edge:#117286}.portal-grades .academy-grade:nth-child(3){--tile:#d94e89;--edge:#b33a70}.portal-grades .academy-grade:nth-child(4){--tile:#347bd0;--edge:#245ba3}.portal-grades .academy-grade:nth-child(5){--tile:#9b5aca;--edge:#723e9c}
+.portal-grades .academy-grade::after{content:'✦';color:#ffffff36;right:7px;top:-22px;font-size:94px;z-index:-1;transform:rotate(8deg)}
+.portal-grades .academy-grade strong{color:#fff;text-shadow:0 4px 0 #30256950;font-size:58px}
+.portal-grades .academy-grade span{color:#fff;font-weight:800}
+.portal-grades .academy-grade:hover{box-shadow:0 9px 0 #b9c9ed;transform:translateY(-4px) rotate(-1deg)}
+.portal-grades .academy-grade[aria-current=page]{outline:4px solid #ffcd40;outline-offset:3px}
+.portal-grade-hero{display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:20px;padding:32px;margin:20px 0 30px;min-height:330px}
+.portal-grade-hero h1{color:#3b3984;font-size:clamp(31px,4vw,50px);margin:16px 0}.portal-grade-hero p{color:#485b85;font-size:18px;max-width:590px}
+.grade-hero-art{min-width:0}.grade-hero-art .world-scene{height:250px}.grade-number{display:inline-grid;place-items:center;border:3px solid #fff;background:#7850cf;color:white;border-radius:21px 21px 29px 21px;width:63px;height:68px;font-size:36px;font-weight:900;box-shadow:0 4px 0 #b09add;transform:rotate(-5deg);margin-right:15px;vertical-align:middle}
+.grade-route-heading{display:flex;gap:15px;align-items:center;justify-content:space-between;margin:25px 0 5px}.grade-route-heading h2{font-size:27px;margin:0}
+.grade-route-note{background:#fff3cc;color:#745124;padding:8px 13px;border-radius:13px;font-size:15px;font-weight:750}
+.container .character-member{background:#fff;border:2px solid #c9b8ee;border-bottom:5px solid #baa2e1;border-radius:23px!important;box-shadow:0 5px 0 #dddff6;color:#343b74}
+.character-member:nth-child(2){border-color:#edb5ce;border-bottom-color:#db8db2}.character-member:nth-child(3){border-color:#a6d6e7;border-bottom-color:#76b4ce}
+.character-member .character-avatar{background:#e0f3ff;border-radius:40% 48% 43% 48%}.character-member:nth-child(2) .character-avatar{background:#fff0ae}.character-member:nth-child(3) .character-avatar{background:#e6dcff}
+.container .character-member small,.container .character-member .character-message,.character-body .tiny{color:#56638d}
+.container .character-member strong{color:#45407d}
+
+/* Illustrated mission cards: turquoise, violet, coral, and blue worlds. */
+.learning-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin:20px 0 30px}
+.learning-cards .mission-card{--island:#60d9e0;--card-edge:#60becf;border:3px solid #fff;border-bottom:6px solid var(--card-edge);border-radius:27px 27px 38px 27px;background:#fff;color:#33417a;box-shadow:0 7px 0 #c7d8f3;animation:none}
+.learning-cards .mission-card[data-world=workshop]{--island:#c2a2ff;--card-edge:#a080d7}.learning-cards .mission-card[data-world=messages]{--island:#ffbc95;--card-edge:#df9b74}.learning-cards .mission-card[data-world=city]{--island:#8ebaff;--card-edge:#709ed7}
+.learning-cards .mission-card.is-next{border-color:#af8ee9;box-shadow:0 7px 0 #c7d8f3}
+.learning-cards .mission-card:hover{border-color:#9b7cdb;box-shadow:0 11px 0 #c2d0ed;transform:translateY(-4px)}
+.learning-cards .mission-cover{background:var(--island)!important;height:220px}
+.mission-cover::after{height:0}.mission-cover>.world-scene{width:92%;left:8%;height:235px;top:1px;filter:drop-shadow(0 8px 3px #4162a22b)}
+.learning-cards .mission-cover .face{background:#fff0b6;border:3px solid white;box-shadow:0 4px 0 #695f9950;border-radius:21px;left:20px;bottom:12px}
+.learning-cards .card-status-pill{background:#ffffffed;color:#404782;border:1px solid #ffffff;border-radius:13px;font-size:14px}
+.learning-cards .is-next .card-status-pill{background:#fff1a8;color:#68521d;border-color:#f5c548}.learning-cards .is-complete .card-status-pill{background:#dbfae8;color:#226345;border-color:#89cba7}
+.learning-cards .mission-name{color:#3c3b7b}.learning-cards .mission-card .mission-description{color:#52638b}.learning-cards .card-progress{color:#5b6691}
+.learning-cards .card-action{color:#6d43bf;border-color:#ded6f2}.card-action b{background:#eee5ff;border-color:#d6c4f0;color:#6d43bf}
+.world-section-heading .tag,.help-intro{color:#5d459a;background:#eee5ff;border:2px solid #d3bff2;border-radius:20px}
+.help-intro p{color:#4e5f89}
+.mission-switcher{background:#e7ddff;border:2px solid #b9a2e5;color:#593d9b;border-radius:19px;box-shadow:0 4px 0 #d6c6ef}
+.mission-switcher>summary{padding:14px}.mission-switcher .aside{background:#fff;border:0;box-shadow:none}
+.portal-tools{border-color:#bbcaea}.portal-tools details{color:#4f5b86}.footer{margin-top:28px}
+
+/* All practical missions use the same bright play-space and clear tools. */
+html body .game-layout>main.academy-mission{background:#fff;border:3px solid #c4b1ec;border-top:9px solid #9b72e0;border-bottom:7px solid #aa93d8;border-radius:28px 28px 42px 28px;box-shadow:0 8px 0 #d8dff5;color:#2d3b72;padding:24px 30px 32px}
+.academy-mission .stage-top>.navbtn{display:none}.academy-mission .stage-top .tag{background:#fff1b9;color:#71511e;border-color:#efcf6c}
+.academy-mission .ticket-header{background:#e5f4ff;border:0!important;border-radius:23px!important;padding:17px!important;margin:15px 0 18px}
+.academy-mission .ticket-header .portrait-frame{background:#ffdf75;border:3px solid #fff;border-radius:25px;box-shadow:0 4px 0 #b8cef0;width:85px;height:92px;flex:0 0 85px}
+.academy-mission .ticket-header .portrait-frame .portrait{width:100%;height:100%;transform:none}.academy-mission .ticket-header h1{color:#3e3e82;font-size:clamp(27px,3vw,38px);text-shadow:none}
+.academy-mission .mission-team{display:none}.academy-mission .msg-story{border:2px dashed #e9c66f;border-radius:18px;background:#fff6d7;padding:0 15px;color:#6a5427}
+.academy-mission .msg-story summary{min-height:47px;cursor:pointer;padding:12px 0;font-size:16px;font-weight:800}.academy-mission .msg-story p{color:#6a5427;margin:5px 0 17px;font-size:18px}
+.academy-mission .task-progress-label{color:#6c4cac}.academy-mission .academy-task,.academy-mission .task-heading p,.academy-mission .tiny,.academy-mission .micro,.academy-mission .skills{color:#53618a}
+.academy-mission :is(.class-card,.class-bin,.class-cards-bank,.class-summary>div,.inspector){background:#f1f7ff;border:2px solid #b8ccee;border-radius:22px;box-shadow:0 4px 0 #dce7f8;color:#354777}
+.academy-mission .class-card h3,.academy-mission .class-card p,.academy-mission .class-bin p{color:#405783}.academy-mission .class-summary strong{color:#6650ac}
+.academy-mission .class-station-art{background:#d8edff;border-radius:18px}.academy-mission .class-token{background:#fff0b9;border:2px solid #e8c967;color:#6f5426;border-radius:16px;font-size:18px}
+.academy-mission .class-token.selected{background:#e1d4ff;border-color:#966cd5;outline-color:#966cd5;color:#563a91}
+.academy-mission .class-ball-track{background:#e0f4ff;border-color:#7eb8dc;border-radius:18px}
+.academy-mission .route span{background:#eee8ff;color:#6952a1;border-color:#cfbdeb;border-radius:15px}.academy-mission .route [aria-current=step]{background:#fff0b1;color:#73551c;border-color:#e0bb52}.academy-mission .route .done{color:#23634c;background:#d8f6e9;border-color:#8acdb7}
+.academy-mission .editor{background:#e4edff;border:2px solid #a3b8e2;border-radius:24px;box-shadow:0 5px 0 #c5d4ee}.academy-mission .editor-bar,.academy-mission .editor-foot{color:#4c5b88;background:#dfe8ff}.academy-mission .editor-bar>span:first-child{color:#50409c}
+.academy-mission .inspector :is(h3,dd),.academy-mission .inspector dt,.academy-mission .inspector .concept{color:#4b5b85}.academy-mission .inspector .concept{border-color:#becdec}
+.academy-mission :is(input:not([type=range]),select){background:#fff;color:#334577;border:2px solid #a9bde0;border-radius:12px;font-size:18px;min-height:46px}.academy-mission input[type=range]{accent-color:#8254cc}
+.academy-mission .brief{background:#fff5cf;border:2px solid #e7cd75;border-radius:21px;color:#735721}.academy-mission .brief h3,.academy-mission .brief li{color:#735721}.academy-mission .brief li.met{color:#286649}.academy-mission .brief li.met::before{color:#286649}
+.academy-mission .button,.academy-mission .editor-foot button,.academy-mission #context-toggle,.academy-mission .context-menu button,.academy-mission #replay{background:#ece4ff;border:2px solid #bc9fe6;color:#5c3d9f;border-radius:14px;font-size:17px;min-height:46px;padding:10px 15px}
+.academy-mission #check{background:#ffce46;color:#67451e;border-color:#e8ae29;border-bottom-width:5px;font-weight:850}.academy-mission .context-menu{background:#e5dcfa;border-color:#bc9fe6;border-radius:18px}
+.academy-mission .lab-choice,.academy-mission .lab-pill{background:#fff;border:2px solid #b9cbea;color:#3e4d7b;border-radius:15px}
+.academy-mission .lab-choice.selected,.academy-mission .lab-pill.selected{background:#dcefff;color:#244c7a;border:2px solid #5295cc;box-shadow:inset 5px 0 #5295cc}
+.academy-mission .phase-alert{background:#ffe8c9;border:2px solid #e9ba79;color:#745027;border-radius:16px}
+.academy-mission .mission-done p{color:#53618a}
+
+/* Independent worked examples share the helper's playful card language. */
+.learning-route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;list-style:none;padding:0;margin:18px 0 23px}
+.learning-route li{display:flex;align-items:center;gap:9px;color:#6a6295;font-size:16px}.learning-route li>span{display:grid;place-items:center;flex:0 0 33px;height:35px;background:#eee7fc;border:2px solid #c9b9e9;border-radius:12px;font-weight:850}.learning-route .current>span{background:#ffdf75;border-color:#e5bc4b;color:#77561f}.learning-route .done>span{background:#d3f3e5;border-color:#7abfa4;color:#235e47}
+.learning-guide,.msg-mission .msg-learning-guide{margin:18px 0 24px;border:2px solid #baa1e5;border-radius:22px;background:#f0e8ff;box-shadow:0 5px 0 #dfd2f5;color:#51407f;overflow:hidden}
+.learning-guide summary{display:flex;gap:12px;align-items:center;list-style:none;cursor:pointer;min-height:68px;padding:13px 17px;color:#5b3d99}.learning-guide summary::-webkit-details-marker{display:none}.learning-guide summary strong{font-size:18px;display:block}.learning-guide summary small{font-size:14px;display:block;margin-top:3px;color:#6a5c8c}
+.learning-hero{width:42px;height:48px;flex:none}.learning-hero svg{width:100%;height:100%}.learning-chevron{font-size:27px;margin-left:auto}.learning-guide[open] .learning-chevron{transform:rotate(180deg)}
+.learning-body{padding:8px 21px 21px;border-top:1px solid #cdb9ee}.learning-body h3{font-size:23px;line-height:1.3;margin:14px 0;color:#5a3f94}.learning-body p{font-size:18px;line-height:1.65}.learning-body>.tiny{font-size:15px}
+.learning-experiment{background:#fff;border:2px solid #d3c4ef;border-radius:18px;padding:17px;margin:18px 0}.learning-switches{display:flex;gap:10px;flex-wrap:wrap}.learning-switches button{flex:1 1 170px;text-align:left}
+.learning-example{display:grid;grid-template-columns:180px minmax(0,1fr);gap:20px;align-items:center;margin-top:16px;padding:20px;background:#fff3cc;border:1px solid #ecd891;border-radius:17px;color:#66502b}.learning-picture{background:#fffdf4;border:1px solid #ead999;border-radius:16px}.learning-picture svg{width:100%;height:auto;display:block}.learning-example h4{font-size:22px;margin:0 0 12px}.learning-example p{margin:10px 0;color:#66502b}.learning-example .learning-reason{border-top:1px solid #d9c689;padding-top:12px;font-size:16px}
+.learning-feedback,.msg-mission .msg-task-feedback{display:grid;grid-template-columns:58px minmax(0,1fr);gap:15px;padding:20px;border:2px solid #edba78;border-left:7px solid #edaa50;border-radius:21px;background:#fff1d9;margin:22px 0;color:#79502b;scroll-margin-bottom:100px}.learning-feedback-hero{width:58px;height:76px}.learning-feedback-hero svg{width:100%;height:100%}.learning-feedback h3{font-size:24px;margin:8px 0}.learning-feedback p{font-size:18px;line-height:1.65}.lesson-feedback-slot:empty{display:none}
+.msg-mission .msg-learning-guide summary,.msg-mission .msg-guide-body h3{color:#5b3d99}.msg-mission .msg-learning-guide summary small,.msg-mission .msg-guide-body>.tiny{color:#6a5c8c}.msg-mission .msg-guide-body{border-color:#cdb9ee;color:#51407f}.msg-mission .msg-example{background:#fff;border:2px solid #d3c4ef}.msg-mission .msg-example-result{background:#fff3cc;border-color:#ecd891;color:#66502b}.msg-mission .msg-example-result :is(h4,p){color:#66502b}
+.msg-mission .msg-park{background:#dff7ec;border:2px solid #99d0bb;display:block;padding:15px 18px}.msg-mission .msg-park-art{width:100%;height:125px}.msg-mission .msg-map-heading{color:#306958}.msg-mission .msg-park li,.msg-mission .msg-park strong{color:#315f58}.msg-mission .msg-park-token{background:#e7fff5;color:#337960;border-color:#8ac5ad}.msg-mission .msg-park .is-current .msg-park-token{background:#ffdf75;color:#74581d;border-color:#d1ad4e}.msg-mission .msg-park .is-done small{color:#337960}
+.msg-mission .msg-observation,.msg-mission .msg-broadcast{background:#f0f8ff;border:2px solid #aecdec;color:#3c517d}.msg-mission .msg-recipients article{background:#e9f1ff;border:2px solid #b6c9eb;color:#3c517d}.msg-mission .msg-recipients strong,.msg-mission .msg-recipient-status{color:#405d86}.msg-mission .msg-recipients article.has-message{background:#d9f5e9;border-color:#88c7ad}.msg-mission .has-message .msg-recipient-status{color:#2a6b50}
+.msg-mission .msg-code-sign{background:#e8defa;border-color:#b79bdc}.msg-mission .msg-code-sign strong{color:#6d419f}.msg-mission .msg-legend{background:#fff1be;border-color:#e0c571;color:#725a2c}.msg-mission fieldset{background:#f2f7ff;border:2px solid #bed0ee}.msg-mission .msg-mastery{background:#ddf4e9;border-color:#a0cdbb;color:#3d6457}.msg-mission .msg-mastery li span{color:#4e6e62}
+.msg-mission .msg-task-feedback :is(.caps,h3,p){color:#79502b}.msg-mission .msg-mastery h3,.msg-mission .msg-mastery li strong,.msg-mission .msg-mastery li::before{color:#316650}
+.learning-feedback .caps{color:#976125}
+.more-nav-menu{background:#fff;border:2px solid #c8b5e9;box-shadow:0 8px 0 #d6c7f1;border-radius:20px}
+.more-nav>summary{background:#f0edff;border:2px solid #c9baf1;color:#50379c;border-radius:15px}.more-nav[open]>summary{background:#e3d7ff;color:#50379c}
+.side-nav button{color:#5c568d;background:#f3edff;border:1px solid #dacbf3}.side-nav button.current{background:#7750d1;color:#fff;border-color:#7750d1}.side-nav button.done{color:#2a6d50;background:#e0f6e9}.aside .progress-text,.aside .stat,.aside .tiny{color:#56618b}
+.academy-mission .success-card{background:#dff8ed;border:2px solid #80c7aa;border-bottom:6px solid #60a98c;box-shadow:0 5px 0 #c5eadb;border-radius:24px}.academy-mission .success-card .success-copy h2{color:#276e51}.academy-mission .success-card .success-copy p,.academy-mission .success-kicker{color:#376a57}
+
+/* The simulated applications retain their working surfaces inside a shared frame. */
+.game-layout>main.stage:not(.academy-mission){background:#fff;color:#303f75;border:3px solid #c4b1ec;border-top:9px solid #9b72e0;border-bottom:7px solid #aa93d8;border-radius:28px;box-shadow:0 8px 0 #d8dff5}
+.game-layout>main.stage:not(.academy-mission) .muted,.game-layout>main.stage:not(.academy-mission) .tiny{color:#53618a}.game-layout>main.stage:not(.academy-mission) .caps{color:#6747ac}
+.stage :is(.m1-head,.m2-head,.m3-head,.m6-head,.v4-heading,.ticket-header){background:#e4f2ff;border:0;border-radius:22px;color:#3b4483}.stage :is(.m1-head,.m2-head,.m3-head,.m6-head,.v4-heading,.ticket-header) :is(h1,h2){color:#3b4483;text-shadow:none}
+.stage :is(.m1-call,.m2-call,.m3-report,.m6-talk,.v4-talk){color:#f2f7ff;background:#334e8e;border:2px solid #91b2e5}
+.stage :is(.m1-drive,.m2-net,.m3-phone,.m6-browser,.v4-scene,.lab-scene){color:#f0f6ff}
+.stage :is(.m1-legend,.m2-note,.m3-explain,.m6-note){color:#53618a}
+.stage .mission-team>span,.stage .mission-team .team-label{color:#625888}.stage .task-progress-label,.stage .step-label{color:#7353b0}
+.stage .success-card{background:#dff8ed;border:2px solid #80c7aa;border-bottom:6px solid #60a98c;box-shadow:0 5px 0 #c5eadb;border-radius:24px}.stage .success-card .success-copy h2{color:#276e51}.stage .success-card .success-copy p,.stage .success-kicker{color:#376a57}
+.report .panel,.guide-page.panel,.lab-activity.panel,.lab-menu.panel,.lab-grid+.panel{background:#fff;color:#303f75;border-color:#c4b1ec;border-top:7px solid #aa84e0}
+.report .caps,.guide-page .caps,.lab-activity .caps{color:#7150b2}.report .muted,.report .tiny,.guide-page .tiny,.guide-note,.lab-activity .tiny{color:#53618a}
+.report .academy-results{background:#f0e9ff}.report .academy-result{background:white;color:#4b3e88;border-color:#d4c3ef}.report .academy-result span{color:#655489}
+.report .report-score{color:#7750c3}.report-metrics>div{background:#e8efff;border:1px solid #b7c8ec;border-radius:20px}.report .topic-row{background:#f1f6ff;border:2px solid #bed0ef;color:#384e80}.report .topic-info strong,.report .topic-count{color:#485f90}.report .topic-info small{color:#5e6d94}.report .topic-num{background:#e4d7ff;color:#7050ab}
+.report .report-score>span{color:#657393!important}
+.guide-page .guide-scene{background:#eef1ff;border-color:#c4c7ed;color:#3e4783}.guide-page .guide-example{background:#fff5cf;border-color:#ecd17c;color:#70552c}.guide-page .guide-note{color:#53618a}.guide-page .guide-answer{background:#fff;border:2px solid #c9b6ed;color:#5b4397}.guide-page .guide-feedback{background:#dbf4e6;color:#31624d;border-color:#95ccb2}
+.lab-activity .lab-scene,.lab-activity .lab-panel{color:#f1f6ff}.lab-activity .lab-scene .tiny{color:#c5d9f5}
+.campaign-cards .mission-card{background:#fff;color:#3e4780;border:3px solid #d4c3f1;border-bottom:6px solid #b69bdc;box-shadow:0 6px 0 #d8dff5;border-radius:25px}.campaign-cards .mission-card:nth-child(3n+2){border-color:#a6d9e8;border-bottom-color:#78bacd}.campaign-cards .mission-card:nth-child(3n){border-color:#f2c49f;border-bottom-color:#dba877}.campaign-cards .mission-subtitle{color:#5e6b91}.campaign-cards .mission-number,.campaign-cards .mission-flag,.campaign-cards .mission-status{color:#655098}
+.live-bip .live-bip-launch{background:#7250d5;border:3px solid #fff;border-bottom-color:#4d319e;box-shadow:0 5px 0 #c2b2e9;color:#fff;border-radius:24px}.live-bip .live-bip-panel{border:3px solid #c8aff0;border-radius:25px;box-shadow:0 10px 40px #3b367a40}
+
+@media(max-width:900px){.learning-example{grid-template-columns:145px minmax(0,1fr)}.portal-grade-hero{grid-template-columns:1.2fr .8fr}.grade-hero-art .world-scene{height:200px}}
+@media(max-width:720px){
+ html body .campaign-hero{grid-template-columns:1fr;padding:18px 22px 6px;border-radius:26px 26px 43px 26px}.campaign-hero .hero-text{padding:8px 0}.campaign-hero h1{font-size:36px!important;margin:16px 0}.campaign-hero .campaign-art{min-height:0;display:block!important}.campaign-art .world-hero-art{height:220px}.hero-eyebrow{font-size:12px;padding:7px 9px}
+ .campaign-hero .hero-text .campaign-lead{display:none}.campaign-hero h1{font-size:31px!important}.campaign-art .world-hero-art{height:190px}
+ .campaign-hero::before,.world-welcome::before,.portal-grade-hero::before{background:radial-gradient(circle at 70% 76%,#ffe27b 0 95px,transparent 96px),radial-gradient(ellipse at 90% 107%,#9bdccc 0 23%,transparent 23.2%)}
+ .world-welcome{padding:21px 20px 12px;border-radius:26px 26px 43px 26px}.world-welcome h1{font-size:35px}.world-welcome .world-badge{font-size:12px}.world-welcome .world-hero-art{height:225px}.world-welcome .learning-resume .btn{width:100%}
+ .portal-grades{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.portal-grades .academy-grade{min-height:100px;border-radius:20px 20px 30px 20px}.portal-grades .academy-grade strong{font-size:41px}.portal-grades .academy-grade:last-child{grid-column:1/-1}.portal-grades .academy-grade:last-child{display:flex;gap:10px;align-items:center;justify-content:center}
+ .portal-grade-hero{grid-template-columns:1fr;padding:24px 22px;gap:0;border-radius:26px 26px 43px 26px}.portal-grade-hero h1{font-size:32px}.grade-hero-art .world-scene{height:190px}.grade-route-heading{display:block}.grade-route-note{display:inline-block;margin-top:12px}
+ .learning-cards{grid-template-columns:1fr;gap:21px}.learning-cards .mission-cover{height:185px}.mission-cover>.world-scene{height:205px}.learning-cards .mission-card .mission-name{font-size:23px}.learning-cards .card-progress{font-size:15px}
+ html body .game-layout>main.academy-mission{padding:16px 14px 24px;border-radius:23px 23px 32px 23px}.academy-mission .ticket-header{gap:12px;padding:12px!important}.academy-mission .ticket-header .portrait-frame{width:48px;height:58px;flex-basis:48px}.academy-mission .ticket-header h1{font-size:25px!important}.academy-mission .ticket-header .caps{font-size:12px}
+ .learning-route{grid-template-columns:1fr;gap:10px}.learning-route li{font-size:16px}.learning-guide summary{padding:12px;gap:9px}.learning-hero{width:34px;height:43px}.learning-body{padding:6px 14px 17px}.learning-body h3{font-size:21px}.learning-experiment{padding:12px}.learning-example{grid-template-columns:1fr;padding:14px;gap:13px}.learning-picture svg{max-width:240px;margin:auto}.learning-feedback,.msg-mission .msg-task-feedback{grid-template-columns:1fr;padding:17px}.learning-feedback-hero{display:none}
+ .msg-mission .msg-park ol{grid-template-columns:1fr}.msg-mission .msg-park-art{height:90px}.academy-mission .route span{flex:1 1 120px}
+ .character-team{grid-template-columns:1fr}.world-section-heading h2{font-size:27px}.container .header{padding:13px;gap:12px}.header .logo small{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{html body{background:white;color:black}.header,.live-bip,.world-hero-art,.grade-hero-art{display:none!important}.container .panel{box-shadow:none}}
