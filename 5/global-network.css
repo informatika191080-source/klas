@@ -1,0 +1,27 @@
+/* Layout only for the two new lessons. Existing portal theme stays unchanged. */
+#global-network{min-width:0}
+#global-network .net-route{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+#global-network .net-route span{flex:1 1 160px;padding:10px;border-radius:12px;border:2px solid var(--line,#cad8ef)}
+#global-network .net-task{min-width:0}
+#global-network .net-fields{display:grid;gap:12px;margin:20px 0}
+#global-network label{display:block;font-weight:700;margin-top:12px}
+#global-network input,#global-network select,#global-network textarea{width:100%;max-width:100%;min-height:48px;font:inherit;font-size:1rem;color:#163253;background:#fff;border:2px solid #abbcdb;border-radius:12px;padding:12px;box-sizing:border-box}
+#global-network select{white-space:normal;height:auto}
+#global-network textarea{resize:vertical;line-height:1.6}
+#global-network .net-line,#global-network .net-pills{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:14px 0}
+#global-network .net-line input{flex:1 1 240px;min-width:0}
+#global-network .net-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;margin:18px 0}
+#global-network .net-results article,#global-network .net-document,#global-network .net-example,#global-network fieldset{padding:18px;border:2px solid #c7d8ef;border-radius:18px;margin:16px 0;min-width:0;background:rgba(255,255,255,.7)}
+#global-network .net-results article{margin:0}
+#global-network fieldset{border-color:#bdb3ec}
+#global-network legend{font-weight:800;padding:0 8px}
+#global-network .net-image{display:block;max-width:350px;width:100%;padding:14px;margin:18px auto;border-radius:18px;border:2px solid #c7d8ef;background:#f3f9ff;color:#163253;font:inherit;text-align:center;box-sizing:border-box}
+#global-network .net-image svg{display:block;width:100%;height:auto;max-height:200px}
+#global-network .net-image span{display:block;padding-top:10px;font-weight:700}
+#global-network .net-pre{white-space:pre-wrap}
+#global-network p,#global-network .net-document,#global-network a{overflow-wrap:anywhere}
+#global-network .net-review-note{border-left:5px solid #8a61de;padding:12px 16px;background:#f2edff;border-radius:8px;color:#352455}
+#global-network .actions{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0}
+#global-network .lab-pill{white-space:normal;text-align:left}
+#global-network summary{cursor:pointer;font-weight:700;min-height:32px}
+@media(max-width:500px){#global-network .net-line .btn{width:100%}#global-network .net-document,#global-network fieldset{padding:12px}#global-network .net-route span{flex-basis:100%}}
