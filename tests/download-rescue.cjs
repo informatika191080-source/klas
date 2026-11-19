@@ -13,3 +13,10 @@ for(const theme of ['space','forest']){
 }
 academy.reset();assert.equal(academy.exportProgress()['download-rescue'].stage,undefined);
 console.log('PASS: both quest branches, investigation/download gates, organize-before-create, file extensions, credit repair, offline export escaping, corrupt-save rejection, combined backup/reset.');
+
+// Exercise the real initial renderer: route navigation must not swallow the workspace.
+const host={innerHTML:'',querySelector(){return null;},addEventListener(){}};
+c.AbortController=AbortController;c.document={getElementById:()=>host};c.window.CyfroUX={capture:()=>null,restore(){}};a.mount();
+const nav=host.innerHTML.match(/<nav[^>]*>([\s\S]*?)<\/nav>/);assert(nav,'Route navigation must be explicitly closed');
+assert.equal((nav[1].match(/<span/g)||[]).length,3);assert(!/<(?:p|h2|button|div)\b/.test(nav[1]),'Workspace and controls must remain outside route navigation');
+console.log('PASS: rendered route contains only its three progress markers, with workspace and actions outside.');
