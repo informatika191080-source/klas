@@ -138,9 +138,10 @@ function importProgress(data){
  catch(e){for(const [id,x] of Object.entries(before))try{if(x===null)localStorage.removeItem(keys[id]);else localStorage.setItem(keys[id],x);}catch(ignored){}throw e;}
 }
 function reset(){try{localStorage.removeItem('cyfropomich5_success_v1');}catch(e){}try{localStorage.removeItem('cyfropomich5_resume_v1');}catch(e){}for(const id of ids)try{localStorage.removeItem(keys[id]);}catch(e){}}
+function catalog(){return ids.map(id=>({id,title:titles[id],storageKey:keys[id]}));}
 function reportRows(){return ids.map(id=>{const x=lessonStatus(id);return [titles[id],x.finished?3:x.stage,3,x.errors,x.hints];});}
 function reportLines(){return ['','НАВЧАЛЬНІ ПРАКТИЧНІ МІСІЇ',...ids.map(id=>{const x=lessonStatus(id);return titles[id]+' — '+(x.finished?3:x.stage)+'/3 частини; повторні перевірки: '+x.errors+'; підказки: '+x.hints;})];}
-window.CyfroAcademy={lessonStatus,totalDone,totalCount,recommend,remember,home,view,mount,init,results,syncRoute,cityContext,cityLocate,exportProgress,validateImport,importProgress,reset,reportLines,reportRows};
+window.CyfroAcademy={catalog,lessonStatus,totalDone,totalCount,recommend,remember,home,view,mount,init,results,syncRoute,cityContext,cityLocate,exportProgress,validateImport,importProgress,reset,reportLines,reportRows};
 
 })();
 

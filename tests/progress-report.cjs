@@ -1,0 +1,21 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
+const values=new Map(),c={window:{},localStorage:{getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)},location:{hash:'#report'},state:{screen:'report',results:{},labs:{}},levelsNames:Array.from({length:8},(_,i)=>'Заявка '+(i+1))};vm.createContext(c);
+vm.runInContext(fs.readFileSync('5/academy.js','utf8'),c);vm.runInContext(fs.readFileSync('5/progress-report.js','utf8'),c);
+const api=c.window.CyfroProgress,defs=c.window.CyfroAcademy.catalog();const make=(lessons={},primary={},catalog=defs)=>api.model({catalog,lessons,primary,cityTitles:c.levelsNames});
+let m=make();assert.equal(m.total,14);assert.equal(m.totalSteps,50);assert.equal(m.finished,0);assert.equal(m.unstarted,14);assert.equal(m.percent,0);
+m=make({'web-search':{stage:0,started:true,done:['tools'],errors:2,hints:3}}, {m1:{stage:'diagnose',mistakes:3},coach:{'0-a':{hints:2}}});assert.equal(m.doneSteps,1);assert.equal(m.active,2);assert.equal(m.percent,2);assert.equal(m.errors,5);assert.equal(m.lessonHints,3);assert.equal(m.cityHintLevels,2);
+m=make({'media-detective':{stage:2,done:['claims','signals','compare','context','reverse']},messages:{stage:1,phase:'combined'},'digital-class':{portal:2,stage:2,followup:true}});assert.equal(m.doneSteps,10);assert.equal(m.entries.find(x=>x.id==='media-detective').done,5);
+const lessons=Object.fromEntries(defs.map(x=>[x.id,{stage:3,finished:true,done:Array(6).fill('done'),errors:1,hints:2}])),results=Object.fromEntries(Array.from({length:24},(_,i)=>[Math.floor(i/3)+1+'-'+i%3,true]));m=make(lessons,{results,finale:{done:true,mistakes:7}});assert.equal(m.finished,14);assert.equal(m.doneSteps,50);assert.equal(m.percent,100);assert.equal(m.errors,6);assert.equal(m.finaleErrors,7);
+const replay=make({objects:{stage:0,finished:true,started:true,errors:4}}).entries.find(x=>x.id==='objects');assert(replay.replaying);assert.equal(replay.done,3);assert.equal(replay.completed,true);
+const legacy=make({'digital-class':{stage:3,picks:Array(9).fill('yes')}});assert.equal(legacy.entries[0].done,4);
+const future=make({'next-lesson':{stage:1,errors:2}}, {},[...defs,{id:'next-lesson',title:'Наступна тема'}]);assert.equal(future.total,15);assert.equal(future.totalSteps,53);assert.equal(future.entries.find(x=>x.id==='next-lesson').done,1);
+const text=api.text(m),csv=api.csv({...m,player:'=HYPERLINK("bad")'});for(const d of defs){assert(text.includes(d.title));assert(csv.includes(d.title));}assert(text.includes('50/50'));assert(csv.includes("'=HYPERLINK"));assert(csv.includes('Одиниця обліку підказок'));assert(text.includes('Секретний виклик: виконано'));
+assert.equal(make({}, {results:{'1-0':{},'1-1':'yes','1-2':false}}).doneSteps,1,'Only stored boolean outcomes count, including legacy corrected steps');
+assert.equal(api.syncPrimary('{bad'),false);assert.equal(api.syncPrimary('[]'),false);assert(api.syncPrimary(JSON.stringify({results:{'1-0':true},m1:{stage:'copy'},player:'Учень'})));assert.equal(c.state.screen,'report');assert.equal(c.state.results['1-0'],true);assert(api.syncPrimary(null));assert.equal(Object.keys(c.state.results).length,0);assert.equal(c.state.m1.stage,'intro');
+values.set(defs.find(x=>x.id==='download-rescue').storageKey,JSON.stringify({stage:2,started:true,errors:4,hints:2}));assert.equal(api.snapshot().entries.find(x=>x.id==='download-rescue').errors,4);assert(api.view().includes('У процесі · 2/3'));assert(api.view().includes('даних браузера'));
+console.log('PASS: 14 missions/50 milestones, partial new-lesson phases, all-complete, legacy saves/replay, future registry entries, scoped counters, TXT/CSV consistency and local reset synchronization.');
+
+assert.equal(make({}, {m6:{stage:'diagnose'}}).entries.find(x=>x.id==='city/6').done,0);
+assert.equal(make({}, {m6:{stage:'tab'}}).entries.find(x=>x.id==='city/6').done,1);
+assert.equal(make({}, {m6:{stage:'bridge',firstDone:true}}).entries.find(x=>x.id==='city/6').done,2);
+console.log('PASS: saved browser-tab mission milestones count before its legacy all-at-once final award.');

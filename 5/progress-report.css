@@ -1,0 +1,29 @@
+/* Layout for the existing report page; shared portal appearance is retained. */
+.report .progress-tools{display:flex;flex-wrap:wrap;gap:12px;margin:20px 0}
+.report .progress-metrics span{display:block;margin-top:7px}
+.report .progress-missions,.report .report-diploma{padding:24px;margin:20px 0}
+.report .progress-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0 28px}
+.report .progress-entry{border:2px solid #c7b5e9;border-radius:18px;background:#fff;min-width:0;overflow:hidden}
+.report .progress-entry summary{display:block;cursor:pointer;padding:18px;list-style:none}
+.report .progress-entry summary:after{content:'Докладніше';display:block;margin-top:12px;font-weight:700;color:#674597}
+.report .progress-entry[open] summary:after{content:'Згорнути'}
+.report .progress-entry-title{display:block;font-weight:800;font-size:1.1rem;line-height:1.45;overflow-wrap:anywhere}
+.report .progress-entry-state{display:block;margin:12px 0;color:#4a5a7d}
+.report .progress-entry[data-status=done]{border-color:#78c5a2}
+.report .progress-entry[data-status=active]{border-color:#b39ae5}
+.report .progress-detail{padding:0 18px 20px;border-top:1px solid #ddd4ef;overflow-wrap:anywhere}
+.report .progress-checklist{list-style:none;margin:18px 0;padding:0}
+.report .progress-checklist li{margin:10px 0;line-height:1.5}
+.report .progress-checklist li span{font-weight:800;color:#346c58}
+.report .progress-facts{display:grid;gap:12px}
+.report .progress-facts div{padding:12px;background:#f3f0ff;border-radius:12px}
+.report .progress-facts dt{font-size:1rem}
+.report .progress-facts dd{font-size:1.3rem;font-weight:800;margin:4px 0 0}
+.report .report-diploma>summary{font-size:1.2rem;font-weight:800;cursor:pointer;line-height:1.5}
+.report .report-diploma .report-score span{color:inherit!important}
+.report .progress-entry summary:focus-visible,.report .report-diploma>summary:focus-visible{outline:3px solid #8558c9;outline-offset:-3px}
+@media(max-width:760px){.report .progress-list{grid-template-columns:1fr}.report .progress-missions,.report .report-diploma{padding:16px}.report .progress-tools button{white-space:normal;max-width:100%}}
+.report .progress-tools button[data-progress-filter][aria-pressed=true]{background:#7447c9;color:#fff;border-color:#5f34b0}
+.report .report-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+.report .report-metrics>div{min-width:0;overflow-wrap:anywhere}
+@media(max-width:600px){.report .report-metrics{grid-template-columns:1fr}}
