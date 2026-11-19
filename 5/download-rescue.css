@@ -1,0 +1,30 @@
+/* New quest workspace only; approved global appearance remains intact. */
+#global-network .dl-quest{min-width:0}
+#global-network .dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px;margin:18px 0}
+#global-network .dl-theme{display:grid;gap:12px;padding:14px;border:3px solid #c8b7eb;background:#f5f1ff;color:#27365f;border-radius:20px;font:inherit;text-align:left;cursor:pointer}
+#global-network .dl-theme.selected{border-color:#7947ce;box-shadow:0 0 0 3px #d9cbfa}
+#global-network .dl-theme svg{width:100%;height:auto;max-height:170px;border-radius:14px}
+#global-network .dl-tools{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:18px 0}
+#global-network .dl-tools input{flex:1 1 220px;min-width:0}
+#global-network .dl-file-choice{display:grid;gap:10px;white-space:normal;text-align:left}
+#global-network .dl-file-choice span{font-size:1rem;font-weight:500;overflow-wrap:anywhere}
+#global-network .dl-info,#global-network .dl-save,#global-network .dl-message{padding:18px;margin:18px 0;background:#f0edff;border:2px solid #ccbaed;border-radius:16px;color:#27365f}
+#global-network .dl-message{background:#fff4c8;border-color:#e7cc69}
+#global-network .dl-passport{padding:18px;border:2px solid #c7d8ef;border-radius:16px;margin:18px 0}
+#global-network .dl-explorer{padding:20px;border:3px solid #bdceeb;border-radius:18px;background:#f4f9ff;min-height:140px}
+#global-network .dl-file{padding:16px;border:2px solid #c7b7e9;border-radius:12px;background:#fff;color:#243b60;font:inherit;overflow-wrap:anywhere;cursor:pointer}
+#global-network .dl-file.selected{border-color:#7947ce;background:#e9e1ff}
+#global-network .dl-thumbnail{max-width:400px;margin:16px auto}
+#global-network .dl-thumbnail svg{display:block;width:100%;height:auto;max-height:230px;border-radius:14px}
+#global-network .dl-editor{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+#global-network .dl-preview{padding:20px;border:3px solid #c4afec;border-radius:20px;background:white;color:#173253;min-width:0}
+#global-network .dl-preview svg{display:block;width:100%;height:auto;max-height:230px;border-radius:14px}
+#global-network .dl-preview p{white-space:pre-wrap}
+#global-network .dl-preview blockquote{margin:16px 0;padding:12px;border-left:4px solid #9168db;background:#f5f1ff;overflow-wrap:anywhere}
+#global-network .dl-url,#global-network .dl-quest p,#global-network .dl-quest a{overflow-wrap:anywhere}
+#global-network .dl-model{padding:12px;border-left:4px solid #7c69bd;background:#f5f1ff}
+#global-network .dl-quest label{margin:15px 0 8px}
+#global-network .dl-quest input,#global-network .dl-quest textarea{font-size:1rem;color:#163253;background:#fff}
+#global-network .dl-finale details{padding:18px;border:2px solid #c7d8ef;border-radius:16px}
+#global-network .dl-finale li{margin:12px 0}
+@media(max-width:760px){#global-network .dl-editor{grid-template-columns:1fr}}
