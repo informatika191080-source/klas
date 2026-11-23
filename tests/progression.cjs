@@ -27,6 +27,16 @@ console.log('PASS: all 8 network missions, 24 learning outcomes, rejected incorr
 const values=new Map(),location={hash:'#topics'},state={m1:{stage:'intro'},m2:{stage:'intro'},m3:{stage:'intro'},m6:{stage:'intro'}};
 const a={window:{},state,DATA:Array(8).fill({}),levelsNames:Array.from({length:8},(_,i)=>'Місія '+i),localStorage:{getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)},location,completed:()=>0,missionStatus:()=>({done:0,closed:false}),history:{pushState(_a,_b,h){location.hash=h;}}};
 vm.createContext(a);vm.runInContext(fs.readFileSync('5/messages.js','utf8'),a);vm.runInContext(fs.readFileSync('5/academy.js','utf8'),a);const api=a.window.CyfroAcademy;
+const lessonRoutes=['digital-class','objects','messages','web-search','media-detective','download-rescue'];
+assert.deepEqual(JSON.parse(JSON.stringify(api.curriculum.flatMap(topic=>topic.routes))),lessonRoutes,'The numbered curriculum contains only lesson adventures');
+assert.deepEqual(JSON.parse(JSON.stringify(api.catalog().map(lesson=>lesson.number))),['1','2','3','12','12а','13'],'Source lesson numbers retain gaps for future lessons');
+assert.equal(new Set(api.cityOrder()).size,8,'The independent methodological adventure retains all eight missions');
+assert(api.cityGroups().every(topic=>!topic.number&&topic.routes.every(route=>route.startsWith('city/'))),'Additional missions have no lesson number');
+assert.deepEqual(JSON.parse(JSON.stringify(api.orderEntries([{route:'city/1'},{route:'download-rescue'},{route:'objects'}]).map(x=>x.route))),['objects','download-rescue','city/1'],'Additional missions follow the separate lesson list in progress reports');
+api.catalog().forEach(lesson=>values.set(lesson.storageKey,JSON.stringify({stage:3,finished:true})));
+assert(api.recommend().done,'Finishing lesson adventures does not make the additional city adventure compulsory');
+values.clear();
+console.log('PASS: source lesson numbers, reserved gaps, separate unnumbered eight-mission adventure and report ordering.');
 assert.equal(api.recommend().hash,'digital-class');
 values.set('cyfropomich5_lesson03_v1',JSON.stringify({stage:0,answers:['vision','','','','']}));assert(api.lessonStatus('messages').started,'Part of the first step is in progress');assert.equal(api.recommend().hash,'messages');
 api.remember('city/6');assert.equal(api.recommend().hash,'city/6','Continue returns to last unfinished mission');
@@ -43,3 +53,4 @@ assert(!html.includes('data-go=\"teacher\"'));assert(!html.includes('function te
 context.root={addEventListener(_event,handler){context.finalHandler=handler;}};context.completed=()=>8;vm.runInContext(block('const FINAL_QUESTIONS=','window.CyfroAcademy.init();'),context);s.screen='finale';s.finale={stage:0,mistakes:0,done:false,feedback:''};
 for(const [stage,choice] of [[0,1],[1,0],[2,1]]){context.finalHandler({target:{closest:()=>({dataset:{finalOption:String(choice)}})}});assert(pendingAck,'Finale needs a visible acknowledgment');assert.equal(s.finale.stage,stage);assert.equal(s.finale.done,false);const ack=pendingAck;pendingAck=null;ack.onNext();assert.equal(s.finale.stage,stage+1);}
 assert.equal(s.finale.done,true);console.log('PASS: all 3 finale answers remain on their current question until Next, including final completion.');
+
