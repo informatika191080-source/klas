@@ -85,6 +85,8 @@ html body .container .msg-mission :is(.msg-observation, .msg-broadcast) :is(h3, 
 }
 html body :is(.container main, main.container) a { color: #245b96; }
 html body main.container.panel { background: #fff; color: #263568; }
+html body .container .final-scenario { color: #f5f8ff; }
+html body .container .final-complete h2 { color: #24634b; }
 @media (max-width: 700px) {
   html body .container .m2-device { flex-wrap: wrap; min-width: 0; }
   html body .container .m2-device strong { flex: 1 1 90px; min-width: 0; }
