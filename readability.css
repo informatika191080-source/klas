@@ -1,0 +1,95 @@
+@import url('./fonts/roboto.css');
+
+/* One font for text, controls, learning illustrations and print views. */
+html, body, body *, input::placeholder, textarea::placeholder {
+  font-family: 'Roboto', Arial, sans-serif !important;
+}
+
+/* Light application surfaces need dark ink; the messenger has a dark surface. */
+html body .container .stage :is(.m1-drive, .m2-net, .m6-browser) {
+  color: #19334f;
+}
+html body .container .stage .m3-chatapp,
+html body .container .stage .m3-chatapp :is(.m3-chathead, .m3-bubble, strong, p) {
+  color: #f5f8ff;
+}
+html body .container .stage .m3-chatapp :is(small, .m3-mute, .tiny) {
+  color: #c9dcf4;
+}
+html body .container .stage :is(.m1-summary > div, .m2-finish, .m2-tip,
+  .m3-summary, .m3-tip, .m6-bip, .coachbox) {
+  color: #f5f8ff;
+}
+html body .container .stage .v4-scene > :is(.tiny, .v4-choice-note) {
+  color: #d1e0f4;
+}
+
+/* Navigation and expandable guidance sit on light panels. */
+html body .container .help-intro :is(summary, p, .mission-team, .mission-team > span, .team-label) {
+  color: #485780;
+}
+html body .container .map-legend {
+  background: #eee7ff;
+  color: #51378a;
+  border-color: #c7b7e9;
+}
+html body .container #reset-progress {
+  background: #fff0ed;
+  color: #852f32 !important;
+  border-color: #cf9697;
+}
+html body .portal-grades .academy-grade:nth-child(2) { --tile: #10758a; }
+html body .portal-grades .academy-grade:nth-child(3) { --tile: #b63472; }
+html body .portal-grades .academy-grade:nth-child(4) { --tile: #2767b3; }
+html body .portal-grades .academy-grade:nth-child(5) { --tile: #8846ad; }
+
+/* Keep secondary text readable in form fields and disabled controls. */
+input::placeholder, textarea::placeholder { color: #59667c; opacity: 1; }
+
+html body .container .stage .mission-done h2 { color: #24634b; }
+html body .container .stage .lesson-recap {
+  background: #eef5fc;
+  color: #2b405f;
+  border-color: #aac5dd;
+}
+html body .container .stage .lesson-recap :is(h3, p, strong) { color: #2b405f; }
+html body .container .stage :is(.m3-label, .m3-count) { color: #395475; }
+html body .container .stage .v4-scene { background-color: #10203a; }
+html body .container .stage .v4-photo {
+  background-color: #536780;
+  background-blend-mode: multiply;
+  color: #fff;
+}
+html body .container .stage .v4-status {
+  background: #dff3e9;
+  color: #214d3b;
+  border-color: #7fb69d;
+}
+html body .container .stage .v4-status.bad {
+  background: #fff0e9;
+  color: #702d31;
+  border-color: #d39a91;
+}
+html body .container main.stage [id$='-feedback']:not(:empty) {
+  background: #fff3e5;
+  color: #6a3821;
+  border-color: #dba774;
+}
+html body .container main.stage [id$='-feedback'] :is(p, h3, strong, small, .caps) {
+  color: #6a3821 !important;
+}
+html body .container .badge-item { color: #495477; background: #eef1f8; }
+html body .container .badge-item.earned { color: #245b42; background: #def4e7; }
+html body .container .msg-mission :is(.msg-observation, .msg-broadcast) :is(h3, strong) {
+  color: #35496d;
+}
+html body :is(.container main, main.container) a { color: #245b96; }
+html body main.container.panel { background: #fff; color: #263568; }
+@media (max-width: 700px) {
+  html body .container .m2-device { flex-wrap: wrap; min-width: 0; }
+  html body .container .m2-device strong { flex: 1 1 90px; min-width: 0; }
+  html body .container .m2-status { max-width: 100%; white-space: normal; }
+}
+@media print {
+  html body .container .stage .m3-chatapp { print-color-adjust: exact; }
+}
