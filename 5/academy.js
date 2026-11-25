@@ -55,7 +55,7 @@ function citySections(next){return '<div class="learning-cards curriculum-grid">
 const keys={'digital-class':'cyfropomich5_lesson01_v1',objects:'cyfropomich5_lesson02_v1',messages:'cyfropomich5_lesson03_v1','data-processes':'cyfropomich5_lesson04_v1','web-search':'cyfropomich5_web_search_v1','media-detective':'cyfropomich5_media_detective_v1','download-rescue':'cyfropomich5_download_rescue_v1'};
 const read=id=>{try{const s=JSON.parse(localStorage.getItem(keys[id])||'null');return s&&typeof s==='object'?s:{};}catch(e){return {};}};
 let routeLock=false,lastRouteHash=location.hash;
-function lessonStatus(id){const s=read(id),stage=Math.max(0,Math.min(3,Number(s.stage)||0));const started=s.started===true||stage>0||(id==='digital-class'&&(s.safe||s.picks||[]).some(Boolean))||(id==='messages'&&(s.answers||[]).some(Boolean))||(id==='objects'&&(s.actions>0||s.color&&s.color!=='blue'||s.title&&s.title!=='Майстерня'));return {stage,finished:s.finished===true||stage===3,started,errors:Math.max(0,Number(s.errors)||0),hints:Math.max(0,Number(s.hints)||0)};}
+function lessonStatus(id){const s=read(id),stage=Math.max(0,Math.min(3,Number(s.stage)||0));const started=s.started===true||stage>0||(id==='digital-class'&&(s.safe||s.picks||[]).some(Boolean))||(id==='messages'&&(s.answers||[]).some(Boolean))||(id==='objects'&&(s.actions>0||s.color&&s.color!=='blue'||s.title&&s.title!=='Майстерня'));return {stage,finished:s.finished===true||stage===3||window.CyfroReplay?.completed(id)===true,started,errors:Math.max(0,Number(s.errors)||0),hints:Math.max(0,Number(s.hints)||0)};}
 function totalCount(){return ids.length+DATA.length;}
 function totalDone(){return ids.filter(id=>lessonStatus(id).finished).length+completed();}
 function routeEntry(hash){if(ids.includes(hash)){const s=lessonStatus(hash);return {hash,title:lessonTitle(hash),done:s.finished,started:s.started};}const m=/^city\/([1-8])$/.exec(hash);if(m){const i=Number(m[1])-1,st=missionStatus(i);return {hash,title:'Додаткова пригода · '+levelsNames[i],done:st.closed,started:st.done>0||cityStage(i)!=='intro'};}return null;}
@@ -189,7 +189,7 @@ function importProgress(data){
  try{for(const [id,x] of Object.entries(data)){if(x===null)localStorage.removeItem(keys[id]);else localStorage.setItem(keys[id],JSON.stringify(x));}}
  catch(e){for(const [id,x] of Object.entries(before))try{if(x===null)localStorage.removeItem(keys[id]);else localStorage.setItem(keys[id],x);}catch(ignored){}throw e;}
 }
-function reset(){try{localStorage.removeItem('cyfropomich5_success_v1');}catch(e){}try{localStorage.removeItem('cyfropomich5_resume_v1');}catch(e){}for(const id of ids)try{localStorage.removeItem(keys[id]);}catch(e){}}
+function reset(){try{window.CyfroReplay?.reset();}catch(e){}try{localStorage.removeItem('cyfropomich5_success_v1');}catch(e){}try{localStorage.removeItem('cyfropomich5_resume_v1');}catch(e){}for(const id of ids)try{localStorage.removeItem(keys[id]);}catch(e){}}
 function catalog(){return ids.map(id=>({id,number:topicFor(id).number,title:lessonTitle(id),storageKey:keys[id]}));}
 function reportRows(){return ids.map(id=>{const x=lessonStatus(id);return [lessonTitle(id),x.finished?3:x.stage,3,x.errors,x.hints];});}
 function reportLines(){return ['','НАВЧАЛЬНІ ПРАКТИЧНІ МІСІЇ',...ids.map(id=>{const x=lessonStatus(id);return lessonTitle(id)+' — '+(x.finished?3:x.stage)+'/3 частини; повторні перевірки: '+x.errors+'; підказки: '+x.hints;})];}
