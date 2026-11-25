@@ -7,6 +7,7 @@ const num=x=>Math.max(0,Math.min(1000000,Math.trunc(Number(x)||0)));
 const clamp=(x,max)=>Math.min(max,num(x));
 const steps={
  'digital-class':['Безпечні дії','Предмети та явища','Властивості м’яча','Зміна положення'],
+ 'data-processes':['Запис даних','Джерело, канал і приймач','Нове оголошення','Збереження й оновлення табло','Носії повідомлень','Власна презентація'],
  objects:['Заливка та розмір','Текст і положення','Команди об’єкта'],
  messages:['Органи чуття','Зміст умовного знака','Поєднання способів','Два навчальні слайди'],
  'web-search':['Браузер, пошук та веб','Відома адреса й каталог','Уточнений запит','Перевірка результатів','Джерело зображення','Маршрут дослідника'],
@@ -21,11 +22,11 @@ function lessonEntry(def,raw){const s=obj(raw),stage=clamp(s.stage,3),labels=ste
  if(def.id==='digital-class'&&s.portal===2)current=stage<2?stage:stage===2?2+Number(s.followup===true):4;
  else if(def.id==='digital-class')current=stage===3?4:stage;
  if(def.id==='messages')current=stage===0?0:stage===1?1+Number(s.phase==='combined'):stage===2?3:4;
- if(['web-search','media-detective'].includes(def.id))current=Math.max(stage*2,clamp(Array.isArray(s.done)?s.done.length:0,labels.length));
+ if(['web-search','media-detective','data-processes'].includes(def.id))current=Math.max(stage*2,clamp(Array.isArray(s.done)?s.done.length:0,labels.length));
  current=Math.min(labels.length,current);
  const began=s.started===true||stage>0||current>0||num(s.errors)>0||num(s.hints)>0||(Array.isArray(s.answers)&&s.answers.some(Boolean))||(Array.isArray(s.safe)&&s.safe.some(Boolean))||(Array.isArray(s.picks)&&s.picks.some(Boolean))||num(s.actions)>0||(def.id==='objects'&&(s.color&&s.color!=='blue'||s.title&&s.title!=='Майстерня'));
  const done=completed?labels.length:current;
- const artifact=completed?({'objects':'Афішу відновлено',messages:'Два слайди підготовлено','media-detective':'Лист підготовлено до обговорення з учителем','download-rescue':s.exportRequested?'Надіслано запит на завантаження експоната':'Експонат готовий; можна завантажити'})[def.id]||'Практичні доручення виконано':'';
+ const artifact=completed?({'data-processes':s.exportRequested?'Надіслано запит на завантаження презентації':'Презентація про носії повідомлень готова','objects':'Афішу відновлено',messages:'Два слайди підготовлено','media-detective':'Лист підготовлено до обговорення з учителем','download-rescue':s.exportRequested?'Надіслано запит на завантаження експоната':'Експонат готовий; можна завантажити'})[def.id]||'Практичні доручення виконано':'';
  return {id:def.id,title:def.title,group:'lessons',route:def.id,labels,done,total:labels.length,parts:completed?3:stage,completed,started:completed||began,status:completed?'done':began?'active':'new',errors:num(s.errors),hints:num(s.hints),hintUnit:'звернень до підказок',replaying:completed&&stage<3,current,artifact};
 }
 function cityEntry(title,i,p){const graph=obj(i===0?p.m1:i===1?p.m2:i===2?p.m3:i===5?p.m6:obj(p.mNew)[i]),results=obj(p.results),recorded=[0,1,2].filter(j=>typeof results[(i+1)+'-'+j]==='boolean').length,inferred=i===5?(['tab','bridge','second','back','done'].includes(graph.stage)?(graph.firstDone===true?2:1):0):0,done=Math.max(recorded,inferred);

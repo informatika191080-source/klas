@@ -27,9 +27,9 @@ console.log('PASS: all 8 network missions, 24 learning outcomes, rejected incorr
 const values=new Map(),location={hash:'#topics'},state={m1:{stage:'intro'},m2:{stage:'intro'},m3:{stage:'intro'},m6:{stage:'intro'}};
 const a={window:{},state,DATA:Array(8).fill({}),levelsNames:Array.from({length:8},(_,i)=>'Місія '+i),localStorage:{getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)},location,completed:()=>0,missionStatus:()=>({done:0,closed:false}),history:{pushState(_a,_b,h){location.hash=h;}}};
 vm.createContext(a);vm.runInContext(fs.readFileSync('5/messages.js','utf8'),a);vm.runInContext(fs.readFileSync('5/academy.js','utf8'),a);const api=a.window.CyfroAcademy;
-const lessonRoutes=['digital-class','objects','messages','web-search','media-detective','download-rescue'];
+const lessonRoutes=['digital-class','objects','messages','data-processes','web-search','media-detective','download-rescue'];
 assert.deepEqual(JSON.parse(JSON.stringify(api.curriculum.flatMap(topic=>topic.routes))),lessonRoutes,'The numbered curriculum contains only lesson adventures');
-assert.deepEqual(JSON.parse(JSON.stringify(api.catalog().map(lesson=>lesson.number))),['1','2','3','12','12а','13'],'Source lesson numbers retain gaps for future lessons');
+assert.deepEqual(JSON.parse(JSON.stringify(api.catalog().map(lesson=>lesson.number))),['1','2','3','4','12','12а','13'],'Source lesson numbers retain gaps for future lessons');
 assert.equal(new Set(api.cityOrder()).size,8,'The independent methodological adventure retains all eight missions');
 assert(api.cityGroups().every(topic=>!topic.number&&topic.routes.every(route=>route.startsWith('city/'))),'Additional missions have no lesson number');
 assert.deepEqual(JSON.parse(JSON.stringify(api.orderEntries([{route:'city/1'},{route:'download-rescue'},{route:'objects'}]).map(x=>x.route))),['objects','download-rescue','city/1'],'Additional missions follow the separate lesson list in progress reports');
